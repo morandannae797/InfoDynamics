@@ -1,0 +1,6 @@
+<Solution>
+  <Project Path="InfoDynamics.API/InfoDynamics.API.csproj" />
+  <Project Path="InfoDynamics.Aplicacion/InfoDynamics.Aplicacion.csproj" />
+  <Project Path="InfoDynamics.Dominio/InfoDynamics.Dominio.csproj" />
+  <Project Path="InfoDynamics.Infraestructura/InfoDynamics.Infraestructura.csproj" />
+</Solution>
