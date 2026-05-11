@@ -1,47 +1,42 @@
 using InfoDynamics.Aplicacion.CustomException;
 using InfoDynamics.Aplicacion.dtos;
-
 using InfoDynamics.Aplicacion.servicio.IServicios;
-using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.EntityFrameworkCore;
 
-namespace InfoDynamics.Aplicacion.Controllers {
-  //  [Authorize]
+namespace InfoDynamics.API.Controllers
+{
     [ApiController]
     [Route("api/[controller]")]
-
     public class RegistroJornadaController : ControllerBase
     {
-        private readonly IReadServiceAsync<RegistroJornadaDto>_readService;
-        private readonly IWriteServiceAsync<RegistroJornadaDto> _writeService;
+        private readonly IReadServiceAsync<RegistroResponseDto> _readService;
+        private readonly IWriteServiceAsync<RegistroCreateDto, RegistroUpdateDto> _writeService;
 
         public RegistroJornadaController(
-                    IReadServiceAsync<RegistroJornadaDto> readService,
-                    IWriteServiceAsync<RegistroJornadaDto> writeService)
+            IReadServiceAsync<RegistroResponseDto> readService,
+            IWriteServiceAsync<RegistroCreateDto, RegistroUpdateDto> writeService)
         {
             _readService = readService;
             _writeService = writeService;
         }
 
-
         [HttpGet]
-
-        public async Task<ActionResult<IEnumerable<RegistroJornadaDto>>> GetAll()
+        public async Task<ActionResult<IEnumerable<RegistroResponseDto>>> GetAll()
         {
             try
             {
                 var registros = await _readService.GetAllAsync();
-                return Ok(registros); // Devuelve 200 OK
+                return Ok(registros);
             }
             catch (EntityNotFoundException ex)
             {
-                return NotFound(new { message = ex.Message }); // Devuelve 404
+                return NotFound(new { message = ex.Message });
             }
         }
-[ProducesResponseType(StatusCodes.Status404NotFound)]
-        [ProducesResponseType(StatusCodes.Status400BadRequest)]
+
         [HttpGet("{id:int}")]
-        public async Task<ActionResult<RegistroJornadaDto>> GetById(int id)
+        public async Task<ActionResult<RegistroResponseDto>> GetById(int id)
         {
             try
             {
@@ -53,43 +48,43 @@ namespace InfoDynamics.Aplicacion.Controllers {
                 return NotFound(new { message = ex.Message });
             }
         }
+
         [HttpPost]
-        public async Task<ActionResult> Create([FromBody] RegistroJornadaDto dto)
+        public async Task<ActionResult> Create([FromBody] RegistroCreateDto dto)
         {
             if (!ModelState.IsValid)
-            {
-                return BadRequest(ModelState); // Devuelve 400 si el DTO no cumple las validaciones
-            }
+                return BadRequest(ModelState);
 
             await _writeService.AddAsync(dto);
 
-            // Lo ideal en un POST es devolver 201 
-            return CreatedAtAction(nameof(GetById), new { id = dto.RegistroID }, dto);
+            return Ok(new { message = "Registro de jornada creado correctamente." });
         }
 
-        [HttpPut("{id}")]
-        public async Task<ActionResult> Update(int id, [FromBody] RegistroJornadaDto dto)
+        [HttpPut("{id:int}")]
+        public async Task<ActionResult> Update(int id, [FromBody] RegistroUpdateDto dto)
         {
-            if (id != dto.RegistroID)
-            {
+            if (!ModelState.IsValid)
+                return BadRequest(ModelState);
+
+            if (id != dto.RegistroId)
                 return BadRequest(new { message = "El ID de la ruta no coincide con el del objeto." });
+
+            try
+            {
+                await _writeService.UpdateAsync(dto);
+                return NoContent();
             }
-
-            // Aquí podrías envolver en un try-catch por si el registro no existe
-            await _writeService.UpdateAsync(dto);
-
-            return NoContent(); // Devuelve 204 No Content (estándar para un PUT exitoso)
+            catch (DbUpdateConcurrencyException)
+            {
+                return Conflict(new { message = "El registro fue modificado por otro proceso. Recarga los datos y reintenta." });
+            }
         }
 
-        [HttpDelete("{id}")]
+        [HttpDelete("{id:int}")]
         public async Task<ActionResult> Delete(int id)
         {
             await _writeService.DeleteAsync(id);
-            return NoContent(); // Devuelve 204 No Content
+            return NoContent();
         }
-        
-
-
-
-    } 
+    }
 }

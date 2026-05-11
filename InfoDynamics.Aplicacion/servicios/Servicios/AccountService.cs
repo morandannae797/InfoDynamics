@@ -2,7 +2,6 @@
 using InfoDynamics.Aplicacion.dtos;
 using InfoDynamics.Aplicacion.servicios.IServicios.IServicioMapping;
 using InfoDynamics.Dominio.Entidades;
-using Microsoft.AspNetCore.Identity;
 
 namespace InfoDynamics.Aplicacion.servicios.Servicios
 {
@@ -12,7 +11,6 @@ namespace InfoDynamics.Aplicacion.servicios.Servicios
         private readonly Iusuarioservicio _usuarioService;
         private readonly IUserRepository _userRepository;
 
-       
         public AccountService(
             IAuthTokenProcessor tokenProcessor,
             Iusuarioservicio usuarioService,
@@ -23,28 +21,19 @@ namespace InfoDynamics.Aplicacion.servicios.Servicios
             _userRepository = userRepository;
         }
 
-       
         public async Task LoginAsync(loginDto loginDto)
         {
-            Usuario user = null;
-
-            if (int.TryParse(loginDto.identificador, out int numeroDeUsuario))
-            {
-                user = await _usuarioService.FindByIdAsync(numeroDeUsuario);
-            }
-            else
-            {
-                user = await _usuarioService.FindByEmailAsync(loginDto.identificador);
-            }
+            var user = await _usuarioService.VerifyUser(
+                loginDto.identificador,
+                loginDto.contrasena);
 
             if (user == null)
-            {
-                throw new Exception("Usuario no encontrado");
-            }
+                throw new UnauthorizedAccessException("Contraseña/Usuario incorrecta.");
 
-            bool passwordValida = BCrypt.Net.BCrypt.Verify(loginDto.contrasena, user.contrasena);
-            if (!passwordValida)
-                throw new Exception("Contraseña/Usuario incorrecta");
+            if (user.estado_cuenta != "Activa")
+                throw new UnauthorizedAccessException("La cuenta no está activa.");
+
+            var rowVersionOriginal = user.RowVersion;
 
             var (jwtToken, expirationDateInUtc) = _tokenProcessor.GenerateJwtToken(user);
             var refreshToken = _tokenProcessor.GenerateRefreshToken();
@@ -53,27 +42,36 @@ namespace InfoDynamics.Aplicacion.servicios.Servicios
             user.RefreshToken = refreshToken;
             user.RefreshTokenExpiryTime = refreshTokenExpirationDateInUtc;
 
-            await _usuarioService.UpdateWithConcurrencyAsync(user, user.RowVersion);
+            await _usuarioService.UpdateWithConcurrencyAsync(user, rowVersionOriginal);
 
             _tokenProcessor.WriteAuthTokenAsHttpOnlyCookie(
-                "ACCESS_TOKEN", jwtToken, expirationDateInUtc);
+                "ACCESS_TOKEN",
+                jwtToken,
+                expirationDateInUtc);
+
             _tokenProcessor.WriteAuthTokenAsHttpOnlyCookie(
-                "REFRESH_TOKEN", refreshToken, refreshTokenExpirationDateInUtc);
+                "REFRESH_TOKEN",
+                refreshToken,
+                refreshTokenExpirationDateInUtc);
         }
 
         public async Task RefreshtokenAsync(string? refreshToken)
         {
-            if (string.IsNullOrEmpty(refreshToken))
-            {
-                throw new Exception("Refresh token no proporcionado");
-            }
+            if (string.IsNullOrWhiteSpace(refreshToken))
+                throw new UnauthorizedAccessException("Refresh token no proporcionado.");
 
             var user = await _userRepository.GetUserbyRefreshToken(refreshToken);
 
-            if (user == null || user.RefreshTokenExpiryTime < DateTime.UtcNow)
-            {
-                throw new UnauthorizedAccessException("Refresh token inválido o expirado");
-            }
+            if (user == null)
+                throw new UnauthorizedAccessException("Refresh token inválido.");
+
+            if (user.RefreshTokenExpiryTime == null || user.RefreshTokenExpiryTime <= DateTime.UtcNow)
+                throw new UnauthorizedAccessException("Refresh token expirado.");
+
+            if (user.estado_cuenta != "Activa")
+                throw new UnauthorizedAccessException("La cuenta no está activa.");
+
+            var rowVersionOriginal = user.RowVersion;
 
             var (jwtToken, expirationDateInUtc) = _tokenProcessor.GenerateJwtToken(user);
             var newRefreshToken = _tokenProcessor.GenerateRefreshToken();
@@ -81,12 +79,18 @@ namespace InfoDynamics.Aplicacion.servicios.Servicios
 
             user.RefreshToken = newRefreshToken;
             user.RefreshTokenExpiryTime = refreshTokenExpirationDateInUtc;
-            await _usuarioService.UpdateWithConcurrencyAsync(user, user.RowVersion);
+
+            await _usuarioService.UpdateWithConcurrencyAsync(user, rowVersionOriginal);
 
             _tokenProcessor.WriteAuthTokenAsHttpOnlyCookie(
-                "ACCESS_TOKEN", jwtToken, expirationDateInUtc);
+                "ACCESS_TOKEN",
+                jwtToken,
+                expirationDateInUtc);
+
             _tokenProcessor.WriteAuthTokenAsHttpOnlyCookie(
-                "REFRESH_TOKEN", newRefreshToken, refreshTokenExpirationDateInUtc);
+                "REFRESH_TOKEN",
+                newRefreshToken,
+                refreshTokenExpirationDateInUtc);
         }
     }
 }

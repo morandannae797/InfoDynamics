@@ -1,52 +1,84 @@
+using InfoDynamics.Dominio.interfaces;
 using System.ComponentModel.DataAnnotations;
 
 namespace InfoDynamics.Aplicacion.dtos
 {
-    public class UsuarioCreateDTO
-    {
-        [Required]
-        public int no_usuario { get; set; }
-
-        [Required, StringLength(100)]
-        public string nombre { get; set; } = null!;
-
-        [Required, StringLength(100)]
-        public string ap_paterno { get; set; } = null!;
-
-        [Required, StringLength(100)]
-        public string ap_maternos { get; set; } = null!;
-
-        [Required, EmailAddress]
-        public string email { get; set; } = null!;
-
-        [Required, MinLength(8, ErrorMessage = "La contraseña debe tener mínimo 8 caracteres.")]
-        public string contrasena { get; set; } = null!;
-
-        [Required, RegularExpression("Administrador|Empleado")]
-        public string rol { get; set; } = null!;
-    }
-
     public class UsuarioResponseDTO
     {
-        private int _no_usuario;
+        public int NoUsuario { get; set; }
 
-        public int no_usuario
-        {
-            get => _no_usuario;
-            set => _no_usuario = value;
-        }
+        public string NoUsuarioFormateado => NoUsuario.ToString("D5");
 
-        public string no_usuarioFormateado => _no_usuario.ToString("D5");
+        public string Nombre { get; set; } = null!;
+
+        public string ApPaterno { get; set; } = null!;
+
+        public string? ApMaterno { get; set; }
+
+        public string NombreCompleto => $"{Nombre} {ApPaterno} {ApMaterno}".Trim();
+
+        public string Email { get; set; } = null!;
+
+        public string Rol { get; set; } = null!;
+
+        public string EstadoCuenta { get; set; } = null!;
 
         public byte[] RowVersion { get; set; } = null!;
+    }
+    public class UsuarioCreateDTO 
+    {
+        [Required]
+        public int NoUsuario { get; set; }
 
-        public string NombreCompleto => $"{nombre} {ap_paterno} {ap_maternos}";
+        [Required, StringLength(100)]
+        public string Nombre { get; set; } = null!;
 
-        public string nombre { get; set; } = null!;
-        public string ap_paterno { get; set; } = null!;
-        public string ap_maternos { get; set; } = null!;
+        [Required, StringLength(50)]
+        public string ApPaterno { get; set; } = null!;
 
-        public string email { get; set; } = null!;
-        public string rol { get; set; } = null!;
+        [StringLength(50)]
+        public string? ApMaterno { get; set; }
+
+        [Required, EmailAddress, StringLength(100)]
+        public string Email { get; set; } = null!;
+
+        [Required, MinLength(8, ErrorMessage = "La contraseña debe tener mínimo 8 caracteres.")]
+        public string Contrasena { get; set; } = null!;
+
+        [Required, RegularExpression("Administrador|Empleado")]
+        public string Rol { get; set; } = null!;
+    }
+    public class UsuarioUpdateDto : IConcurrencyDto
+    {
+        [Required]
+        public int NoUsuario { get; set; }
+
+        [Required, StringLength(100)]
+        public string Nombre { get; set; } = null!;
+
+        [Required, StringLength(50)]
+        public string ApPaterno { get; set; } = null!;
+
+        [StringLength(50)]
+        public string? ApMaterno { get; set; }
+
+        [Required, EmailAddress, StringLength(100)]
+        public string Email { get; set; } = null!;
+
+        [Required, RegularExpression("Administrador|Empleado")]
+        public string Rol { get; set; } = null!;
+
+        [Required, RegularExpression("Activa|Bloqueada|Desactivada")]
+        public string EstadoCuenta { get; set; } = null!;
+
+        [Required]
+        public byte[] RowVersion { get; set; } = null!;
+       
+        }
+
+    public class UsuarioDesactivarDto : IConcurrencyDto
+    {
+        [Required]
+        public byte[] RowVersion { get; set; } = null!;
     }
 }

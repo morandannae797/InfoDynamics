@@ -10,23 +10,27 @@ namespace InfoDynamics.Infraestructura.FluentConfiguracion
         {
 
 
-            builder.HasKey(e => e.id_vacacion);
+            builder.HasKey(e => e.id_vacacion).HasName("PK__Vacacion__726C3EFE67A99459");
 
+            builder.ToTable("Vacacion");
+
+            builder.Property(e => e.RowVersion)
+                .IsRowVersion()
+                .IsConcurrencyToken();
             builder.Property(e => e.estado)
-                .HasMaxLength(20)
-                .HasDefaultValue("Pendiente");
-            builder.Property(e => e.RowVersion).IsRowVersion();
+                .HasMaxLength(15)
+                .IsUnicode(false);
+            builder.Property(e => e.fecha_aprobo).HasColumnType("datetime");
+            builder.Property(e => e.fecha_solicito).HasColumnType("datetime");
 
-            // Relación doble con Usuarios
-            builder.HasOne(d => d.Solicitante)
-                .WithMany(p => p.VacacionesSolicitadas)
-                .HasForeignKey(d => d.no_usuario)
-                .OnDelete(DeleteBehavior.Restrict);
-
-            builder.HasOne(d => d.Aprobador)
-                .WithMany(p => p.VacacionesAprobadas)
+            builder.HasOne(d => d.id_administradorNavigation).WithMany(p => p.Vacacionid_administradorNavigations)
                 .HasForeignKey(d => d.id_administrador)
-                .OnDelete(DeleteBehavior.Restrict);
+                .HasConstraintName("FK_Vacacion_Administrador");
+
+            builder.HasOne(d => d.no_usuarioNavigation).WithMany(p => p.Vacacionno_usuarioNavigations)
+                .HasForeignKey(d => d.no_usuario)
+                .OnDelete(DeleteBehavior.ClientSetNull)
+                .HasConstraintName("FK_Vacacion_Usuario");
         }
 
 

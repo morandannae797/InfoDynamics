@@ -5,12 +5,15 @@ using System.ComponentModel.DataAnnotations;
 namespace InfoDynamics.Dominio.Entidades { 
 
 public partial class Empresa
-{public int id_empresa { get; set; }
+{
+        public int id_empresa { get; set; }
 
-    public string nombre { get; set; } = null!;
+        public string nombre { get; set; } = null!;
 
-    public string descripcion { get; set; }
-        [Timestamp]
-        public byte [] RowVersion { get; set; }= null!;
+        public string? descripcion { get; set; }
+
+        public byte[] RowVersion { get; set; } = null!;
+
+        public virtual ICollection<Proyecto> Proyectos { get; set; } = new List<Proyecto>();
     }
 }

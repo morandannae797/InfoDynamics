@@ -8,20 +8,21 @@ namespace InfoDynamics.Infraestructura.FluentConfiguracion
     {
         public void Configure(EntityTypeBuilder<Empresa> builder)
         {
-       
-    
-            builder.HasKey(e => e.id_empresa).HasName("id_empresa");
+
+
+            builder.HasKey(e => e.id_empresa).HasName("PK__Empresa__4A0B7E2CA32B022E");
 
             builder.ToTable("Empresa");
 
-            builder.Property(e => e.id_empresa).HasColumnName("id_empresa");
-            builder.Property(e => e.descripcion).HasMaxLength(200)
-                .HasColumnName("descripcion");
-            builder.Property(e => e.RowVersion).IsRowVersion();
-        
-        builder.Property(e => e.nombre)
-                .HasMaxLength(150)
-                .HasColumnName("nombre");
+            builder.Property(e => e.RowVersion)
+                .IsRowVersion()
+                .IsConcurrencyToken();
+            builder.Property(e => e.descripcion)
+                .HasMaxLength(255)
+                .IsUnicode(false);
+            builder.Property(e => e.nombre)
+                .HasMaxLength(100)
+                .IsUnicode(false);
         }
 
           

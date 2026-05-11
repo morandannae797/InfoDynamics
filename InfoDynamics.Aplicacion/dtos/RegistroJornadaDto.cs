@@ -1,21 +1,82 @@
-﻿namespace InfoDynamics.Aplicacion.dtos
+﻿using InfoDynamics.Dominio.interfaces;
+using System.ComponentModel.DataAnnotations;
+
+namespace InfoDynamics.Aplicacion.dtos
 {
-    public class RegistroJornadaDto
+    public class RegistroCreateDto
     {
-        public int RegistroID { get; set; }
+        [Required]
+        public DateTime Fecha { get; set; }
+
+        [Required]
+        public TimeSpan HoraInicio { get; set; }
+
+        [Required]
+        public TimeSpan HoraFin { get; set; }
+
+        [Required]
+        [Range(0, 24)]
+        public decimal Horas { get; set; }
+
+        [Required]
+        public int NoUsuario { get; set; }
+
+        [Required]
+        public int PeriodoId { get; set; }
+
+        [Required]
+        public int ProyectoId { get; set; }
+    }
+
+    public class RegistroUpdateDto : IConcurrencyDto
+    {
+        [Required]
+        public int RegistroId { get; set; }
+
+        [Required]
+        public DateTime Fecha { get; set; }
+
+        [Required]
+        public TimeSpan HoraInicio { get; set; }
+
+        [Required]
+        public TimeSpan HoraFin { get; set; }
+
+        [Required]
+        [Range(0, 24)]
+        public decimal Horas { get; set; }
+
+        [Required]
+        public int PeriodoId { get; set; }
+
+        [Required]
+        public int ProyectoId { get; set; }
+
+        [Required]
+        public byte[] RowVersion { get; set; } = null!;
+    }
+    public class RegistroResponseDto
+    {
+        public int RegistroId { get; set; }
 
         public DateTime Fecha { get; set; }
 
-        public decimal HorasTrabajadas { get; set; }
+        public TimeSpan HoraInicio { get; set; }
 
-        public string Tipo { get; set; }
+        public TimeSpan HoraFin { get; set; }
 
-        public string Estado { get; set; }
+        public decimal Horas { get; set; }
 
-        public int NumeroEmpleado { get; set; }
+        public int NoUsuario { get; set; }
 
-        public int PeriodoID { get; set; }
+        public string? NombreUsuario { get; set; }
 
-        public byte[]? RowVersion { get; set; } = null!;
+        public int PeriodoId { get; set; }
+
+        public int ProyectoId { get; set; }
+
+        public string? CodigoProyecto { get; set; }
+
+        public byte[] RowVersion { get; set; } = null!;
     }
 }

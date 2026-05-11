@@ -1,38 +1,30 @@
 using InfoDynamics.Aplicacion.CustomException;
 using InfoDynamics.Aplicacion.dtos;
-using InfoDynamics.Aplicacion.servicio;
 using InfoDynamics.Aplicacion.servicio.IServicios;
 using InfoDynamics.Aplicacion.servicios.IServicios.IServicioMapping;
-using InfoDynamics.Aplicacion.servicios.Servicios;
 using InfoDynamics.Dominio.Entidades;
-using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
-
+using Microsoft.EntityFrameworkCore;
 
 namespace InfoDynamics.API.Controllers
-
 {
-   // [Authorize]
     [ApiController]
     [Route("api/[controller]")]
     public class UsuarioController : ControllerBase
     {
         private readonly IReadServiceAsync<UsuarioResponseDTO> _readService;
-        private readonly IWriteServiceAsync<UsuarioCreateDTO> _writeService;
         private readonly Iusuarioservicio _usuarioServicio;
 
         public UsuarioController(
-            IReadServiceAsync<UsuarioResponseDTO> readService, IWriteServiceAsync<UsuarioCreateDTO> writeService, Iusuarioservicio usuarioServicio)
+            IReadServiceAsync<UsuarioResponseDTO> readService,
+            Iusuarioservicio usuarioServicio)
         {
             _readService = readService;
-            _writeService = writeService;
             _usuarioServicio = usuarioServicio;
         }
 
-
-
         [HttpGet]
-        public async Task<ActionResult<IEnumerable<UsuarioCreateDTO>>> GetAll()
+        public async Task<ActionResult<IEnumerable<UsuarioResponseDTO>>> GetAll()
         {
             try
             {
@@ -45,7 +37,7 @@ namespace InfoDynamics.API.Controllers
             }
         }
 
-        [HttpGet("{id}")]
+        [HttpGet("{id:int}")]
         public async Task<ActionResult<UsuarioResponseDTO>> GetById(int id)
         {
             try
@@ -59,35 +51,98 @@ namespace InfoDynamics.API.Controllers
             }
         }
 
-
         [HttpPost]
         public async Task<ActionResult> Create([FromBody] UsuarioCreateDTO dto)
         {
-            if (!ModelState.IsValid) return BadRequest(ModelState);
+            if (!ModelState.IsValid)
+                return BadRequest(ModelState);
 
-            await _usuarioServicio.CreateFromDtoAsync(dto);
+            try
+            {
+                var usuario = await _usuarioServicio.CreateFromDtoAsync(dto);
 
-            return Ok(new { message = "Usuario creado exitosamente." });
-
+                return CreatedAtAction(
+                    nameof(GetById),
+                    new { id = usuario.no_usuario },
+                    new { message = "Usuario creado exitosamente." });
+            }
+            catch (ConflictException ex)
+            {
+                return Conflict(new { message = ex.Message });
+            }
+            catch (Exception ex)
+            {
+                return BadRequest(new { message = ex.Message });
+            }
         }
 
-            [HttpPut("{id}")]
-        public async Task<ActionResult> Update(int id, [FromBody] UsuarioCreateDTO dto)
+        [HttpPut("{id:int}")]
+        public async Task<ActionResult> Update(int id, [FromBody] UsuarioUpdateDto dto)
         {
-            if (id != dto.no_usuario)
+            if (!ModelState.IsValid)
+                return BadRequest(ModelState);
+
+            if (id != dto.NoUsuario)
                 return BadRequest(new { message = "El ID de la ruta no coincide con el del objeto." });
 
-            if (!ModelState.IsValid) return BadRequest(ModelState);
+            try
+            {
+                var usuarioActualizado = new Usuario
+                {
+                    no_usuario = dto.NoUsuario,
+                    nombre = dto.Nombre,
+                    ap_paterno = dto.ApPaterno,
+                    ap_materno = dto.ApMaterno,
+                    email = dto.Email,
+                    rol = dto.Rol,
+                    estado_cuenta = dto.EstadoCuenta
+                };
 
-            await _writeService.UpdateAsync(dto);
-            return NoContent();
+                await _usuarioServicio.UpdateWithConcurrencyAsync(
+                    usuarioActualizado,
+                    dto.RowVersion);
+
+                return NoContent();
+            }
+            catch (KeyNotFoundException ex)
+            {
+                return NotFound(new { message = ex.Message });
+            }
+            catch (InvalidOperationException ex)
+            {
+                return Conflict(new { message = ex.Message });
+            }
+            catch (DbUpdateConcurrencyException)
+            {
+                return Conflict(new { message = "El usuario fue modificado por otro proceso. Recarga los datos y reintenta." });
+            }
         }
-        //cambio a desactivar en lugar de eliminar, para mantener la integridad referencial y evitar problemas con datos relacionados., reescribir
-        [HttpDelete("{id}")]
-        public async Task<ActionResult> Delete(int id)
+
+        [HttpPatch("{id:int}/desactivar")]
+        public async Task<ActionResult> Desactivar(int id, [FromBody] UsuarioDesactivarDto dto)
         {
-            await _writeService.DeleteAsync(id);
-            return NoContent();
+            if (!ModelState.IsValid)
+                return BadRequest(ModelState);
+
+            try
+            {
+                var usuario = await _usuarioServicio.FindByIdAsync(id);
+
+                if (usuario == null)
+                    return NotFound(new { message = "Usuario no encontrado." });
+
+                usuario.estado_cuenta = "Desactivada";
+
+                await _usuarioServicio.UpdateWithConcurrencyAsync(
+                    usuario,
+                    dto.RowVersion);
+
+                return NoContent();
+            }
+            catch (InvalidOperationException ex)
+            {
+                return Conflict(new { message = ex.Message });
+            }
         }
     }
 }

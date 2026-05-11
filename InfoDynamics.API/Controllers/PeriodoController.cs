@@ -1,27 +1,28 @@
 using InfoDynamics.Aplicacion.CustomException;
 using InfoDynamics.Aplicacion.dtos;
 using InfoDynamics.Aplicacion.servicio.IServicios;
-using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.EntityFrameworkCore;
 
 namespace InfoDynamics.API.Controllers
 {
-  //  [Authorize]
     [ApiController]
     [Route("api/[controller]")]
     public class PeriodoController : ControllerBase
     {
-        private readonly IReadServiceAsync <PeriodoDto> _readService;
-        private readonly IWriteServiceAsync <PeriodoDto> _writeService;
+        private readonly IReadServiceAsync<PeriodoResponseDto> _readService;
+        private readonly IWriteServiceAsync<PeriodoCreateDto, PeriodoUpdateDto> _writeService;
 
-        public PeriodoController(IReadServiceAsync<PeriodoDto> readService, IWriteServiceAsync<PeriodoDto> writeService)
+        public PeriodoController(
+            IReadServiceAsync<PeriodoResponseDto> readService,
+            IWriteServiceAsync<PeriodoCreateDto, PeriodoUpdateDto> writeService)
         {
             _readService = readService;
             _writeService = writeService;
         }
 
         [HttpGet]
-        public async Task<ActionResult<IEnumerable<PeriodoDto>>> GetAll()
+        public async Task<ActionResult<IEnumerable<PeriodoResponseDto>>> GetAll()
         {
             try
             {
@@ -34,8 +35,8 @@ namespace InfoDynamics.API.Controllers
             }
         }
 
-        [HttpGet("{id}")]
-        public async Task<ActionResult<PeriodoDto>> GetById(int id)
+        [HttpGet("{id:int}")]
+        public async Task<ActionResult<PeriodoResponseDto>> GetById(int id)
         {
             try
             {
@@ -49,25 +50,37 @@ namespace InfoDynamics.API.Controllers
         }
 
         [HttpPost]
-        public async Task<ActionResult> Create([FromBody] PeriodoDto dto)
+        public async Task<ActionResult> Create([FromBody] PeriodoCreateDto dto)
         {
-            if (!ModelState.IsValid) return BadRequest(ModelState);
+            if (!ModelState.IsValid)
+                return BadRequest(ModelState);
 
             await _writeService.AddAsync(dto);
-            return CreatedAtAction(nameof(GetById), new { id = dto.PeriodoID }, dto);
+
+            return Ok(new { message = "Periodo creado correctamente." });
         }
 
-        [HttpPut("{id}")]
-        public async Task<ActionResult> Update(int id, [FromBody] PeriodoDto dto)
+        [HttpPut("{id:int}")]
+        public async Task<ActionResult> Update(int id, [FromBody] PeriodoUpdateDto dto)
         {
-            if (id != dto.PeriodoID)
+            if (!ModelState.IsValid)
+                return BadRequest(ModelState);
+
+            if (id != dto.PeriodoId)
                 return BadRequest(new { message = "El ID de la ruta no coincide con el del objeto." });
 
-            await _writeService.UpdateAsync(dto);
-            return NoContent();
+            try
+            {
+                await _writeService.UpdateAsync(dto);
+                return NoContent();
+            }
+            catch (DbUpdateConcurrencyException)
+            {
+                return Conflict(new { message = "El periodo fue modificado por otro proceso. Recarga los datos y reintenta." });
+            }
         }
 
-        [HttpDelete("{id}")]
+        [HttpDelete("{id:int}")]
         public async Task<ActionResult> Delete(int id)
         {
             await _writeService.DeleteAsync(id);

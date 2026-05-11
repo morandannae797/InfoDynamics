@@ -12,7 +12,7 @@ public interface IGenericRepository<T> where T : class
         bool tracked = true,
         string? includeProperties = null);
         Task DeleteByIdAsync(int id);
-        Task SaveAsync();
+       
         void SetOriginalConcurrencyToken(T entity, byte[] rowVersion, string tokenPropertyName = "RowVersion");
 
     }

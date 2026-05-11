@@ -1,9 +1,10 @@
-﻿using System;
-using System.Collections.Generic;
+﻿
 using InfoDynamics.Dominio.Entidades;
 using InfoDynamics.Infraestructura.Contexto;
 using InfoDynamics.Infraestructura.FluentConfiguracion;
 using Microsoft.EntityFrameworkCore;
+using System;
+using System.Collections.Generic;
 
 namespace InfoDynamics.Infraestructura.Contexto;
 
@@ -26,6 +27,9 @@ public partial class EmployeesDbContext : DbContext
 
     public virtual DbSet<Usuario> Usuarios { get; set; }
     public virtual  DbSet<Vacacion> Vacacion { get; set; }
+    public virtual DbSet<Contrasena> Contrasenas { get; set; }
+    public virtual DbSet<Preguntum> Pregunta { get; set; }
+    public virtual DbSet<Proyecto> Proyectos { get; set; }
 
 
 
@@ -37,6 +41,13 @@ public partial class EmployeesDbContext : DbContext
         modelBuilder.ApplyConfiguration(new FluentConfiguracion.Periodo_FluentConfiguration());
         modelBuilder.ApplyConfiguration(new FluentConfiguracion.Registro_FluentConfiguration());
         modelBuilder.ApplyConfiguration(new FluentConfiguracion.Usuario_FluentConfiguration());
+        modelBuilder.ApplyConfiguration(new FluentConfiguracion.Proyecto_FluentConfiguration());
+        modelBuilder.ApplyConfiguration(new FluentConfiguracion.Preguntum_FluentConfiguration());
+        modelBuilder.ApplyConfiguration(new FluentConfiguracion.Contrasena_FluentConfiguration());
+
+
+
+
 
 
         OnModelCreatingPartial(modelBuilder);

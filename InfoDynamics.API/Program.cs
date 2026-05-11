@@ -16,6 +16,8 @@ using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Net.Http.Headers;
 using Scalar.AspNetCore;
+using static InfoDynamics.Aplicacion.dtos.UsuarioUpdateDto;
+using static InfoDynamics.Aplicacion.dtos.VacacionDto;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -30,7 +32,7 @@ builder.Services.AddOpenApi();
 
 // Base de datos 
 builder.Services.AddDbContext<EmployeesDbContext>(options =>
-    options.UseInMemoryDatabase("InfoDynamicsTestDB"));
+    options.UseSqlServer(builder.Configuration.GetConnectionString("DefaultConnection")));
 
 builder.Services.AddMediatR(cfg => cfg.RegisterServicesFromAssembly(typeof(Program).Assembly));
 
@@ -43,23 +45,46 @@ builder.Services.AddAutoMapper(cfg =>
 // Repositorio y Unit of Work
 builder.Services.AddScoped(typeof(IGenericRepository<>), typeof(GenericRepository<>));
 builder.Services.AddScoped<IUnitOfWork, UnitOfWork>();
-
 // === LADO DE LECTURA ===
-builder.Services.AddScoped<IReadServiceAsync<EmpresaDto>, ReadServiceAsync<Empresa, EmpresaDto>>();
-builder.Services.AddScoped<IReadServiceAsync<PeriodoDto>, ReadServiceAsync<Periodo, PeriodoDto>>();
-builder.Services.AddScoped<IReadServiceAsync<UsuarioCreateDTO>, ReadServiceAsync<Usuario, UsuarioCreateDTO>>();
-builder.Services.AddScoped<IReadServiceAsync<UsuarioResponseDTO>, ReadServiceAsync<Usuario, UsuarioResponseDTO>>();
-builder.Services.AddScoped<IReadServiceAsync<VacacionDto.VacacionResponseDTO>, ReadServiceAsync<Vacacion, VacacionDto.VacacionResponseDTO>>();
-builder.Services.AddScoped<IReadServiceAsync<RegistroJornadaDto>, ReadServiceAsync<Registro, RegistroJornadaDto>>();
+builder.Services.AddScoped<
+    IReadServiceAsync<EmpresaResponseDto>,
+    ReadServiceAsync<Empresa, EmpresaResponseDto>>();
+
+builder.Services.AddScoped<
+    IReadServiceAsync<PeriodoResponseDto>,
+    ReadServiceAsync<Periodo, PeriodoResponseDto>>();
+
+builder.Services.AddScoped<
+    IReadServiceAsync<UsuarioResponseDTO>,
+    ReadServiceAsync<Usuario, UsuarioResponseDTO>>();
+
+builder.Services.AddScoped<
+    IReadServiceAsync<VacacionResponseDto>,
+    ReadServiceAsync<Vacacion, VacacionResponseDto>>();
+
+builder.Services.AddScoped<
+    IReadServiceAsync<RegistroResponseDto>,
+    ReadServiceAsync<Registro, RegistroResponseDto>>();
+
 
 // === LADO DE ESCRITURA ===
-builder.Services.AddScoped<IWriteServiceAsync<EmpresaDto>, WriteServiceAsync<Empresa, EmpresaDto>>();
-builder.Services.AddScoped<IWriteServiceAsync<PeriodoDto>, WriteServiceAsync<Periodo, PeriodoDto>>();
-builder.Services.AddScoped<IWriteServiceAsync<UsuarioCreateDTO>, WriteServiceAsync<Usuario, UsuarioCreateDTO>>();
-builder.Services.AddScoped<IWriteServiceAsync<VacacionDto.VacacionCreateDTO>, WriteServiceAsync<Vacacion, VacacionDto.VacacionCreateDTO>>();
-builder.Services.AddScoped<IWriteServiceAsync<VacacionDto.VacacionAprobacionDTO>, WriteServiceAsync<Vacacion, VacacionDto.VacacionAprobacionDTO>>();
-builder.Services.AddScoped<IWriteServiceAsync<RegistroJornadaDto>, WriteServiceAsync<Registro, RegistroJornadaDto>>();
+builder.Services.AddScoped<
+    IWriteServiceAsync<EmpresaCreateDto, EmpresaUpdateDto>,
+    WriteServiceAsync<Empresa, EmpresaCreateDto, EmpresaUpdateDto>>();
 
+builder.Services.AddScoped<
+    IWriteServiceAsync<PeriodoCreateDto, PeriodoUpdateDto>,
+    WriteServiceAsync<Periodo, PeriodoCreateDto, PeriodoUpdateDto>>();
+
+builder.Services.AddScoped<Iusuarioservicio, UsuarioServicio>();
+
+builder.Services.AddScoped<
+    IWriteServiceAsync<VacacionCreateDto, VacacionAprobacionDto>,
+    WriteServiceAsync<Vacacion, VacacionCreateDto, VacacionAprobacionDto>>();
+
+builder.Services.AddScoped<
+    IWriteServiceAsync<RegistroCreateDto, RegistroUpdateDto>,
+    WriteServiceAsync<Registro, RegistroCreateDto, RegistroUpdateDto>>();
 // Servicios de dominio
 builder.Services.AddScoped<Iusuarioservicio, UsuarioServicio>();
 builder.Services.AddScoped<IUserRepository, UserRepository>();
