@@ -168,17 +168,19 @@ builder.Services.AddAuthentication(opt =>
 });
 
 builder.Services.AddAuthorization();
+builder.Services.AddExceptionHandler<GlobalExceptionHandler>();
 
+builder.Services.AddProblemDetails();
 var app = builder.Build();
 
-app.UseMiddleware<ExceptionMiddleware>();
+
 
 if (app.Environment.IsDevelopment())
 {
     app.MapOpenApi();
     app.MapScalarApiReference(opt => opt.WithTitle("JWT + RefreshToken Auth API"));
 }
-
+app.UseExceptionHandler();
 app.UseCors("FrontendClient");
 app.UseHttpsRedirection();
 app.UseAuthentication();
