@@ -60,7 +60,8 @@ namespace InfoDynamics.API.Controllers
             return Ok(new { message = "Empresa creada correctamente." });
         }
 
-        [HttpPut("{id:int}")]
+        // [HttpPut("{id:int}")]
+        [HttpPost("{id:int}")]
         public async Task<ActionResult> Update(int id, [FromBody] EmpresaUpdateDto dto)
         {
             if (!ModelState.IsValid)

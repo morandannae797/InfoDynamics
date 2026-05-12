@@ -1,6 +1,6 @@
 @InfoDynamics.API_HostAddress = http://localhost:5248
 
-GET {{InfoDynamics.API_HostAddress}}/weatherforecast/
+GET http://localhost:5248/api/empresa
 Accept: application/json
 
 ###
