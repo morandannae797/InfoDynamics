@@ -25,16 +25,12 @@ namespace Employees.API.Controllers
         [HttpPost("login")]
         public async Task<IActionResult> Login(
             [FromBody] loginDto request,
-            [FromHeader(Name = "firma")] string signature)
+            [FromHeader(Name = "firma")] string? signature=null)
         {
             if (request == null)
                 return BadRequest(new { message = "El cuerpo de la petición no puede estar vacío." });
 
-            if (string.IsNullOrWhiteSpace(signature))
-                return BadRequest(new { message = "El header 'firma' es requerido." });
-
-            if (!_hmacServicio.VerifySignature(request, signature))
-                return Unauthorized(new { message = "Firma no válida." });
+            
 
             try
             {

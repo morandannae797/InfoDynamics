@@ -24,14 +24,13 @@ namespace InfoDynamics.Aplicacion.mapeo
                 .ForMember(dest => dest.Proyectos, opt => opt.Ignore());
 
             CreateMap<EmpresaUpdateDto, Empresa>()
-                .ForMember(dest => dest.id_empresa, opt => opt.MapFrom(src => src.IdEmpresa))
-                .ForMember(dest => dest.nombre, opt => opt.MapFrom(src => src.Nombre))
-                .ForMember(dest => dest.descripcion, opt => opt.MapFrom(src => src.Descripcion))
-                .ForMember(dest => dest.RowVersion, opt => opt.Ignore())
-                .ForMember(dest => dest.Proyectos, opt => opt.Ignore());
+       .ForMember(dest => dest.id_empresa, opt => opt.MapFrom(src => src.IdEmpresa))
+       .ForMember(dest => dest.nombre, opt => opt.MapFrom(src => src.Nombre))
+       .ForMember(dest => dest.descripcion, opt => opt.MapFrom(src => src.Descripcion))
+       .ForMember(dest => dest.RowVersion, opt => opt.MapFrom(src => src.RowVersion))
+       .ForMember(dest => dest.Proyectos, opt => opt.Ignore());
 
 
-           
 
             CreateMap<Periodo, PeriodoResponseDto>()
                 .ForMember(dest => dest.PeriodoId, opt => opt.MapFrom(src => src.id_periodo))
@@ -47,15 +46,13 @@ namespace InfoDynamics.Aplicacion.mapeo
                 .ForMember(dest => dest.estado, opt => opt.MapFrom(src => src.Estado))
                 .ForMember(dest => dest.RowVersion, opt => opt.Ignore())
                 .ForMember(dest => dest.Registros, opt => opt.Ignore());
-
-            CreateMap<PeriodoUpdateDto, Periodo>()
-                .ForMember(dest => dest.id_periodo, opt => opt.MapFrom(src => src.PeriodoId))
-                .ForMember(dest => dest.fecha_inicio, opt => opt.MapFrom(src => ToDateOnly(src.FechaInicio)))
-                .ForMember(dest => dest.fecha_fin, opt => opt.MapFrom(src => ToDateOnly(src.FechaFin)))
-                .ForMember(dest => dest.estado, opt => opt.MapFrom(src => src.Estado))
-                .ForMember(dest => dest.RowVersion, opt => opt.Ignore())
-                .ForMember(dest => dest.Registros, opt => opt.Ignore());
-
+CreateMap<PeriodoUpdateDto, Periodo>()
+    .ForMember(dest => dest.id_periodo, opt => opt.MapFrom(src => src.PeriodoId))
+    .ForMember(dest => dest.fecha_inicio, opt => opt.MapFrom(src => ToDateOnly(src.FechaInicio)))
+    .ForMember(dest => dest.fecha_fin, opt => opt.MapFrom(src => ToDateOnly(src.FechaFin)))
+    .ForMember(dest => dest.estado, opt => opt.MapFrom(src => src.Estado))
+    .ForMember(dest => dest.RowVersion, opt => opt.MapFrom(src => src.RowVersion))
+    .ForMember(dest => dest.Registros, opt => opt.Ignore());
 
          
 
@@ -89,18 +86,17 @@ namespace InfoDynamics.Aplicacion.mapeo
                 .ForMember(dest => dest.id_proyectoNavigation, opt => opt.Ignore());
 
             CreateMap<RegistroUpdateDto, Registro>()
-                .ForMember(dest => dest.id_registro, opt => opt.MapFrom(src => src.RegistroId))
-                .ForMember(dest => dest.fecha, opt => opt.MapFrom(src => ToDateOnly(src.Fecha)))
-                .ForMember(dest => dest.hora_inicio, opt => opt.MapFrom(src => ToTimeOnly(src.HoraInicio)))
-                .ForMember(dest => dest.hora_fin, opt => opt.MapFrom(src => ToTimeOnly(src.HoraFin)))
-                .ForMember(dest => dest.horas, opt => opt.MapFrom(src => src.Horas))
-                .ForMember(dest => dest.id_periodo, opt => opt.MapFrom(src => src.PeriodoId))
-                .ForMember(dest => dest.id_proyecto, opt => opt.MapFrom(src => src.ProyectoId))
-                .ForMember(dest => dest.RowVersion, opt => opt.Ignore())
-                .ForMember(dest => dest.no_usuarioNavigation, opt => opt.Ignore())
-                .ForMember(dest => dest.id_periodoNavigation, opt => opt.Ignore())
-                .ForMember(dest => dest.id_proyectoNavigation, opt => opt.Ignore());
-
+           .ForMember(dest => dest.id_registro, opt => opt.MapFrom(src => src.RegistroId))
+           .ForMember(dest => dest.fecha, opt => opt.MapFrom(src => ToDateOnly(src.Fecha)))
+           .ForMember(dest => dest.hora_inicio, opt => opt.MapFrom(src => ToTimeOnly(src.HoraInicio)))
+           .ForMember(dest => dest.hora_fin, opt => opt.MapFrom(src => ToTimeOnly(src.HoraFin)))
+           .ForMember(dest => dest.horas, opt => opt.MapFrom(src => src.Horas))
+           .ForMember(dest => dest.id_periodo, opt => opt.MapFrom(src => src.PeriodoId))
+           .ForMember(dest => dest.id_proyecto, opt => opt.MapFrom(src => src.ProyectoId))
+           .ForMember(dest => dest.RowVersion, opt => opt.MapFrom(src => src.RowVersion))
+           .ForMember(dest => dest.no_usuarioNavigation, opt => opt.Ignore())
+           .ForMember(dest => dest.id_periodoNavigation, opt => opt.Ignore())
+           .ForMember(dest => dest.id_proyectoNavigation, opt => opt.Ignore());
 
 
             CreateMap<UsuarioCreateDTO, Usuario>()
@@ -121,21 +117,21 @@ namespace InfoDynamics.Aplicacion.mapeo
                 .ForMember(dest => dest.Vacacionno_usuarioNavigations, opt => opt.Ignore());
 
             CreateMap<UsuarioUpdateDto, Usuario>()
-                .ForMember(dest => dest.no_usuario, opt => opt.MapFrom(src => src.NoUsuario))
-                .ForMember(dest => dest.nombre, opt => opt.MapFrom(src => src.Nombre))
-                .ForMember(dest => dest.ap_paterno, opt => opt.MapFrom(src => src.ApPaterno))
-                .ForMember(dest => dest.ap_materno, opt => opt.MapFrom(src => src.ApMaterno))
-                .ForMember(dest => dest.email, opt => opt.MapFrom(src => src.Email))
-                .ForMember(dest => dest.rol, opt => opt.MapFrom(src => src.Rol))
-                .ForMember(dest => dest.estado_cuenta, opt => opt.MapFrom(src => src.EstadoCuenta))
-                .ForMember(dest => dest.RowVersion, opt => opt.Ignore())
-                .ForMember(dest => dest.RefreshToken, opt => opt.Ignore())
-                .ForMember(dest => dest.RefreshTokenExpiryTime, opt => opt.Ignore())
-                .ForMember(dest => dest.Contrasenas, opt => opt.Ignore())
-                .ForMember(dest => dest.Pregunta, opt => opt.Ignore())
-                .ForMember(dest => dest.Registros, opt => opt.Ignore())
-                .ForMember(dest => dest.Vacacionid_administradorNavigations, opt => opt.Ignore())
-                .ForMember(dest => dest.Vacacionno_usuarioNavigations, opt => opt.Ignore());
+          .ForMember(dest => dest.no_usuario, opt => opt.MapFrom(src => src.NoUsuario))
+          .ForMember(dest => dest.nombre, opt => opt.MapFrom(src => src.Nombre))
+          .ForMember(dest => dest.ap_paterno, opt => opt.MapFrom(src => src.ApPaterno))
+          .ForMember(dest => dest.ap_materno, opt => opt.MapFrom(src => src.ApMaterno))
+          .ForMember(dest => dest.email, opt => opt.MapFrom(src => src.Email))
+          .ForMember(dest => dest.rol, opt => opt.MapFrom(src => src.Rol))
+          .ForMember(dest => dest.estado_cuenta, opt => opt.MapFrom(src => src.EstadoCuenta))
+          .ForMember(dest => dest.RowVersion, opt => opt.MapFrom(src => src.RowVersion))
+          .ForMember(dest => dest.RefreshToken, opt => opt.Ignore())
+          .ForMember(dest => dest.RefreshTokenExpiryTime, opt => opt.Ignore())
+          .ForMember(dest => dest.Contrasenas, opt => opt.Ignore())
+          .ForMember(dest => dest.Pregunta, opt => opt.Ignore())
+          .ForMember(dest => dest.Registros, opt => opt.Ignore())
+          .ForMember(dest => dest.Vacacionid_administradorNavigations, opt => opt.Ignore())
+          .ForMember(dest => dest.Vacacionno_usuarioNavigations, opt => opt.Ignore());
 
             CreateMap<Usuario, UsuarioResponseDTO>()
                 .ForMember(dest => dest.NoUsuario, opt => opt.MapFrom(src => src.no_usuario))
@@ -161,14 +157,14 @@ namespace InfoDynamics.Aplicacion.mapeo
                 .ForMember(dest => dest.no_usuarioNavigation, opt => opt.Ignore());
 
             CreateMap<ContrasenaUpdateEstadoDto, Contrasena>()
-                .ForMember(dest => dest.id_contrasena, opt => opt.MapFrom(src => src.IdContrasena))
-                .ForMember(dest => dest.estado, opt => opt.MapFrom(src => src.Estado))
-                .ForMember(dest => dest.RowVersion, opt => opt.Ignore())
-                .ForMember(dest => dest.contrasena, opt => opt.Ignore())
-                .ForMember(dest => dest.fecha_creacion, opt => opt.Ignore())
-                .ForMember(dest => dest.es_temporal, opt => opt.Ignore())
-                .ForMember(dest => dest.no_usuario, opt => opt.Ignore())
-                .ForMember(dest => dest.no_usuarioNavigation, opt => opt.Ignore());
+      .ForMember(dest => dest.id_contrasena, opt => opt.MapFrom(src => src.IdContrasena))
+      .ForMember(dest => dest.estado, opt => opt.MapFrom(src => src.Estado))
+      .ForMember(dest => dest.RowVersion, opt => opt.MapFrom(src => src.RowVersion))
+      .ForMember(dest => dest.contrasena, opt => opt.Ignore())
+      .ForMember(dest => dest.fecha_creacion, opt => opt.Ignore())
+      .ForMember(dest => dest.es_temporal, opt => opt.Ignore())
+      .ForMember(dest => dest.no_usuario, opt => opt.Ignore())
+      .ForMember(dest => dest.no_usuarioNavigation, opt => opt.Ignore());
 
             CreateMap<Contrasena, ContrasenaResponseDto>()
                 .ForMember(dest => dest.IdContrasena, opt => opt.MapFrom(src => src.id_contrasena))
@@ -195,17 +191,17 @@ namespace InfoDynamics.Aplicacion.mapeo
                 .ForMember(dest => dest.id_administradorNavigation, opt => opt.Ignore());
 
             CreateMap<VacacionDto.VacacionAprobacionDto, Vacacion>()
-                .ForMember(dest => dest.id_vacacion, opt => opt.MapFrom(src => src.VacacionId))
-                .ForMember(dest => dest.estado, opt => opt.MapFrom(src => src.EstadoDecision))
-                .ForMember(dest => dest.id_administrador, opt => opt.MapFrom(src => src.AprobadorId))
-                .ForMember(dest => dest.fecha_aprobo, opt => opt.MapFrom(src => DateTime.UtcNow))
-                .ForMember(dest => dest.RowVersion, opt => opt.Ignore())
-                .ForMember(dest => dest.fecha_solicito, opt => opt.Ignore())
-                .ForMember(dest => dest.fecha_inicio, opt => opt.Ignore())
-                .ForMember(dest => dest.fecha_fin, opt => opt.Ignore())
-                .ForMember(dest => dest.no_usuario, opt => opt.Ignore())
-                .ForMember(dest => dest.no_usuarioNavigation, opt => opt.Ignore())
-                .ForMember(dest => dest.id_administradorNavigation, opt => opt.Ignore());
+     .ForMember(dest => dest.id_vacacion, opt => opt.MapFrom(src => src.VacacionId))
+     .ForMember(dest => dest.estado, opt => opt.MapFrom(src => src.EstadoDecision))
+     .ForMember(dest => dest.id_administrador, opt => opt.MapFrom(src => src.AprobadorId))
+     .ForMember(dest => dest.fecha_aprobo, opt => opt.MapFrom(src => DateTime.UtcNow))
+     .ForMember(dest => dest.RowVersion, opt => opt.MapFrom(src => src.RowVersion))
+     .ForMember(dest => dest.fecha_solicito, opt => opt.Ignore())
+     .ForMember(dest => dest.fecha_inicio, opt => opt.Ignore())
+     .ForMember(dest => dest.fecha_fin, opt => opt.Ignore())
+     .ForMember(dest => dest.no_usuario, opt => opt.Ignore())
+     .ForMember(dest => dest.no_usuarioNavigation, opt => opt.Ignore())
+     .ForMember(dest => dest.id_administradorNavigation, opt => opt.Ignore());
 
             CreateMap<Vacacion, VacacionDto.VacacionResponseDto>()
                 .ForMember(dest => dest.VacacionId, opt => opt.MapFrom(src => src.id_vacacion))
@@ -235,16 +231,14 @@ namespace InfoDynamics.Aplicacion.mapeo
                 .ForMember(dest => dest.RowVersion, opt => opt.Ignore())
                 .ForMember(dest => dest.Registros, opt => opt.Ignore())
                 .ForMember(dest => dest.id_empresaNavigation, opt => opt.Ignore());
-
             CreateMap<ProyectoUpdateDto, Proyecto>()
                 .ForMember(dest => dest.id_proyecto, opt => opt.MapFrom(src => src.IdProyecto))
                 .ForMember(dest => dest.codigo, opt => opt.MapFrom(src => src.Codigo))
                 .ForMember(dest => dest.categoria, opt => opt.MapFrom(src => src.Categoria))
                 .ForMember(dest => dest.id_empresa, opt => opt.MapFrom(src => src.IdEmpresa))
-                .ForMember(dest => dest.RowVersion, opt => opt.Ignore())
+                .ForMember(dest => dest.RowVersion, opt => opt.MapFrom(src => src.RowVersion))
                 .ForMember(dest => dest.Registros, opt => opt.Ignore())
                 .ForMember(dest => dest.id_empresaNavigation, opt => opt.Ignore());
-
             CreateMap<Proyecto, ProyectoResponseDto>()
                 .ForMember(dest => dest.IdProyecto, opt => opt.MapFrom(src => src.id_proyecto))
                 .ForMember(dest => dest.Codigo, opt => opt.MapFrom(src => src.codigo))
@@ -264,12 +258,12 @@ namespace InfoDynamics.Aplicacion.mapeo
                 .ForMember(dest => dest.no_usuarioNavigation, opt => opt.Ignore());
 
             CreateMap<PreguntaUpdateDto, Preguntum>()
-                .ForMember(dest => dest.id_pregunta, opt => opt.MapFrom(src => src.IdPregunta))
-                .ForMember(dest => dest.pregunta, opt => opt.MapFrom(src => src.Pregunta))
-                .ForMember(dest => dest.respuesta, opt => opt.MapFrom(src => src.Respuesta))
-                .ForMember(dest => dest.RowVersion, opt => opt.Ignore())
-                .ForMember(dest => dest.no_usuario, opt => opt.Ignore())
-                .ForMember(dest => dest.no_usuarioNavigation, opt => opt.Ignore());
+     .ForMember(dest => dest.id_pregunta, opt => opt.MapFrom(src => src.IdPregunta))
+     .ForMember(dest => dest.pregunta, opt => opt.MapFrom(src => src.Pregunta))
+     .ForMember(dest => dest.respuesta, opt => opt.MapFrom(src => src.Respuesta))
+     .ForMember(dest => dest.RowVersion, opt => opt.MapFrom(src => src.RowVersion))
+     .ForMember(dest => dest.no_usuario, opt => opt.Ignore())
+     .ForMember(dest => dest.no_usuarioNavigation, opt => opt.Ignore());
 
             CreateMap<Preguntum, PreguntaResponseDto>()
                 .ForMember(dest => dest.IdPregunta, opt => opt.MapFrom(src => src.id_pregunta))

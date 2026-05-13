@@ -200,11 +200,7 @@ var app = builder.Build();
 
 
 
-if (app.Environment.IsDevelopment())
-{
-    app.MapOpenApi();
-    app.MapScalarApiReference(opt => opt.WithTitle("JWT + RefreshToken Auth API"));
-}
+
 app.UseExceptionHandler();
 app.UseCors("FrontendClient");
 app.UseHttpsRedirection();
