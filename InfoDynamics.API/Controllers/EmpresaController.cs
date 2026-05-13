@@ -1,6 +1,7 @@
 using InfoDynamics.Aplicacion.CustomException;
 using InfoDynamics.Aplicacion.dtos;
 using InfoDynamics.Aplicacion.servicio.IServicios;
+using InfoDynamics.Dominio.Entidades;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 
@@ -60,35 +61,29 @@ namespace InfoDynamics.API.Controllers
             return Ok(new { message = "Empresa creada correctamente." });
         }
 
-        // [HttpPut("{id:int}")]
-        [HttpPost("{id:int}")]
+        [HttpPost("update/{id:int}")]
         public async Task<ActionResult> Update(int id, [FromBody] EmpresaUpdateDto dto)
         {
+            if (id != dto.IdEmpresa)
+                return BadRequest("El id de la URL no coincide con el id del body.");
+
             if (!ModelState.IsValid)
                 return BadRequest(ModelState);
 
             if (id != dto.IdEmpresa)
                 return BadRequest(new { message = "El ID de la ruta no coincide con el del objeto." });
-
+           
             try
             {
                 await _writeService.UpdateAsync(dto);
-                return NoContent();
+                return Ok("Actualizado correctamente.");
             }
             catch (DbUpdateConcurrencyException)
             {
-                return Conflict(new
-                {
-                    message = "La empresa fue modificada por otro proceso. Recarga los datos y reintenta."
-                });
+                return Conflict("El registro fue modificado por otro usuario.");
             }
         }
 
-        [HttpDelete("{id:int}")]
-        public async Task<ActionResult> Delete(int id)
-        {
-            await _writeService.DeleteAsync(id);
-            return NoContent();
-        }
+       
     }
 }

@@ -76,7 +76,7 @@ namespace InfoDynamics.API.Controllers
             }
         }
 
-        [HttpPut("{id:int}")]
+        [HttpPost("{id:int}")]
         public async Task<ActionResult> Update(int id, [FromBody] UsuarioUpdateDto dto)
         {
             if (!ModelState.IsValid)
@@ -118,7 +118,7 @@ namespace InfoDynamics.API.Controllers
             }
         }
 
-        [HttpPatch("{id:int}/desactivar")]
+        [HttpPost("{id:int}/desactivar")]
         public async Task<ActionResult> Desactivar(int id, [FromBody] UsuarioDesactivarDto dto)
         {
             if (!ModelState.IsValid)

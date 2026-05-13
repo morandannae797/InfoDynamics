@@ -25,7 +25,12 @@ namespace InfoDynamics.Infraestructura.Repositorio
         {
             return await _dbSet.FindAsync(id);
         }
-
+           public async Task<T?> FirstOrDefaultAsync(Expression<Func<T, bool>> predicate)
+{
+    return await _dbSet
+        .AsNoTracking()
+        .FirstOrDefaultAsync(predicate);
+}
         public async Task<List<T>> GetAllAsync(bool tracked = true)
         {
             IQueryable<T> query = _dbSet;

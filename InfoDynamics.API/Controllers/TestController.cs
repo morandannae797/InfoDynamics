@@ -15,7 +15,7 @@ namespace Employees.API.Controllers
             return Ok(hmacServ != null ? "Servicio presente" : "Servicio nulo");
         }
         [HttpGet("omg")]
-        [Authorize]  // Requiere autenticación igual que RequireAuthorization()
+        [Authorize]  
         public IActionResult Get()
         {
             var matrix = new List<string> { "matrix" };

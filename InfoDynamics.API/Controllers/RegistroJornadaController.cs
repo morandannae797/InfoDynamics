@@ -60,7 +60,7 @@ namespace InfoDynamics.API.Controllers
             return Ok(new { message = "Registro de jornada creado correctamente." });
         }
 
-        [HttpPut("{id:int}")]
+        [HttpPost("{id:int}")]
         public async Task<ActionResult> Update(int id, [FromBody] RegistroUpdateDto dto)
         {
             if (!ModelState.IsValid)
@@ -80,11 +80,6 @@ namespace InfoDynamics.API.Controllers
             }
         }
 
-        [HttpDelete("{id:int}")]
-        public async Task<ActionResult> Delete(int id)
-        {
-            await _writeService.DeleteAsync(id);
-            return NoContent();
-        }
+       
     }
 }

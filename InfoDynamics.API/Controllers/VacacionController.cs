@@ -60,7 +60,7 @@ namespace InfoDynamics.API.Controllers
             return Ok(new { mensaje = "Vacación solicitada correctamente." });
         }
 
-        [HttpPatch("{id:int}/evaluar")]
+        [HttpPost("{id:int}/evaluar")]
         public async Task<IActionResult> EvaluarVacacion(int id, [FromBody] VacacionDto.VacacionAprobacionDto dto)
         {
             if (!ModelState.IsValid)
