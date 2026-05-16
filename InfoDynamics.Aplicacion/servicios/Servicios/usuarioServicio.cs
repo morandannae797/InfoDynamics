@@ -25,6 +25,13 @@ namespace InfoDynamics.Aplicacion.servicios.Servicios
 
         public async Task<Usuario?> VerifyUser(string identificador, string contrasena)
         {
+
+
+
+            //Como nos llega la contraseña en texto plano, la hasheamos antes de guardarla. Esto es crucial para la seguridad de los usuarios.
+
+            //throw new Exception(BCrypt.Net.BCrypt.HashPassword("12345678"));
+
             Usuario? usuarioEncontrado;
 
             if (int.TryParse(identificador, out int numeroUsuario))
@@ -58,6 +65,8 @@ namespace InfoDynamics.Aplicacion.servicios.Servicios
 
         public async Task<Usuario> CreateFromDtoAsync(UsuarioCreateDTO dto)
         {
+
+
             var existente = await _usuarioRepo.GetByIdAsync(dto.NoUsuario);
             if (existente != null)
                 throw new ConflictException($"Ya existe un usuario con el número {dto.NoUsuario}.");

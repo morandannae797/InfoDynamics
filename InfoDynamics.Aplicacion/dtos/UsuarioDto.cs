@@ -5,6 +5,8 @@ namespace InfoDynamics.Aplicacion.dtos
 {
     public class UsuarioResponseDTO
     {
+        //modificacion en la bd para que el id_administrador sea nullable, ya que no todos los usuarios son administradores
+        public int? idAdministrador { get; set; }
         public int NoUsuario { get; set; }
 
         public string NoUsuarioFormateado => NoUsuario.ToString("D5");
@@ -26,7 +28,11 @@ namespace InfoDynamics.Aplicacion.dtos
         public byte[] RowVersion { get; set; } = null!;
     }
     public class UsuarioCreateDTO 
+
+
     {
+
+        public int? idAdministrador { get; set; }
         [Required]
         public int NoUsuario { get; set; }
 
@@ -49,7 +55,10 @@ namespace InfoDynamics.Aplicacion.dtos
         public string Rol { get; set; } = null!;
     }
     public class UsuarioUpdateDto : IConcurrencyDto
+
     {
+        public int? idAdministrador { get; set; }
+
         [Required]
         public int NoUsuario { get; set; }
 
