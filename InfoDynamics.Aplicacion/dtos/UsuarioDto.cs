@@ -42,13 +42,13 @@ namespace InfoDynamics.Aplicacion.dtos
         [Required, EmailAddress, StringLength(100)]
         public string Email { get; set; } = null!;
 
-        [Required, MinLength(8, ErrorMessage = "La contraseña debe tener mínimo 8 caracteres.")]
+        [Required, MinLength(8, ErrorMessage = "La contraseña debe tener  8 caracteres minimo.")]
         public string Contrasena { get; set; } = null!;
 
-        [Required, RegularExpression("Administrador|Empleado")]
+        [Required] [RegularExpression("^(Administrador|Empleado)$")]
         public string Rol { get; set; } = null!;
     }
-    public class UsuarioUpdateDto : IConcurrencyDto
+    public class UsuarioUpdateDto 
     {
         [Required]
         public int NoUsuario { get; set; }
@@ -76,7 +76,7 @@ namespace InfoDynamics.Aplicacion.dtos
        
         }
 
-    public class UsuarioDesactivarDto : IConcurrencyDto
+    public class UsuarioDesactivarDto 
     {
         [Required]
         public byte[] RowVersion { get; set; } = null!;
