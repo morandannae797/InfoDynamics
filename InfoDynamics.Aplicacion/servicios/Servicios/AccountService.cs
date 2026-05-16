@@ -1,4 +1,5 @@
 ﻿using InfoDynamics.Aplicacion.Abstracts;
+using InfoDynamics.Aplicacion.CustomException;
 using InfoDynamics.Aplicacion.dtos;
 using InfoDynamics.Aplicacion.servicios.IServicios.IServicioMapping;
 using InfoDynamics.Dominio.Entidades;
@@ -23,15 +24,66 @@ namespace InfoDynamics.Aplicacion.servicios.Servicios
 
         public async Task LoginAsync(loginDto loginDto)
         {
+            // --------------------------S1.4----------------------------------------------------
+            // Campos vacíos
+
+            if (string.IsNullOrWhiteSpace(loginDto.identificador))
+            {
+                throw new BadRequestException(
+                    "El número de empleado es obligatorio."
+                );
+            }
+
+            if (string.IsNullOrWhiteSpace(loginDto.contrasena))
+            {
+                throw new BadRequestException(
+                    "La contraseña es obligatoria."
+                );
+            }
+
+
+
+
+
+            // ----------------------------------------S1.1.2-----------------------------------------
+            if (!loginDto.identificador.All(char.IsDigit))
+            {
+                throw new BadRequestException(
+                    "El número de empleado debe ser numérico."
+                );
+            }
+
+            // ----------------------------------------S1.1.3------------------------------------------
+            if (loginDto.identificador.Length != 7)
+            {
+                throw new BadRequestException(
+                    "El número de empleado debe tener 7 dígitos."
+                );
+            }
+
+
+
+
+
             var user = await _usuarioService.VerifyUser(
                 loginDto.identificador,
                 loginDto.contrasena);
 
+
+            //  -----------------------------------------S1.5.-----------------------------------------
             if (user == null)
-                throw new UnauthorizedAccessException("Contraseña/Usuario incorrecta.");
+                throw new UnauthorizedException(
+                    "Contraseña/Usuario incorrecta."
+                );
+
+
+
+
 
             if (user.estado_cuenta != "Activa")
-                throw new UnauthorizedAccessException("La cuenta no está activa.");
+                throw new UnauthorizedException(
+                    "La cuenta no está activa."
+                );
 
             var rowVersionOriginal = user.RowVersion;
 

@@ -4,6 +4,10 @@ using InfoDynamics.Aplicacion.servicios;
 using InfoDynamics.Aplicacion.servicios.IServicios.IServicioMapping;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+//nuevo using agregado
+using InfoDynamics.Aplicacion.CustomException;
+
+
 
 namespace Employees.API.Controllers
 {
@@ -30,14 +34,18 @@ namespace Employees.API.Controllers
             if (request == null)
                 return BadRequest(new { message = "El cuerpo de la petición no puede estar vacío." });
 
-            
+
 
             try
             {
                 await _accountService.LoginAsync(request);
                 return Ok(new { message = "Inicio de sesión exitoso." });
             }
-            catch (UnauthorizedAccessException ex)
+            catch (BadRequestException ex)
+            {
+                return BadRequest(new { message = ex.Message });
+            }
+            catch (UnauthorizedException ex)
             {
                 return Unauthorized(new { message = ex.Message });
             }
@@ -46,6 +54,10 @@ namespace Employees.API.Controllers
                 return BadRequest(new { message = ex.Message });
             }
         }
+
+
+
+
 
         [HttpPost("refresh")]
         public async Task<IActionResult> Refresh()

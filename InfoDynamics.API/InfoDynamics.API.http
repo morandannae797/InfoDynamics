@@ -1,6 +1,15 @@
-@InfoDynamics.API_HostAddress = http://localhost:5248
-
-GET http://localhost:5248/api/empresa
-Accept: application/json
+@InfoDynamics.API_HostAddress = https://localhost:7293
 
 ###
+POST {{InfoDynamics.API_HostAddress}}/api/usuario
+Content-Type: application/json
+
+{
+  "noUsuario": 1234567,
+  "nombre": "Luis",
+  "apPaterno": "Perez",
+  "apMaterno": "Lopez",
+  "email": "luis@test.com",
+  "rol": "Administrador",
+  "contrasena": "AbC123@m@xyZS"
+}
