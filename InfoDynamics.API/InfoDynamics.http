@@ -2,20 +2,26 @@
 
 ### Obtener empresa por id
 GET {{baseUrl}}/api/Empresa
+### Obtener 
+GET {{baseUrl}}/api/Usuario/
 
 
 Accept: application/json
 
-### Actualizar empresa
-POST {{baseUrl}}/api/Empresa/update/4
+### Crear Usuario admin
+POST {{baseUrl}}/api/Usuario
 Content-Type: application/json
 Accept: application/json
 
 {
-  "idEmpresa": 4,
-  "nombre": "OXXO",
-  "descripcion": "Siempre listos siempre hola",
-  "rowVersion": "AAAAAAAARlE="
+ "noUsuario": 56,
+    "nombre": "Johny",
+    "apPaterno": "Guitar",
+    "apMaterno": "lopez",
+    "email": "johny@gmail.com",
+    "rol": "Administrador",
+  
+    "contrasena": "batmanwashere"
 }
 
 ####hola
@@ -37,13 +43,16 @@ Content-Type: application/json
 Accept: application/json
 
 {
-  "identificador": "holacomoestas@gmail.com",
-  "contrasena": "batmaneljefe"
+  "identificador":  "holacomoestas@gmail.com",
+  "contrasena":  "batmaneljefe"
 }
-
+### Logout
+POST {{baseUrl}}/api/LogIn/logout
+Content-Type: application/json
+Accept: application/json
 
 ### copias el set cookie desde el login 
-### Probar endpoint protegido con access token
-GET {{baseUrl}}/api/test
+
+GET {{baseUrl}}/api/test/testadminonly
 Accept: application/json
-Set-Cookie: eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiI0NTYiLCJqdGkiOiI1ZTE5ZDg4Ni0zZTAzLTQ5ZmEtOTZlNy1kYjhmZTA1ZGQxZDkiLCJlbWFpbCI6ImhvbGFjb21vZXN0YXNAZ21haWwuY29tIiwiaHR0cDovL3NjaGVtYXMubWljcm9zb2Z0LmNvbS93cy8yMDA4LzA2L2lkZW50aXR5L2NsYWltcy9yb2xlIjoiRW1wbGVhZG8iLCJleHAiOjE3Nzg2MzQyMzUsImlzcyI6Imh0dHBzOi8vbG9jYWxob3N0OjcyOTMiLCJhdWQiOiJodHRwczovL2xvY2FsaG9zdDo3MjkzIn0.65WjYvC7eZtPnNTUKRUlUTCScH2m3VWISULSeFDkhBw
+Set-Cookie: eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiI0NTYiLCJqdGkiOiJmZDdlNzIwYS02ZTM5LTQ1NWUtYTBmMi01Y2I0ZDI0OTc0MWIiLCJlbWFpbCI6ImhvbGFjb21vZXN0YXNAZ21haWwuY29tIiwiaHR0cDovL3NjaGVtYXMubWljcm9zb2Z0LmNvbS93cy8yMDA4LzA2L2lkZW50aXR5L2NsYWltcy9yb2xlIjoiRW1wbGVhZG8iLCJleHAiOjE3Nzg3OTQwMDcsImlzcyI6Imh0dHBzOi8vbG9jYWxob3N0OjcyOTMiLCJhdWQiOiJodHRwczovL2xvY2FsaG9zdDo3MjkzIn0.nLkavwx3j1WkAQ3bp-woXUBJBMGQVYNaHqmFCChmyMU
