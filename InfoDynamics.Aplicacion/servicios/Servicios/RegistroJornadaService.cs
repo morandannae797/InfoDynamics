@@ -32,30 +32,6 @@ namespace InfoDynamics.Aplicacion.servicios.Servicios
 
 
 
-            if (dto.HoraInicio >= dto.HoraFin)
-            {
-                throw new BadRequestException(
-                    "La hora de inicio debe ser menor que la hora final."
-                );
-            }
-
-
-
-            var horasCalculadas = Convert.ToDecimal(
-                (dto.HoraFin - dto.HoraInicio).TotalHours
-            );
-
-
-
-            if (dto.Horas != horasCalculadas)
-            {
-                throw new BadRequestException(
-                    "Las horas no coinciden con el rango de tiempo."
-                );
-            }
-
-
-
             var proyecto = await _unitOfWork
                 .Repository<Proyecto>()
                 .GetByIdAsync(dto.ProyectoId);
@@ -114,25 +90,6 @@ namespace InfoDynamics.Aplicacion.servicios.Servicios
                 );
             }
 
-
-            if (dto.HoraInicio >= dto.HoraFin)
-            {
-                throw new BadRequestException(
-                    "La hora de inicio debe ser menor que la hora final."
-                );
-            }
-
-
-            var horasCalculadas = Convert.ToDecimal(
-                (dto.HoraFin - dto.HoraInicio).TotalHours
-            );
-
-            if (dto.Horas != horasCalculadas)
-            {
-                throw new BadRequestException(
-                    "Las horas no coinciden con el rango de tiempo."
-                );
-            }
 
 
             var proyecto = await _unitOfWork

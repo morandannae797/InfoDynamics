@@ -1,24 +1,92 @@
 @InfoDynamics.API_HostAddress = https://localhost:7293
 
-### Crear usuario
-POST {{InfoDynamics.API_HostAddress}}/api/usuario
+### INICIO DE SESIÓN EMPLEADO (No debe de dejar ni ver empresas ni usuarios)
+
+POST https://localhost:7293/api/LogIn/login
+Content-Type: application/json
+Accept: application/json
+
+{
+  "identificador": "2",
+  "contrasena": "12345678"
+}
+
+
+###LOS SIGUEINTES PETICIONES HTTP ES PARA HACER REGISTRO DE JORNADA
+
+
+###CREACION DE EMPRESA desde cuenta admin
+POST https://localhost:7293/api/Empresa
 Content-Type: application/json
 
 {
-  "noUsuario": 1234567,
-  "nombre": "Luis",
-  "apPaterno": "Perez",
-  "apMaterno": "Lopez",
-  "email": "luis@test.com",
-  "rol": "Administrador",
-  "contrasena": "AbC123@m@xyZ@S"
+  "nombre": "Microsoft",
+  "descripcion": "Empresa de tecnologia"
 }
 
-### Intento fallido 1
-POST {{InfoDynamics.API_HostAddress}}/api/LogIn/login
+### Registrar el codigo cobrable o no cobrable  TAMBIEN DESDE ADMIN JEJEJ
+POST https://localhost:7293/api/Proyecto
 Content-Type: application/json
 
 {
-  "identificador": "1234567",
-  "contrasena": "mal123"
+  "codigo": "M001",
+  "categoria": "No cobrable",
+  "idEmpresa": 5
 }
+
+
+###
+POST https://localhost:7293/api/Proyecto
+Content-Type: application/json
+
+{
+  "codigo": "L001",
+  "categoria": "Cobrable",
+  "idEmpresa": 5
+}
+### TAMBIEN DESDE ADMIN JEJEJ
+POST https://localhost:7293/api/Periodo
+Content-Type: application/json
+
+{
+  "fechaInicio": "2026-05-01T00:00:00",
+  "fechaFin": "2026-05-15T00:00:00",
+  "estado": "Abierto"
+}
+
+### AQUI SE EMPIEZA A HACER ESTAS PETICIONES DESDE LA CUENTA DE EMPLEADO
+
+
+### Registrar jornada del empleado (Debe de ser el empleado quien registre su jornada, no el admin)
+POST https://localhost:7293/api/RegistroJornada
+Content-Type: application/json
+
+{
+  "fecha": "2026-05-17T00:00:00",
+  "horas": 8,
+  "noUsuario": 2,
+  "periodoId": 1,
+  "proyectoId": 3
+}
+
+###
+
+POST https://localhost:7293/api/RegistroJornada
+Content-Type: application/json
+
+{
+  "fecha": "2026-05-17T00:00:00",
+  "horas": 8,
+  "noUsuario": 2,
+  "periodoId": 1,
+  "proyectoId": 4
+}
+
+### Cierre Sesion 
+POST https://localhost:7293/api/Login/logout
+
+###
+GET https://localhost:7293/api/Periodo
+
+###
+GET https://localhost:7293/api/Proyecto
