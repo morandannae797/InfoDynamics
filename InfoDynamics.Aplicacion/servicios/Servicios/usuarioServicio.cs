@@ -63,7 +63,7 @@ namespace InfoDynamics.Aplicacion.servicios.Servicios
         {
             ValidarSeguridadContrasena(dto.Contrasena, dto.Nombre);
 
-            //Historial de contraseñas
+            //Historial de contraseñas------------------------------------------
             await ValidarHistorialContrasenas(
                 dto.NoUsuario,
                 dto.Contrasena
