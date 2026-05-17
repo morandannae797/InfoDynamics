@@ -1,6 +1,76 @@
-@InfoDynamics.API_HostAddress = http://localhost:5248
+@InfoDynamics.API_HostAddress = https://localhost:7293
 
-GET http://localhost:5248/api/empresa
+###
+
+# OBTENER TODAS LAS VACACIONES
+GET {{InfoDynamics.API_HostAddress}}/api/Vacacion
 Accept: application/json
 
 ###
+
+# OBTENER VACACION POR ID
+GET {{InfoDynamics.API_HostAddress}}/api/Vacacion/1
+Accept: application/json
+
+###
+
+# CREAR SOLICITUD DE VACACION
+# REQUERIMIENTO S6.2
+# El sistema valida que el periodo solicitado sea válido.
+#
+# REQUERIMIENTO S6.2.1
+# Si falla la validación, se muestra un mensaje de error.
+#
+# REQUERIMIENTO S6.3.1
+# El sistema muestra confirmación antes/procesar envío.
+#
+# REQUERIMIENTO S6.3.2
+# Simulación de notificación por correo al administrador.
+
+POST {{InfoDynamics.API_HostAddress}}/api/Vacacion
+Content-Type: application/json
+Accept: application/json
+
+{
+  "fechaInicio": "2026-05-10",
+  "fechaFin": "2026-05-15",
+  "solicitanteId": 1
+}
+
+###
+
+# APROBAR SOLICITUD
+# REQUERIMIENTO S6.4
+# El administrador puede aprobar o rechazar solicitudes.
+#
+# REQUERIMIENTO S6.4.1
+# Si se aprueba, se registran automáticamente las horas.
+#
+# REQUERIMIENTO S6.4.2
+# Simulación de correo notificando al empleado.
+
+POST {{InfoDynamics.API_HostAddress}}/api/Vacacion/1/evaluar
+Content-Type: application/json
+Accept: application/json
+
+{
+  "vacacionId": 1,
+  "aprobadorId": 1,
+  "estadoDecision": "Aprobada",
+  "rowVersion": "AAAAAAAAB9E="
+}
+
+###
+
+# RECHAZAR SOLICITUD
+
+POST {{InfoDynamics.API_HostAddress}}/api/Vacacion/1/evaluar
+Content-Type: application/json
+Accept: application/json
+
+{
+  "vacacionId": 1,
+  "aprobadorId": 1,
+  "estadoDecision": "Rechazada",
+  "rowVersion": "AAAAAAAAB9E="
+}

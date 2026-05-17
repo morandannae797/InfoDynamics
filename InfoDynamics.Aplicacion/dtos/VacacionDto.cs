@@ -18,7 +18,7 @@ namespace InfoDynamics.Aplicacion.dtos
             public int SolicitanteId { get; set; }
         }
 
-        public class VacacionResponseDto 
+        public class VacacionResponseDto
         {
             public int VacacionId { get; set; }
 
@@ -30,17 +30,17 @@ namespace InfoDynamics.Aplicacion.dtos
 
             public DateTime FechaFin { get; set; }
 
-            public string EstadoAprobacion { get; set; } = null!;
+            public string? EstadoAprobacion { get; set; }
 
             public int SolicitanteId { get; set; }
 
-            public string NombreSolicitante { get; set; } = null!;
+            public string? NombreSolicitante { get; set; }
 
             public int? AprobadorId { get; set; }
 
             public string? NombreAprobador { get; set; }
 
-            public byte[] RowVersion { get; set; } = null!;
+            public byte[]? RowVersion { get; set; }
         }
 
         public class VacacionAprobacionDto : IConcurrencyDto
@@ -59,5 +59,4 @@ namespace InfoDynamics.Aplicacion.dtos
             public byte[] RowVersion { get; set; } = null!;
         }
     }
-
 }

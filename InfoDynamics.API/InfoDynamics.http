@@ -1,49 +1,75 @@
-@baseUrl = https://localhost:7293
+@baseUrl=https://localhost:7293
 
-### Obtener empresa por id
-GET {{baseUrl}}/api/Empresa/
+###
 
-
+# OBTENER VACACIONES
+GET {{baseUrl}}/api/Vacacion
 Accept: application/json
 
-### Actualizar empresa
-POST {{baseUrl}}/api/Empresa/update/4
+###
+
+# CREAR SOLICITUD DE VACACION
+POST {{baseUrl}}/api/Vacacion
 Content-Type: application/json
 Accept: application/json
 
 {
-  "idEmpresa": 4,
-  "nombre": "OXXO",
-  "descripcion": "Siempre listos siempre hola",
-  "rowVersion": "AAAAAAAARlE="
+  "fechaInicio": "2026-05-10",
+  "fechaFin": "2026-05-15",
+  "solicitanteId": 1
 }
 
-####hola
-POST {{baseUrl}}/api/Empresa/
+###
+
+# ERROR: FECHA FINAL MENOR A FECHA INICIAL
+POST {{baseUrl}}/api/Vacacion
 Content-Type: application/json
 Accept: application/json
 
 {
-  "idEmpresa": 4,
-  "nombre": "OXXO",
-  "descripcion": "Siempre listos siempre ahi.",
-  "rowVersion": "AAAAAAAARlE="
+  "fechaInicio": "2026-05-15",
+  "fechaFin": "2026-05-10",
+  "solicitanteId": 1
 }
 
+###
 
-### Login
-POST {{baseUrl}}/api/LogIn/login
+# APROBAR SOLICITUD
+POST {{baseUrl}}/api/Vacacion/1/evaluar
 Content-Type: application/json
 Accept: application/json
 
 {
-  "identificador": "holacomoestas@gmail.com",
-  "contrasena": "batmaneljefe"
+  "vacacionId": 1,
+  "aprobadorId": 2,
+  "estadoDecision": "Aprobada",
+  "rowVersion": "AAAAAAAAB9E="
 }
 
+###
 
-### copias el set cookie desde el login 
-### Probar endpoint protegido con access token
-GET {{baseUrl}}/api/test/omg
+# RECHAZAR SOLICITUD
+POST {{baseUrl}}/api/Vacacion/1/evaluar
+Content-Type: application/json
 Accept: application/json
-Set-Cookie: eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiI0NTYiLCJqdGkiOiI1ZTE5ZDg4Ni0zZTAzLTQ5ZmEtOTZlNy1kYjhmZTA1ZGQxZDkiLCJlbWFpbCI6ImhvbGFjb21vZXN0YXNAZ21haWwuY29tIiwiaHR0cDovL3NjaGVtYXMubWljcm9zb2Z0LmNvbS93cy8yMDA4LzA2L2lkZW50aXR5L2NsYWltcy9yb2xlIjoiRW1wbGVhZG8iLCJleHAiOjE3Nzg2MzQyMzUsImlzcyI6Imh0dHBzOi8vbG9jYWxob3N0OjcyOTMiLCJhdWQiOiJodHRwczovL2xvY2FsaG9zdDo3MjkzIn0.65WjYvC7eZtPnNTUKRUlUTCScH2m3VWISULSeFDkhBw
+
+{
+  "vacacionId": 1,
+  "aprobadorId": 2,
+  "estadoDecision": "Rechazada",
+  "rowVersion": "AAAAAAAAB9E="
+}
+
+###
+
+# ERROR: ESTADO INVALIDO
+POST {{baseUrl}}/api/Vacacion/1/evaluar
+Content-Type: application/json
+Accept: application/json
+
+{
+  "vacacionId": 1,
+  "aprobadorId": 2,
+  "estadoDecision": "EnProceso",
+  "rowVersion": "AAAAAAAAB9E="
+}
