@@ -1,6 +1,6 @@
 @InfoDynamics.API_HostAddress = https://localhost:7293
 
-###
+### Crear usuario
 POST {{InfoDynamics.API_HostAddress}}/api/usuario
 Content-Type: application/json
 
@@ -11,5 +11,14 @@ Content-Type: application/json
   "apMaterno": "Lopez",
   "email": "luis@test.com",
   "rol": "Administrador",
-  "contrasena": "AbC123@m@xyZS"
+  "contrasena": "AbC123@m@xyZ@S"
+}
+
+### Intento fallido 1
+POST {{InfoDynamics.API_HostAddress}}/api/LogIn/login
+Content-Type: application/json
+
+{
+  "identificador": "1234567",
+  "contrasena": "mal123"
 }
