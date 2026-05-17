@@ -2,6 +2,7 @@ using InfoDynamics.Aplicacion.CustomException;
 using InfoDynamics.Aplicacion.dtos;
 using InfoDynamics.Aplicacion.servicio.IServicios;
 using InfoDynamics.Dominio.Entidades;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 
@@ -21,7 +22,7 @@ namespace InfoDynamics.API.Controllers
             _readService = readService;
             _writeService = writeService;
         }
-
+        [Authorize(Roles = "Administrador")]
         [HttpGet]
         public async Task<ActionResult<IEnumerable<EmpresaResponseDto>>> GetAll()
         {
@@ -35,7 +36,7 @@ namespace InfoDynamics.API.Controllers
                 return NotFound(new { message = ex.Message });
             }
         }
-
+        [Authorize(Roles = "Administrador")]
         [HttpGet("{id:int}")]
         public async Task<ActionResult<EmpresaResponseDto>> GetById(int id)
         {
@@ -49,7 +50,7 @@ namespace InfoDynamics.API.Controllers
                 return NotFound(new { message = ex.Message });
             }
         }
-
+        [Authorize(Roles = "Administrador")]
         [HttpPost]
         public async Task<ActionResult> Create([FromBody] EmpresaCreateDto dto)
         {
@@ -60,7 +61,7 @@ namespace InfoDynamics.API.Controllers
 
             return Ok(new { message = "Empresa creada correctamente." });
         }
-
+        [Authorize(Roles = "Administrador")]
         [HttpPost("update/{id:int}")]
         public async Task<ActionResult> Update(int id, [FromBody] EmpresaUpdateDto dto)
         {

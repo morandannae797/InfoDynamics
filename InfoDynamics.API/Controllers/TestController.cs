@@ -9,13 +9,11 @@ namespace Employees.API.Controllers
         [Route("api/test")]
         public class TestController : ControllerBase
         {
-        [HttpGet("test-hmac")]
-        public IActionResult TestHmac([FromServices] IHmacServicio hmacServ)
-        {
-            return Ok(hmacServ != null ? "Servicio presente" : "Servicio nulo");
-        }
-        [HttpGet("omg")]
-        [Authorize]  
+        
+       
+
+        [HttpGet("testadminonly")]
+        [Authorize (Roles = "Administrador")]
         public IActionResult Get()
         {
             var matrix = new List<string> { "matrix" };

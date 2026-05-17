@@ -57,7 +57,7 @@ namespace InfoDynamics.API.Controllers
 
             await _writeService.AddAsync(dto);
 
-            return Ok(new { mensaje = "Vacación solicitada correctamente." });
+            return Ok(new { mensaje = "Vacacion solicitada correctamente." });
         }
 
         [HttpPost("{id:int}/evaluar")]
@@ -78,7 +78,7 @@ namespace InfoDynamics.API.Controllers
 
                 await _writeService.UpdateAsync(dto);
 
-                return Ok(new { mensaje = "Estado de la vacación actualizado exitosamente." });
+                return Ok(new { mensaje = "Estado de la vacacion actualizado exitosamente." });
             }
             catch (EntityNotFoundException ex)
             {
