@@ -1,9 +1,13 @@
 using AutoMapper;
+using InfoDynamics.Aplicacion.dtos;
 using InfoDynamics.Aplicacion.servicio.IServicios;
+using InfoDynamics.Dominio.Entidades;
 using InfoDynamics.Dominio.interfaces;
 
 namespace InfoDynamics.Aplicacion.servicio
 {
+
+    
     public class WriteServiceAsync<TEntity, TCreateDto, TUpdateDto>
      : IWriteServiceAsync<TCreateDto, TUpdateDto>
      where TEntity : class
@@ -22,9 +26,13 @@ namespace InfoDynamics.Aplicacion.servicio
         public virtual async Task AddAsync(TCreateDto dto)
         {
             var entity = _mapper.Map<TEntity>(dto);
-
+            //var entity = _mapper.Map<Registro>(dto);
             await _unitOfWork.Repository<TEntity>().AddAsync(entity);
+            //AGREGADO PARA PRUEBAS, DEBIDO A QUE EL MAPPER NO FUNCIONA CORRECTAMENTE CON LOS TIPOS GENERICOS
+           //await _unitOfWork.Repository<TEntity>().AddAsync((TEntity)(object)entity);
+
             await _unitOfWork.SaveChangesAsync();
+
         }
 
         public virtual async Task UpdateAsync(TUpdateDto dto)

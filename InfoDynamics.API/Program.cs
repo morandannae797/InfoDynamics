@@ -61,12 +61,21 @@ builder.Services.AddScoped<
 builder.Services.AddScoped<
     IReadServiceAsync<RegistroResponseDto>,
     ReadServiceAsync<Registro, RegistroResponseDto>>();
+//Agregacion de proyecto
+builder.Services.AddScoped<
+    IReadServiceAsync<ProyectoResponseDto>,
+    ReadServiceAsync<Proyecto, ProyectoResponseDto>>();
 
 
 // lado lectura
 builder.Services.AddScoped<
     IWriteServiceAsync<EmpresaCreateDto, EmpresaUpdateDto>,
     WriteServiceAsync<Empresa, EmpresaCreateDto, EmpresaUpdateDto>>();
+//Agregacion de proyecto
+builder.Services.AddScoped<
+    IWriteServiceAsync<ProyectoCreateDto, ProyectoUpdateDto>,
+    WriteServiceAsync<Proyecto, ProyectoCreateDto, ProyectoUpdateDto>>();
+
 
 builder.Services.AddScoped<
     IWriteServiceAsync<PeriodoCreateDto, PeriodoUpdateDto>,

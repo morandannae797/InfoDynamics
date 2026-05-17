@@ -5,7 +5,7 @@ namespace InfoDynamics.Aplicacion.dtos
 {
     public class UsuarioResponseDTO
     {
-        //modificacion en la bd para que el id_administrador sea nullable, ya que no todos los usuarios son administradores
+     
         public int? idAdministrador { get; set; }
       
         public int NoUsuario { get; set; }
