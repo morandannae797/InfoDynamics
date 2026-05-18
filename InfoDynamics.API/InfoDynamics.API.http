@@ -30,17 +30,366 @@ Accept: application/json
   "contrasena": "12345678"
 }
 
-### INICIO DE SESIÃ“N EMPLEADO (No debe de dejar ni ver empresas ni usuarios)
+### INICIO DE SESIÓN EMPLEADO (No debe de dejar ni ver empresas ni usuarios)
 
 POST https://localhost:7293/api/LogIn/login
 Content-Type: application/json
 Accept: application/json
 
 {
-  "identificador": "2",
+  "identificador": "diego@gmail.com",
   "contrasena": "12345678"
 }
 
 
-### Cierre Sesion
+### Cierre Sesion 
 POST https://localhost:7293/api/Login/logout
+
+
+###LOS SIGUEINTES PETICIONES HTTP ES PARA HACER REGISTRO DE JORNADA
+
+
+###CREACION DE EMPRESA desde cuenta admin
+POST https://localhost:7293/api/Empresa
+Content-Type: application/json
+
+{
+  "nombre": "Microsoft",
+  "descripcion": "Empresa de tecnologia"
+}
+
+### Registrar el codigo cobrable o no cobrable  TAMBIEN DESDE ADMIN JEJEJ
+POST https://localhost:7293/api/Proyecto
+Content-Type: application/json
+
+{
+  "codigo": "M001",
+  "categoria": "No cobrable",
+  "idEmpresa": 5
+}
+
+
+###
+POST https://localhost:7293/api/Proyecto
+Content-Type: application/json
+
+{
+  "codigo": "L001",
+  "categoria": "Cobrable",
+  "idEmpresa": 5
+}
+### TAMBIEN DESDE ADMIN JEJEJ
+POST https://localhost:7293/api/Periodo
+Content-Type: application/json
+
+{
+  "fechaInicio": "2026-05-01T00:00:00",
+  "fechaFin": "2026-05-15T00:00:00",
+  "estado": "Abierto"
+}
+
+### AQUI SE EMPIEZA A HACER ESTAS PETICIONES DESDE LA CUENTA DE EMPLEADO
+
+
+### Registrar jornada del empleado (Debe de ser el empleado quien registre su jornada, no el admin)
+POST https://localhost:7293/api/RegistroJornada
+Content-Type: application/json
+
+{
+  "fecha": "2026-05-17T00:00:00",
+  "horas": 8,
+  "noUsuario": 2,
+  "periodoId": 1,
+  "proyectoId": 3
+}
+
+###
+
+POST https://localhost:7293/api/RegistroJornada
+Content-Type: application/json
+
+{
+  "fecha": "2026-05-17T00:00:00",
+  "horas": 8,
+  "noUsuario": 2,
+  "periodoId": 1,
+  "proyectoId": 4
+}
+
+###
+GET https://localhost:7293/api/Periodo
+
+
+###  ================  PRUEBAS CON LOGIN  ==================== 
+
+
+
+### 1. Identificador vacío
+POST https://localhost:7293/api/LogIn/login
+Content-Type: application/json
+
+{
+  "identificador": "",
+  "contrasena": "  "contrasena": "12345678"
+}
+
+
+### 2. Contraseña vacía
+POST https://localhost:7293/api/LogIn/login
+Content-Type: application/json
+
+{
+  "identificador": "0000002",
+  "contrasena": ""
+}
+
+
+### 3 Identificador no numérico
+POST https://localhost:7293/api/LogIn/login
+Content-Type: application/json
+
+{
+  "identificador": "VALERIA",
+  "contrasena": "12345678"
+}
+
+
+### 4. Longitud incorrecta
+POST https://localhost:7293/api/LogIn/login
+Content-Type: application/json
+
+{
+  "identificador": "123",
+  "contrasena": "12345678"
+}
+
+
+### 5. Usuario o contraseña incorrecta
+### SOLO EJECUTAR UNA VEZ PARA EVITAR BLOQUEO
+POST https://localhost:7293/api/LogIn/login
+Content-Type: application/json
+
+{
+  "identificador": "0000002",
+  "contrasena": "Incorrecta123"
+}
+
+
+### 6. Login correcto
+POST https://localhost:7293/api/LogIn/login
+Content-Type: application/json
+
+{
+  "identificador": "ashley@gmail.com",
+  "contrasena": "12345678"
+}
+
+
+### ========================================================= SIIIIUUUU
+### CREAR USUARIO EMPLEADO - VALERIA
+### PERTENECE AL ADMIN ASHLEY (1)
+### =========================================================
+
+POST https://localhost:7293/api/Usuario
+Content-Type: application/json
+
+{
+  "noUsuario": 1000001,
+  "nombre": "Scarlett",
+  "apPaterno": "Grajales",
+  "apMaterno": "Ramirez",
+  "email": "letito45@gmail.com",
+  "rol": "Empleado",
+  "contrasena": "Valeria123!!!@@@",
+  "idAdministrador": 1
+}
+
+
+### =========================================================
+### VALIDACION - CONTRASEÑA MENOR A 12 CARACTERES
+### =========================================================
+
+POST https://localhost:7293/api/Usuario
+Content-Type: application/json
+
+{
+  "noUsuario": 1000001,
+  "nombre": "Valeria",
+  "apPaterno": "Martinez",
+  "apMaterno": "Grajales",
+  "email": "valeria@gmail.com",
+  "rol": "Empleado",
+  "contrasena": "Vale123!",
+  "idAdministrador": 1
+}
+
+
+### =========================================================
+### VALIDACION - SIN MAYUSCULAS
+### =========================================================
+
+POST https://localhost:7293/api/Usuario
+Content-Type: application/json
+
+{
+  "noUsuario": 2,
+  "nombre": "Valeria",
+  "apPaterno": "Martinez",
+  "apMaterno": "Grajales",
+  "email": "valeria@gmail.com",
+  "rol": "Empleado",
+  "contrasena": "valeria123!!!@@@",
+  "idAdministrador": 1
+}
+
+
+### =========================================================
+### VALIDACION - SIN MINUSCULAS
+### =========================================================
+
+POST https://localhost:7293/api/Usuario
+Content-Type: application/json
+
+{
+  "noUsuario": 2,
+  "nombre": "Valeria",
+  "apPaterno": "Martinez",
+  "apMaterno": "Grajales",
+  "email": "letito45@gmail.com",
+  "rol": "Empleado",
+  "contrasena": "VALERIA123!!!@@@",
+  "idAdministrador": 1
+}
+
+
+### =========================================================
+### VALIDACION - MENOS DE 3 NUMEROS
+### =========================================================
+
+POST https://localhost:7293/api/Usuario
+Content-Type: application/json
+
+{
+  "noUsuario": 2,
+  "nombre": "Valeria",
+  "apPaterno": "Martinez",
+  "apMaterno": "Grajales",
+  "email": "letito45@gmail.com",
+  "rol": "Empleado",
+  "contrasena": "Valeria1!!!@@@",
+  "idAdministrador": 1
+}
+
+
+### =========================================================
+### VALIDACION - MENOS DE 3 CARACTERES ESPECIALES
+### =========================================================
+
+POST https://localhost:7293/api/Usuario
+Content-Type: application/json
+
+{
+  "noUsuario": 2,
+  "nombre": "Valeria",
+  "apPaterno": "Martinez",
+  "apMaterno": "Grajales",
+  "email": "letito45@gmail.com",
+  "rol": "Empleado",
+  "contrasena": "Valeria123!!",
+  "idAdministrador": 1
+}
+
+
+### =========================================================
+### VALIDACION - CARACTERES REPETIDOS
+### =========================================================
+
+POST https://localhost:7293/api/Usuario
+Content-Type: application/json
+
+{
+  "noUsuario": 2,
+  "nombre": "Valeria",
+  "apPaterno": "Martinez",
+  "apMaterno": "Grajales",
+  "email": "kuromi24@gmail.com",
+  "rol": "Empleado",
+  "contrasena": "Valeeeria123!!!",
+  "idAdministrador": 1
+}
+
+
+### =========================================================
+### VALIDACION - CONTRASEÑA CONTIENE NOMBRE
+### =========================================================
+
+POST https://localhost:7293/api/Usuario
+Content-Type: application/json
+
+{
+  "noUsuario": 2,
+  "nombre": "Valeria",
+  "apPaterno": "Martinez",
+  "apMaterno": "Grajales",
+  "email": "kuromi24@gmail.com",
+  "rol": "Empleado",
+  "contrasena": "Valeria123!!!",
+  "idAdministrador": 1
+}
+
+
+### =========================================================
+### VALIDACION - NUMERO DE USUARIO DUPLICADO
+### =========================================================
+
+POST https://localhost:7293/api/Usuario
+Content-Type: application/json
+
+{
+  "noUsuario": 1,
+  "nombre": "Valeria",
+  "apPaterno": "Martinez",
+  "apMaterno": "Grajales",
+  "email": "kuromi24@gmail.com",
+  "rol": "Empleado",
+  "contrasena": "Valeria123!!!@@@",
+  "idAdministrador": 1
+}
+
+
+
+### ----- validamos el de CORREO DUPLICADO ------
+
+
+POST https://localhost:7293/api/Usuario
+Content-Type: application/json
+
+{
+  "noUsuario": 1000003,
+  "nombre": "Scarlett",
+  "apPaterno": "Grajales",
+  "apMaterno": "Ramirez",
+  "email": "kuromi24@gmail.com",
+  "rol": "Empleado",
+  "contrasena": "Scarlata123!#@",
+  "idAdministrador": 1
+}
+
+
+
+### ----- ESTE YA LO REGISTRAMOS BIEN BIEN JEJE ------
+
+
+POST https://localhost:7293/api/Usuario
+Content-Type: application/json
+
+{
+  "noUsuario": 1000001,
+  "nombre": "Scarlett",
+  "apPaterno": "Grajales",
+  "apMaterno": "Ramirez",
+  "email": "kuromi24@gmail.com",
+  "rol": "Empleado",
+  "contrasena": "Scarlata123!#@",
+  "idAdministrador": 1
+}
