@@ -100,6 +100,7 @@ CreateMap<PeriodoUpdateDto, Periodo>()
 
 
             CreateMap<UsuarioCreateDTO, Usuario>()
+                .ForMember(dest => dest.id_administrador, opt => opt.MapFrom(src => src.idAdministrador))
                 .ForMember(dest => dest.no_usuario, opt => opt.MapFrom(src => src.NoUsuario))
                 .ForMember(dest => dest.nombre, opt => opt.MapFrom(src => src.Nombre))
                 .ForMember(dest => dest.ap_paterno, opt => opt.MapFrom(src => src.ApPaterno))
@@ -117,6 +118,7 @@ CreateMap<PeriodoUpdateDto, Periodo>()
                 .ForMember(dest => dest.Vacacionno_usuarioNavigations, opt => opt.Ignore());
 
             CreateMap<UsuarioUpdateDto, Usuario>()
+           .ForMember(dest => dest.id_administrador,opt => opt.MapFrom(src => src.idAdministrador))
           .ForMember(dest => dest.no_usuario, opt => opt.MapFrom(src => src.NoUsuario))
           .ForMember(dest => dest.nombre, opt => opt.MapFrom(src => src.Nombre))
           .ForMember(dest => dest.ap_paterno, opt => opt.MapFrom(src => src.ApPaterno))
@@ -141,10 +143,12 @@ CreateMap<PeriodoUpdateDto, Periodo>()
                 .ForMember(dest => dest.Email, opt => opt.MapFrom(src => src.email))
                 .ForMember(dest => dest.Rol, opt => opt.MapFrom(src => src.rol))
                 .ForMember(dest => dest.EstadoCuenta, opt => opt.MapFrom(src => src.estado_cuenta))
-                .ForMember(dest => dest.RowVersion, opt => opt.MapFrom(src => src.RowVersion));
+                .ForMember(dest => dest.RowVersion, opt => opt.MapFrom(src => src.RowVersion))
+                .ForMember(dest => dest.idAdministrador, opt => opt.MapFrom(src => src.id_administrador));
 
 
-        
+
+
 
             CreateMap<ContrasenaCreateDto, Contrasena>()
                 .ForMember(dest => dest.id_contrasena, opt => opt.Ignore())

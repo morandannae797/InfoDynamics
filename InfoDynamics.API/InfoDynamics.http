@@ -1,5 +1,7 @@
 @baseUrl = https://localhost:7293
 
+### Obtener empresa por id
+GET {{baseUrl}}/api/Empresa
 ### Obtener 
 GET {{baseUrl}}/api/Usuario/
 
