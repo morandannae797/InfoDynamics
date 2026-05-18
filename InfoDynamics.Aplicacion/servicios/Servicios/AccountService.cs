@@ -31,11 +31,11 @@ namespace InfoDynamics.Aplicacion.servicios.Servicios
 
         public async Task LoginAsync(loginDto loginDto)
         {
-            // --------------------------LÓGICA BÁSICA--------------------------
+     
 
             LoginValidation.Validar(loginDto);
 
-            // --------------------------LÓGICA NEGOCIO--------------------------
+      
 
             LoginAttemptValidation.ValidarBloqueo(
                 loginDto,
@@ -46,7 +46,7 @@ namespace InfoDynamics.Aplicacion.servicios.Servicios
                 loginDto.identificador,
                 loginDto.contrasena);
 
-            // --------------------------S1.5--------------------------
+    
 
             if (user == null)
             {
@@ -67,7 +67,7 @@ namespace InfoDynamics.Aplicacion.servicios.Servicios
                 );
             }
 
-            // Reiniciar intentos después de login exitoso
+            // Reiniciar intentos despues de login exitoso
 
             _failedAttempts.TryRemove(
                 loginDto.identificador,
@@ -77,7 +77,7 @@ namespace InfoDynamics.Aplicacion.servicios.Servicios
                 loginDto.identificador,
                 out _);
 
-            // --------------------------TOKENS--------------------------
+
 
             var rowVersionOriginal = user.RowVersion;
 
@@ -175,7 +175,7 @@ namespace InfoDynamics.Aplicacion.servicios.Servicios
         }
     }
 
-    // ========================== LÓGICA BÁSICA ==========================
+
 
     public static class LoginValidation
     {
@@ -196,7 +196,7 @@ namespace InfoDynamics.Aplicacion.servicios.Servicios
                     "El número de empleado debe ser numérico.");
             }
 
-            // --------------------------S1.1.3--------------------------
+     
 
             if (!loginDto.identificador.Contains("@") && (!loginDto.identificador.All(char.IsDigit) || loginDto.identificador.Length != 7))
             {
@@ -206,7 +206,6 @@ namespace InfoDynamics.Aplicacion.servicios.Servicios
         }
     }
 
-    // ========================== LÓGICA NEGOCIO ==========================
 
     public static class LoginAttemptValidation
     {
@@ -215,7 +214,7 @@ namespace InfoDynamics.Aplicacion.servicios.Servicios
             ConcurrentDictionary<string, DateTime> blockedUsers,
             ConcurrentDictionary<string, int> failedAttempts)
         {
-            // --------------------------S1.8--------------------------
+
 
             if (blockedUsers.ContainsKey(loginDto.identificador))
             {
@@ -229,7 +228,7 @@ namespace InfoDynamics.Aplicacion.servicios.Servicios
                     );
                 }
 
-                // --------------------------S1.8.1--------------------------
+         
 
                 blockedUsers.TryRemove(
                     loginDto.identificador,
