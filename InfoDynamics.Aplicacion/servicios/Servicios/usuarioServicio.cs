@@ -5,7 +5,6 @@ using InfoDynamics.Aplicacion.servicios.IServicios.IServicioMapping;
 using InfoDynamics.Dominio.Entidades;
 using InfoDynamics.Dominio.interfaces;
 using Microsoft.EntityFrameworkCore;
-using System.Runtime.Intrinsics.Arm;
 
 namespace InfoDynamics.Aplicacion.servicios.Servicios
 {
@@ -26,20 +25,13 @@ namespace InfoDynamics.Aplicacion.servicios.Servicios
 
         public async Task<Usuario?> VerifyUser(string identificador, string contrasena)
         {
-
-
-
-            //Como nos llega la contraseña en texto plano, la hasheamos antes de guardarla. Esto es crucial para la seguridad de los usuarios.
-
-            //throw new Exception(BCrypt.Net.BCrypt.HashPassword("12345678"));
-
             Usuario? usuarioEncontrado;
 
             if (int.TryParse(identificador, out int numeroUsuario))
             {
                 usuarioEncontrado = await _usuarioRepo.GetAsync(
                     u => u.no_usuario == numeroUsuario,
-                    tracked: true,
+                    tracked: true, 
                     includeProperties: "Contrasenas");
             }
             else
@@ -66,33 +58,35 @@ namespace InfoDynamics.Aplicacion.servicios.Servicios
             return esValida ? usuarioEncontrado : null;
         }
 
+        // ============================ CREATE USER ============================
+
         public async Task<Usuario> CreateFromDtoAsync(UsuarioCreateDTO dto)
         {
-            ValidarSeguridadContrasena(dto.Contrasena, dto.Nombre);
+            UsuarioPasswordValidation.ValidarSeguridadContrasena(
+                dto.Contrasena,
+                dto.Nombre);
 
-            //Historial de contraseñas------------------------------------------
-            await ValidarHistorialContrasenas(
+            await UsuarioHistorialValidation.ValidarHistorialContrasenas(
+                _usuarioRepo,
                 dto.NoUsuario,
-                dto.Contrasena
-            );
-
-
-
+                dto.Contrasena);
 
             var existente = await _usuarioRepo.GetByIdAsync(dto.NoUsuario);
 
             if (existente != null)
+            {
                 throw new ConflictException(
-                    $"Ya existe un usuario con el número {dto.NoUsuario}."
-                );
+                    $"Ya existe un usuario con el número {dto.NoUsuario}.");
+            }
 
             var emailExistente = await _usuarioRepo.GetAsync(
                 u => u.email == dto.Email);
 
             if (emailExistente != null)
+            {
                 throw new ConflictException(
-                    $"El correo {dto.Email} ya está registrado."
-                );
+                    $"El correo {dto.Email} ya está registrado.");
+            }
 
             var usuario = new Usuario
             {
@@ -123,125 +117,7 @@ namespace InfoDynamics.Aplicacion.servicios.Servicios
             return usuario;
         }
 
-
-
-
-
-
-
-       //---------------------------------------------------S2.6--------------------------------------------
-        private void ValidarSeguridadContrasena(string contrasena, string nombreUsuario)
-        {
-            // -------------------------------------------S2.6.1.1----------------------------------------
-            if (contrasena.Length < 12)
-            {
-                throw new BadRequestException(
-                    "La contraseña debe tener mínimo 12 caracteres."
-                );
-            }
-
-            // -------------------------------------------S2.6.1.2-----------------------------------------
-            bool Mayuscula = contrasena.Any(char.IsUpper);
-            bool Minuscula = contrasena.Any(char.IsLower);
-
-            if (!Mayuscula || !Minuscula)
-            {
-                throw new BadRequestException(
-                    "La contraseña debe incluir mayúsculas y minúsculas."
-                );
-            }
-
-            // ===========================================S2.6.1.3============================================
-            int cantidadNumeros = contrasena.Count(char.IsDigit);
-
-            if (cantidadNumeros < 3)
-            {
-                throw new BadRequestException(
-                    "La contraseña debe incluir al menos 3 números."
-                );
-            }
-
-            // -----------------------------------------S2.6.1.4---------------------------------------
-            int cantidadEspeciales = contrasena.Count(
-                c => !char.IsLetterOrDigit(c));
-
-            if (cantidadEspeciales < 3)
-            {
-                throw new BadRequestException(
-                    "La contraseña debe incluir al menos 3 caracteres especiales."
-                );
-            }
-
-            // -----------------------------------------S2.6.1.5-----------------------------------------
-            for (int i = 0; i < contrasena.Length - 2; i++)
-            {
-                if (contrasena[i] == contrasena[i + 1] &&
-                    contrasena[i] == contrasena[i + 2])
-                {
-                    throw new BadRequestException(
-                        "La contraseña no puede contener caracteres repetidos consecutivos."
-                    );
-                }
-            }
-
-
-            // -----------------------------------------S2.6.1.7-----------------------------------------
-            // No permitir incluir el nombre del usuario en la contraseña
-            if (!string.IsNullOrWhiteSpace(nombreUsuario))
-            {
-                string nombreLower = nombreUsuario.ToLower();
-                string contrasenaLower = contrasena.ToLower();
-
-                if (contrasenaLower.Contains(nombreLower))
-                {
-                    throw new BadRequestException(
-                        "La contraseña no puede contener el nombre del usuario."
-                    );
-                }
-            }
-
-        }
-
-
-
-
-
-
-        //-------------------------------------------S2.6.1.6------------------------------------------------
-        //Metodo para validar el historial de contraseñas.
-        private async Task ValidarHistorialContrasenas(
-    int noUsuario,
-    string nuevaContrasena)
-        {
-            var usuario = await _usuarioRepo.GetAsync(
-                u => u.no_usuario == noUsuario,
-                tracked: false,
-                includeProperties: "Contrasenas"
-            );
-
-            if (usuario == null)
-                return;
-
-            var ultimas3 = usuario.Contrasenas
-                .OrderByDescending(c => c.fecha_creacion)
-                .Take(3)
-                .ToList();
-
-            foreach (var c in ultimas3)
-            {
-                if (BCrypt.Net.BCrypt.Verify(nuevaContrasena, c.contrasena))
-                {
-                    throw new BadRequestException(
-                        "No puedes reutilizar las últimas 3 contraseñas."
-                    );
-                }
-            }
-        }
-
-
-        //----------------------------------------------------------------------------------------------------
-
-
+        // ============================ FIND EMAIL ============================
 
         public async Task<Usuario?> FindByEmailAsync(string email)
         {
@@ -251,6 +127,8 @@ namespace InfoDynamics.Aplicacion.servicios.Servicios
                 includeProperties: "Contrasenas");
         }
 
+        // ============================ FIND ID ============================
+
         public async Task<Usuario?> FindByIdAsync(int id)
         {
             return await _usuarioRepo.GetAsync(
@@ -259,10 +137,14 @@ namespace InfoDynamics.Aplicacion.servicios.Servicios
                 includeProperties: "Contrasenas");
         }
 
+        // ============================ rol ============================
+
         public Task<bool> IsInRoleAsync(Usuario user, string role)
         {
             return Task.FromResult(user.rol == role);
         }
+
+        // ============================ modificacion ============================
 
         public async Task<Usuario> UpdateWithConcurrencyAsync(
             Usuario usuarioActualizado,
@@ -272,9 +154,10 @@ namespace InfoDynamics.Aplicacion.servicios.Servicios
                 usuarioActualizado.no_usuario);
 
             if (usuarioExistente == null)
+            {
                 throw new KeyNotFoundException(
-                    "Usuario no encontrado."
-                );
+                    "Usuario no encontrado.");
+            }
 
             usuarioExistente.email = usuarioActualizado.email;
             usuarioExistente.nombre = usuarioActualizado.nombre;
@@ -302,8 +185,109 @@ namespace InfoDynamics.Aplicacion.servicios.Servicios
             catch (DbUpdateConcurrencyException ex)
             {
                 throw new InvalidOperationException(
-                    "El usuario fue modificado por otro proceso. Recarga los datos y reintenta.",
+                    "El usuario fue modificado por otro proceso.",
                     ex);
+            }
+        }
+    }
+
+    // ============================ Contraseña requerimientos de logica de negocio ============================
+
+    internal static class UsuarioPasswordValidation
+    {
+        public static void ValidarSeguridadContrasena(
+            string contrasena,
+            string nombreUsuario)
+        {
+            if (contrasena.Length < 12)
+            {
+                throw new BadRequestException(
+                    "La contraseña debe tener mínimo 12 caracteres.");
+            }
+
+            bool mayuscula = contrasena.Any(char.IsUpper);
+            bool minuscula = contrasena.Any(char.IsLower);
+
+            if (!mayuscula || !minuscula)
+            {
+                throw new BadRequestException(
+                    "La contraseña debe incluir mayúsculas y minúsculas.");
+            }
+
+            int cantidadNumeros = contrasena.Count(char.IsDigit);
+
+            if (cantidadNumeros < 3)
+            {
+                throw new BadRequestException(
+                    "La contraseña debe incluir al menos 3 números.");
+            }
+
+            int cantidadEspeciales = contrasena.Count(
+                c => !char.IsLetterOrDigit(c));
+
+            if (cantidadEspeciales < 3)
+            {
+                throw new BadRequestException(
+                    "La contraseña debe incluir al menos 3 caracteres especiales.");
+            }
+
+            for (int i = 0; i < contrasena.Length - 2; i++)
+            {
+                if (
+                    contrasena[i] == contrasena[i + 1] &&
+                    contrasena[i] == contrasena[i + 2]
+                )
+                {
+                    throw new BadRequestException(
+                        "La contraseña no puede contener caracteres repetidos consecutivos.");
+                }
+            }
+
+            if (!string.IsNullOrWhiteSpace(nombreUsuario))
+            {
+                string nombreLower = nombreUsuario.ToLower();
+                string contrasenaLower = contrasena.ToLower();
+
+                if (contrasenaLower.Contains(nombreLower))
+                {
+                    throw new BadRequestException(
+                        "La contraseña no puede contener el nombre del usuario.");
+                }
+            }
+        }
+    }
+
+    // ============================ Contraseña historial ============================
+
+    internal static class UsuarioHistorialValidation
+    {
+        public static async Task ValidarHistorialContrasenas(
+            IGenericRepository<Usuario> usuarioRepo,
+            int noUsuario,
+            string nuevaContrasena)
+        {
+            var usuario = await usuarioRepo.GetAsync(
+                u => u.no_usuario == noUsuario,
+                tracked: false,
+                includeProperties: "Contrasenas");
+
+            if (usuario == null)
+                return;
+
+            var ultimas3 = usuario.Contrasenas
+                .OrderByDescending(c => c.fecha_creacion)
+                .Take(3)
+                .ToList();
+
+            foreach (var c in ultimas3)
+            {
+                if (BCrypt.Net.BCrypt.Verify(
+                    nuevaContrasena,
+                    c.contrasena))
+                {
+                    throw new BadRequestException(
+                        "No puedes reutilizar las últimas 3 contraseñas.");
+                }
             }
         }
     }

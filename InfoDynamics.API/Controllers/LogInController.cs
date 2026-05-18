@@ -4,7 +4,6 @@ using InfoDynamics.Aplicacion.servicios;
 using InfoDynamics.Aplicacion.servicios.IServicios.IServicioMapping;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
-//nuevo using agregado
 using InfoDynamics.Aplicacion.CustomException;
 
 
@@ -17,6 +16,7 @@ namespace Employees.API.Controllers
     {
         private readonly IHmacServicio _hmacServicio;
         private readonly IAccountService _accountService;
+
 
         public LogInController(
             IHmacServicio hmacServicio,
@@ -54,9 +54,6 @@ namespace Employees.API.Controllers
                 return BadRequest(new { message = ex.Message });
             }
         }
-
-
-
 
 
         [HttpPost("refresh")]
