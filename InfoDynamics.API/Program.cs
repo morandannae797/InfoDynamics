@@ -16,6 +16,7 @@ using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Net.Http.Headers;
 using Scalar.AspNetCore;
+using System.Security.Claims;
 using static InfoDynamics.Aplicacion.dtos.UsuarioUpdateDto;
 using static InfoDynamics.Aplicacion.dtos.VacacionDto;
 
@@ -24,10 +25,8 @@ var builder = WebApplication.CreateBuilder(args);
 builder.Services.AddControllers();
 builder.Services.AddEndpointsApiExplorer();
 
-// Razor Pages
 builder.Services.AddRazorPages();
 
-// OpenAPI
 builder.Services.AddOpenApi();
 
 // Base de datos 
@@ -45,7 +44,7 @@ builder.Services.AddAutoMapper(cfg =>
 // Repositorio y Unit of Work
 builder.Services.AddScoped(typeof(IGenericRepository<>), typeof(GenericRepository<>));
 builder.Services.AddScoped<IUnitOfWork, UnitOfWork>();
-// === LADO DE LECTURA ===
+// lADO DE LECTURA 
 builder.Services.AddScoped<
     IReadServiceAsync<EmpresaResponseDto>,
     ReadServiceAsync<Empresa, EmpresaResponseDto>>();
@@ -53,24 +52,30 @@ builder.Services.AddScoped<
 builder.Services.AddScoped<
     IReadServiceAsync<PeriodoResponseDto>,
     ReadServiceAsync<Periodo, PeriodoResponseDto>>();
-
 builder.Services.AddScoped<
     IReadServiceAsync<UsuarioResponseDTO>,
     ReadServiceAsync<Usuario, UsuarioResponseDTO>>();
-
 builder.Services.AddScoped<
     IReadServiceAsync<VacacionResponseDto>,
     ReadServiceAsync<Vacacion, VacacionResponseDto>>();
-
 builder.Services.AddScoped<
     IReadServiceAsync<RegistroResponseDto>,
     ReadServiceAsync<Registro, RegistroResponseDto>>();
+//Agregacion de proyecto
+builder.Services.AddScoped<
+    IReadServiceAsync<ProyectoResponseDto>,
+    ReadServiceAsync<Proyecto, ProyectoResponseDto>>();
 
 
-// === LADO DE ESCRITURA ===
+// lado lectura
 builder.Services.AddScoped<
     IWriteServiceAsync<EmpresaCreateDto, EmpresaUpdateDto>,
     WriteServiceAsync<Empresa, EmpresaCreateDto, EmpresaUpdateDto>>();
+//Agregacion de proyecto
+builder.Services.AddScoped<
+    IWriteServiceAsync<ProyectoCreateDto, ProyectoUpdateDto>,
+    WriteServiceAsync<Proyecto, ProyectoCreateDto, ProyectoUpdateDto>>();
+
 
 builder.Services.AddScoped<
     IWriteServiceAsync<PeriodoCreateDto, PeriodoUpdateDto>,
@@ -85,14 +90,14 @@ builder.Services.AddScoped<
 builder.Services.AddScoped<
     IWriteServiceAsync<RegistroCreateDto, RegistroUpdateDto>,
     WriteServiceAsync<Registro, RegistroCreateDto, RegistroUpdateDto>>();
-// Servicios de dominio
+
+
 builder.Services.AddScoped<Iusuarioservicio, UsuarioServicio>();
 builder.Services.AddScoped<IUserRepository, UserRepository>();
 builder.Services.AddScoped<IAccountService, AccountService>();
 builder.Services.AddScoped<IAuthTokenProcessor, AuthTokenProcessor>();
 builder.Services.AddHttpContextAccessor();
 
-// HmacServicio 
 builder.Services.AddScoped<IHmacServicio, HmacServicio>();
 
 // JWT Options
@@ -103,14 +108,14 @@ builder.Services.AddCors(options =>
 {
     options.AddPolicy("FrontendClient", policy =>
     {
-        policy.WithOrigins("https://localhost:7293", "https://www.infodynamics.com")
+        policy.WithOrigins("https://localhost:7293", "https://www.infodynamics.dpns.org")
               .WithHeaders(HeaderNames.Accept, HeaderNames.ContentType, HeaderNames.Authorization)
               .AllowCredentials()
               .AllowAnyMethod();
     });
 });
 
-// CORS — política dinámica desde appsettings
+// CORS
 var cors = builder.Configuration.GetSection("Cors");
 var allowedOrigins = cors.GetSection("AllowedOrigins").Get<string[]>() ?? Array.Empty<string>();
 var allowSubdomainsUnder = cors.GetSection("AllowSubdomainsUnder").Get<string[]>() ?? Array.Empty<string>();
@@ -120,7 +125,7 @@ var exposed = cors.GetSection("ExposedHeaders").Get<string[]>() ?? Array.Empty<s
 
 builder.Services.AddCors(options =>
 {
-    options.AddPolicy("Default", policy =>
+    options.AddPolicy("FrontCors", policy =>
     {
         if (allowedOrigins.Length > 0)
             policy.WithOrigins(allowedOrigins);
@@ -146,7 +151,7 @@ builder.Services.AddCors(options =>
         }
 
         policy.WithHeaders("Content-Type", "Authorization", "X-Request-ID")
-              .WithMethods("GET", "POST", "PUT", "PATCH", "DELETE", "OPTIONS");
+              .WithMethods("GET", "POST", "OPTIONS");
 
         if (allowCredentials)
             policy.AllowCredentials();
@@ -179,8 +184,10 @@ builder.Services.AddAuthentication(opt =>
         ValidateLifetime = true,
         IssuerSigningKey = new Microsoft.IdentityModel.Tokens.SymmetricSecurityKey(
                                        System.Text.Encoding.UTF8.GetBytes(jwtOptions.Secret)),
-        ValidateIssuerSigningKey = true
-    };
+
+        ValidateIssuerSigningKey = true,
+        RoleClaimType = ClaimTypes.Role
+    }; 
 
     options.Events = new JwtBearerEvents
     {
@@ -202,7 +209,7 @@ var app = builder.Build();
 
 
 app.UseExceptionHandler();
-app.UseCors("FrontendClient");
+//app.UseCors("FrontCors");//comentado para pruebas
 app.UseHttpsRedirection();
 app.UseAuthentication();
 app.UseAuthorization();

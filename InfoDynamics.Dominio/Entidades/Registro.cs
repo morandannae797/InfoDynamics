@@ -11,9 +11,7 @@ namespace InfoDynamics.Dominio.Entidades
         public int id_registro { get; set; }
 
         public DateTime fecha { get; set; }
-        public TimeOnly hora_inicio { get; set; }
 
-        public TimeOnly hora_fin { get; set; }
         public decimal horas { get; set; } // Decimal(4,2)
 
 

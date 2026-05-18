@@ -32,14 +32,14 @@ namespace Employees.API.Controllers
             [FromHeader(Name = "firma")] string? signature=null)
         {
             if (request == null)
-                return BadRequest(new { message = "El cuerpo de la petición no puede estar vacío." });
+                return BadRequest(new { message = "El cuerpo de la peticion no puede estar vacío." });
 
 
 
             try
             {
                 await _accountService.LoginAsync(request);
-                return Ok(new { message = "Inicio de sesión exitoso." });
+                return Ok(new { message = "Inicio de sesion exitoso." });
             }
             catch (BadRequestException ex)
             {
@@ -93,7 +93,7 @@ namespace Employees.API.Controllers
                 SameSite = SameSiteMode.Strict
             });
 
-            return Ok(new { message = "Sesión cerrada con éxito." });
+            return Ok(new { message = "Sesion cerrada con exito." });
         }
     }
 }

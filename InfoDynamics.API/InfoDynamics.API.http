@@ -1,4 +1,34 @@
-@InfoDynamics.API_HostAddress = https://localhost:7293
+@InfoDynamics.API_HostAddress = http://localhost:7293
+
+GET https://localhost:7293/api/empresa
+Accept: application/json
+
+### Creacion de EMPRESA SOLO ADMIN PUEDE
+POST https://localhost:7293/api/empresa
+Content-Type: application/json
+
+{
+  "nombre": "OXXO",
+  "descripcion": "Tienda"
+}
+
+
+### Consulta de usuarios (Debe de mostrar solo los usuarios 
+### de la empresa a la que pertenece el empleado) FALTA LOGICA DE EMPLEADO PARA QUE
+###SOLO MUESTRE LOS USUARIOS DE SU EMPRESA
+GET https://localhost:7293/api/usuario
+Accept: application/json
+
+
+### INICIO SESION DE ADMIN
+POST https://localhost:7293/api/LogIn/login
+Content-Type: application/json
+Accept: application/json
+
+{
+  "identificador": "1",
+  "contrasena": "12345678"
+}
 
 ### INICIO DE SESIÓN EMPLEADO (No debe de dejar ni ver empresas ni usuarios)
 
@@ -10,6 +40,10 @@ Accept: application/json
   "identificador": "2",
   "contrasena": "12345678"
 }
+
+
+### Cierre Sesion 
+POST https://localhost:7293/api/Login/logout
 
 
 ###LOS SIGUEINTES PETICIONES HTTP ES PARA HACER REGISTRO DE JORNADA
@@ -82,11 +116,5 @@ Content-Type: application/json
   "proyectoId": 4
 }
 
-### Cierre Sesion 
-POST https://localhost:7293/api/Login/logout
-
 ###
 GET https://localhost:7293/api/Periodo
-
-###
-GET https://localhost:7293/api/Proyecto

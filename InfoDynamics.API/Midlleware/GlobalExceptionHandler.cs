@@ -28,7 +28,7 @@ namespace InfoDynamics.API.Middleware
                 ConflictException e => (StatusCodes.Status409Conflict, e.Message),
                 InvalidOperationException e => (StatusCodes.Status409Conflict, e.Message),
                 ArgumentException e => (StatusCodes.Status409Conflict, e.Message),
-                _ => (StatusCodes.Status500InternalServerError, "Ocurrió un error inesperado.")
+                _ => (StatusCodes.Status500InternalServerError, "Ocurrio un error inesperado.")
             };
 
           

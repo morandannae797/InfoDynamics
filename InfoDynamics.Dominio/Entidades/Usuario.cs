@@ -11,6 +11,7 @@ namespace InfoDynamics.Dominio.Entidades
     public partial class Usuario
 
     {
+        public int? id_administrador { get; set; }
         public int no_usuario { get; set; }
 
         public string nombre { get; set; } = null!;
@@ -37,7 +38,7 @@ namespace InfoDynamics.Dominio.Entidades
 
         public virtual ICollection<Registro> Registros { get; set; } = new List<Registro>();
 
-        public virtual ICollection<Vacacion> Vacacionid_administradorNavigations { get; set; } = new List<Vacacion>();
+       public virtual ICollection<Vacacion> Vacacionid_administradorNavigations { get; set; } = new List<Vacacion>();
 
         public virtual ICollection<Vacacion> Vacacionno_usuarioNavigations { get; set; } = new List<Vacacion>();
 
