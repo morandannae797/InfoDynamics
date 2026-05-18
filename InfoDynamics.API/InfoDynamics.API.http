@@ -4,3 +4,14 @@ GET http://localhost:5248/api/empresa
 Accept: application/json
 
 ###
+POST http://localhost:5248/api/empresa
+Accept: application/json
+
+### Login
+POST https://localhost:5248/api/LogIn/login
+Accept: application/json
+
+{
+  "identificador": "holacomoestas@gmail.com",
+  "contrasena": "batmaneljefe"
+}

@@ -1,13 +1,13 @@
-@baseUrl = https://localhost:7293
+@baseUrl = https://localhost:5248
 
 ### Obtener empresa por id
-GET {{baseUrl}}/api/Empresa/
+GET https://localhost:5248/api/Empresa
 
 
 Accept: application/json
 
 ### Actualizar empresa
-POST {{baseUrl}}/api/Empresa/update/4
+POST https://localhost:5248/api/Empresa/update/4
 Content-Type: application/json
 Accept: application/json
 
@@ -19,7 +19,7 @@ Accept: application/json
 }
 
 ####hola
-POST {{baseUrl}}/api/Empresa/
+POST https://localhost:5248/api/Empresa
 Content-Type: application/json
 Accept: application/json
 
@@ -32,7 +32,7 @@ Accept: application/json
 
 
 ### Login
-POST {{baseUrl}}/api/LogIn/login
+POST https://localhost:5248/api/LogIn/login
 Content-Type: application/json
 Accept: application/json
 
@@ -44,6 +44,10 @@ Accept: application/json
 
 ### copias el set cookie desde el login 
 ### Probar endpoint protegido con access token
-GET {{baseUrl}}/api/test/omg
+GET https://localhost:5248/api/test/omg
 Accept: application/json
 Set-Cookie: eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiI0NTYiLCJqdGkiOiI1ZTE5ZDg4Ni0zZTAzLTQ5ZmEtOTZlNy1kYjhmZTA1ZGQxZDkiLCJlbWFpbCI6ImhvbGFjb21vZXN0YXNAZ21haWwuY29tIiwiaHR0cDovL3NjaGVtYXMubWljcm9zb2Z0LmNvbS93cy8yMDA4LzA2L2lkZW50aXR5L2NsYWltcy9yb2xlIjoiRW1wbGVhZG8iLCJleHAiOjE3Nzg2MzQyMzUsImlzcyI6Imh0dHBzOi8vbG9jYWxob3N0OjcyOTMiLCJhdWQiOiJodHRwczovL2xvY2FsaG9zdDo3MjkzIn0.65WjYvC7eZtPnNTUKRUlUTCScH2m3VWISULSeFDkhBw
+
+
+### test
+GET {{baseUrl}}/api/empresa/test
