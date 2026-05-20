@@ -4,6 +4,9 @@ using InfoDynamics.Aplicacion.servicios;
 using InfoDynamics.Aplicacion.servicios.IServicios.IServicioMapping;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using InfoDynamics.Aplicacion.CustomException;
+
+
 
 namespace Employees.API.Controllers
 {
@@ -13,6 +16,7 @@ namespace Employees.API.Controllers
     {
         private readonly IHmacServicio _hmacServicio;
         private readonly IAccountService _accountService;
+
 
         public LogInController(
             IHmacServicio hmacServicio,
@@ -28,16 +32,20 @@ namespace Employees.API.Controllers
             [FromHeader(Name = "firma")] string? signature=null)
         {
             if (request == null)
-                return BadRequest(new { message = "El cuerpo de la petición no puede estar vacío." });
+                return BadRequest(new { message = "El cuerpo de la peticion no puede estar vacío." });
 
-            
+
 
             try
             {
                 await _accountService.LoginAsync(request);
-                return Ok(new { message = "Inicio de sesión exitoso." });
+                return Ok(new { message = "Inicio de sesion exitoso." });
             }
-            catch (UnauthorizedAccessException ex)
+            catch (BadRequestException ex)
+            {
+                return BadRequest(new { message = ex.Message });
+            }
+            catch (UnauthorizedException ex)
             {
                 return Unauthorized(new { message = ex.Message });
             }
@@ -46,6 +54,7 @@ namespace Employees.API.Controllers
                 return BadRequest(new { message = ex.Message });
             }
         }
+
 
         [HttpPost("refresh")]
         public async Task<IActionResult> Refresh()
@@ -81,7 +90,7 @@ namespace Employees.API.Controllers
                 SameSite = SameSiteMode.Strict
             });
 
-            return Ok(new { message = "Sesión cerrada con éxito." });
+            return Ok(new { message = "Sesion cerrada con exito." });
         }
     }
 }

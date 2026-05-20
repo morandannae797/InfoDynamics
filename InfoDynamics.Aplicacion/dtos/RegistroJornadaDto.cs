@@ -8,11 +8,10 @@ namespace InfoDynamics.Aplicacion.dtos
         [Required]
         public DateTime Fecha { get; set; }
 
-        [Required]
-        public TimeSpan HoraInicio { get; set; }
+        //public TimeSpan HoraInicio { get; set; }
 
-        [Required]
-        public TimeSpan HoraFin { get; set; }
+        //[Required]
+        //public TimeSpan HoraFin { get; set; }
 
         [Required]
         [Range(0, 24)]
@@ -36,11 +35,11 @@ namespace InfoDynamics.Aplicacion.dtos
         [Required]
         public DateTime Fecha { get; set; }
 
-        [Required]
-        public TimeSpan HoraInicio { get; set; }
+        //[Required]
+        //public TimeSpan HoraInicio { get; set; }
 
-        [Required]
-        public TimeSpan HoraFin { get; set; }
+        //[Required]
+        //public TimeSpan HoraFin { get; set; }
 
         [Required]
         [Range(0, 24)]
@@ -60,10 +59,6 @@ namespace InfoDynamics.Aplicacion.dtos
         public int RegistroId { get; set; }
 
         public DateTime Fecha { get; set; }
-
-        public TimeSpan HoraInicio { get; set; }
-
-        public TimeSpan HoraFin { get; set; }
 
         public decimal Horas { get; set; }
 

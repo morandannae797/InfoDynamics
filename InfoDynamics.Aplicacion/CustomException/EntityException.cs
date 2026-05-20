@@ -39,13 +39,13 @@ namespace InfoDynamics.Aplicacion.CustomException
         public ConflictException(string? message, Exception? innerException) : base(message, innerException) { }
         protected ConflictException(SerializationInfo info, StreamingContext context) : base(info, context) { }
     }
-}
 
-// 400 BAD REQUEST
-// Se usa cuando los datos enviados por el cliente son inválidos.
-// Ejemplo: nombre vacío, longitud incorrecta, formato inválido.
 
-[Serializable]
+    // 400 BAD REQUEST
+    // Se usa cuando los datos enviados por el cliente son inválidos.
+    // Ejemplo: nombre vacío, longitud incorrecta, formato inválido.
+
+    [Serializable]
     public class BadRequestException : Exception
     {
         public BadRequestException() { }
@@ -53,3 +53,5 @@ namespace InfoDynamics.Aplicacion.CustomException
         public BadRequestException(string? message, Exception? innerException) : base(message, innerException) { }
         protected BadRequestException(SerializationInfo info, StreamingContext context) : base(info, context) { }
     }
+
+}
