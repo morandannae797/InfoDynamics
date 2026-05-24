@@ -94,7 +94,7 @@ namespace InfoDynamics.API.Controllers
                     ap_paterno = dto.ApPaterno,
                     ap_materno = dto.ApMaterno,
                     email = dto.Email,
-                    rol = dto.Rol,
+                    es_manager = dto.EsManager,
                     estado_cuenta = dto.EstadoCuenta
                 };
 
@@ -131,7 +131,7 @@ namespace InfoDynamics.API.Controllers
                 if (usuario == null)
                     return NotFound(new { message = "Usuario no encontrado." });
 
-                usuario.estado_cuenta = "Desactivada";
+                usuario.estado_cuenta = false;
 
                 await _usuarioServicio.UpdateWithConcurrencyAsync(
                     usuario,
@@ -144,5 +144,13 @@ namespace InfoDynamics.API.Controllers
                 return Conflict(new { message = ex.Message });
             }
         }
+
+        [HttpPost("cambiar-contrasena")]
+        public async Task<IActionResult> CambiarContrasena(CambiarContrasenaDto dto)
+        {
+            //Agregar validación de la logica de negocio al momento de cambiar la contraseña
+            return Ok(new { message = "Contraseña cambiada correctamente." });
+        }
     }
-}
+
+    }

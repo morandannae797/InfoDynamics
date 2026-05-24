@@ -11,7 +11,6 @@ namespace InfoDynamics.Dominio.Entidades
     public partial class Usuario
 
     {
-        public int? id_administrador { get; set; }
         public int no_usuario { get; set; }
 
         public string nombre { get; set; } = null!;
@@ -22,9 +21,17 @@ namespace InfoDynamics.Dominio.Entidades
 
         public string email { get; set; } = null!;
 
-        public string rol { get; set; } = null!;
+        public bool es_manager { get; set; }
 
-        public string estado_cuenta { get; set; } = null!;
+        public bool estado_cuenta { get; set; } = true;
+
+        public string contrasena_hash { get; set; }  = null!;
+
+        public bool debe_cambiar_pass { get; set; }
+
+        public int intentos { get; set; }
+
+        public DateTime? hora_bloqueo { get; set; }
 
         public byte[] RowVersion { get; set; } = null!;
 
@@ -33,8 +40,6 @@ namespace InfoDynamics.Dominio.Entidades
         public DateTime? RefreshTokenExpiryTime { get; set; }
 
         public virtual ICollection<Contrasena> Contrasenas { get; set; } = new List<Contrasena>();
-
-        public virtual ICollection<Preguntum> Pregunta { get; set; } = new List<Preguntum>();
 
         public virtual ICollection<Registro> Registros { get; set; } = new List<Registro>();
 

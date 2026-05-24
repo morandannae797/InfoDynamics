@@ -10,8 +10,6 @@ public partial class Empresa
 
         public string nombre { get; set; } = null!;
 
-        public string? descripcion { get; set; }
-
         public byte[] RowVersion { get; set; } = null!;
 
         public virtual ICollection<Proyecto> Proyectos { get; set; } = new List<Proyecto>();

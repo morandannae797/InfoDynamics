@@ -95,8 +95,8 @@ namespace InfoDynamics.Aplicacion.servicios.Servicios
                 ap_paterno = dto.ApPaterno,
                 ap_materno = dto.ApMaterno,
                 email = dto.Email,
-                rol = dto.Rol,
-                estado_cuenta = "Activa"
+                es_manager = dto.EsManager,
+                estado_cuenta = true
             };
 
             await _usuarioRepo.AddAsync(usuario);
@@ -141,14 +141,15 @@ namespace InfoDynamics.Aplicacion.servicios.Servicios
 
         public Task<bool> IsInRoleAsync(Usuario user, string role)
         {
-            return Task.FromResult(user.rol == role);
+            if (role == "Manager")
+                return Task.FromResult(user.es_manager);
+
+            return Task.FromResult(false);
         }
 
-        // ============================ modificacion ============================
 
-        public async Task<Usuario> UpdateWithConcurrencyAsync(
-            Usuario usuarioActualizado,
-            byte[] rowVersion)
+        public async Task<Usuario> UpdateWithConcurrencyAsync(Usuario usuarioActualizado, byte[] rowVersion)
+
         {
             var usuarioExistente = await _usuarioRepo.GetByIdAsync(
                 usuarioActualizado.no_usuario);
@@ -163,7 +164,7 @@ namespace InfoDynamics.Aplicacion.servicios.Servicios
             usuarioExistente.nombre = usuarioActualizado.nombre;
             usuarioExistente.ap_paterno = usuarioActualizado.ap_paterno;
             usuarioExistente.ap_materno = usuarioActualizado.ap_materno;
-            usuarioExistente.rol = usuarioActualizado.rol;
+            usuarioExistente.es_manager = usuarioActualizado.es_manager;
             usuarioExistente.estado_cuenta = usuarioActualizado.estado_cuenta;
 
             usuarioExistente.RefreshToken = usuarioActualizado.RefreshToken;
@@ -191,9 +192,11 @@ namespace InfoDynamics.Aplicacion.servicios.Servicios
         }
     }
 
-    // ============================ Contraseña requerimientos de logica de negocio ============================
+}
 
-    internal static class UsuarioPasswordValidation
+// ============================ Contraseña requerimientos de logica de negocio ============================
+
+internal static class UsuarioPasswordValidation
     {
         public static void ValidarSeguridadContrasena(
             string contrasena,
@@ -290,5 +293,4 @@ namespace InfoDynamics.Aplicacion.servicios.Servicios
                 }
             }
         }
-    }
 }

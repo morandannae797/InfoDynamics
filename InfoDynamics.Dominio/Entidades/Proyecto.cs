@@ -6,11 +6,10 @@ namespace InfoDynamics.Dominio.Entidades;
 
 public partial class Proyecto
 {
-    public int id_proyecto { get; set; }
 
     public string codigo { get; set; } = null!;
 
-    public string categoria { get; set; } = null!;
+    public string es_cobrable { get; set; } = null!;
 
     public int id_empresa { get; set; }
 
