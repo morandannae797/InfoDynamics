@@ -68,13 +68,13 @@ namespace InfoDynamics.API.Controllers
             });
         }
 
-        [HttpPost("{id:int}")]
-        public async Task<ActionResult> Update(int id, [FromBody] ProyectoUpdateDto dto)
+        [HttpPost("{codigo:int}")]
+        public async Task<ActionResult> Update(string codigo, [FromBody] ProyectoUpdateDto dto)
         {
             if (!ModelState.IsValid)
                 return BadRequest(ModelState);
 
-            if (id != dto.IdProyecto)
+            if (codigo != dto.Codigo)
             {
                 return BadRequest(new
                 {

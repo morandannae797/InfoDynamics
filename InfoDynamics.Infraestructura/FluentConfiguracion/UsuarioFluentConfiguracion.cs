@@ -37,7 +37,7 @@ namespace InfoDynamics.Infraestructura.FluentConfiguracion
             builder.Property(e => e.nombre)
                 .HasMaxLength(100)
                 .IsUnicode(false);
-            builder.Property(e => e.rol)
+            builder.Property(e => e.es_manager)
                 .HasMaxLength(15)
                 .IsUnicode(false);
 

@@ -8,6 +8,6 @@ using Microsoft.EntityFrameworkCore;
 
 namespace InfoDynamics.Aplicacion.servicios.Servicios
 {
-    //Separar por funcionalidades es decir validaciones por clases para campos para categoria 
+   
 
 }

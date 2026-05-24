@@ -22,10 +22,6 @@ namespace InfoDynamics.Aplicacion.dtos
         {
             public int VacacionId { get; set; }
 
-            public DateTime FechaSolicito { get; set; }
-
-            public DateTime? FechaAprobo { get; set; }
-
             public DateTime FechaInicio { get; set; }
 
             public DateTime FechaFin { get; set; }
@@ -47,9 +43,6 @@ namespace InfoDynamics.Aplicacion.dtos
         {
             [Required]
             public int VacacionId { get; set; }
-
-            [Required]
-            public int AprobadorId { get; set; }
 
             [Required]
             [RegularExpression("Aprobada|Rechazada", ErrorMessage = "El estado debe ser 'Aprobada' o 'Rechazada'.")]

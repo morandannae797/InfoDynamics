@@ -7,6 +7,7 @@ using InfoDynamics.Aplicacion.servicio.IServicios;
 using InfoDynamics.Aplicacion.servicios;
 using InfoDynamics.Aplicacion.servicios.IServicios.IServicioMapping;
 using InfoDynamics.Aplicacion.servicios.Servicios;
+using InfoDynamics.Aplicacion.Servicios.Servicios;
 using InfoDynamics.Dominio.Entidades;
 using InfoDynamics.Dominio.interfaces;
 using InfoDynamics.Infraestructura.Contexto;
@@ -17,8 +18,8 @@ using Microsoft.EntityFrameworkCore;
 using Microsoft.Net.Http.Headers;
 using Scalar.AspNetCore;
 using System.Security.Claims;
-using static InfoDynamics.Aplicacion.dtos.UsuarioUpdateDto;
 using static InfoDynamics.Aplicacion.dtos.VacacionDto;
+
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -67,6 +68,7 @@ builder.Services.AddScoped<
     ReadServiceAsync<Proyecto, ProyectoResponseDto>>();
 
 
+
 // lado lectura
 builder.Services.AddScoped<
     IWriteServiceAsync<EmpresaCreateDto, EmpresaUpdateDto>,
@@ -97,6 +99,39 @@ builder.Services.AddScoped<IUserRepository, UserRepository>();
 builder.Services.AddScoped<IAccountService, AccountService>();
 builder.Services.AddScoped<IAuthTokenProcessor, AuthTokenProcessor>();
 builder.Services.AddHttpContextAccessor();
+
+// Account
+builder.Services.AddScoped<LoginValidacion>();
+builder.Services.AddScoped<LoginIntentosValidacion>();
+
+// Busqueda
+builder.Services.AddScoped<BusquedaService>();
+
+// Contraseña
+builder.Services.AddScoped<RestablecerContraseñaService>();
+builder.Services.AddScoped<ContrasenaService>();
+
+// Empresa
+builder.Services.AddScoped<EmpresaValidacionService>();
+builder.Services.AddScoped<EmpresaRegistroService>();
+builder.Services.AddScoped<EmpresaAuditoriaService>();
+
+// Seguridad
+builder.Services.AddScoped<HmacServicio>();
+
+// Jornada
+builder.Services.AddScoped<RegistroJornadaService>();
+builder.Services.AddScoped<JornadaValidacionService>();
+builder.Services.AddScoped<JornadaRegistroService>();
+builder.Services.AddScoped<JornadaCalculoService>();
+
+
+
+// Vacaciones
+builder.Services.AddScoped<VacacionValidacionService>();
+builder.Services.AddScoped<VacacionSolicitudService>();
+builder.Services.AddScoped<VacacionDecisionService>();
+builder.Services.AddScoped<VacacionNotificacionService>();
 
 builder.Services.AddScoped<IHmacServicio, HmacServicio>();
 

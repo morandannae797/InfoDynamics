@@ -9,11 +9,10 @@ namespace InfoDynamics.Aplicacion.dtos
 
     public class ProyectoCreateDto
     {
-        [Required, StringLength(4)]
+        [Required, StringLength(7)]
         public string Codigo { get; set; } = null!;
 
-        [Required, RegularExpression("Cobrable|No cobrable")]
-        public string Categoria { get; set; } = null!;
+        public bool EsCobrable { get; set; } 
 
         [Required]
         public int IdEmpresa { get; set; }
@@ -21,14 +20,12 @@ namespace InfoDynamics.Aplicacion.dtos
 
     public class ProyectoUpdateDto : IConcurrencyDto
     {
-        [Required]
-        public int IdProyecto { get; set; }
 
-        [Required, StringLength(4)]
+        [Required, StringLength(7)]
         public string Codigo { get; set; } = null!;
 
-        [Required, RegularExpression("Cobrable|No cobrable")]
-        public string Categoria { get; set; } = null!;
+
+        public bool EsCobrable { get; set; }
 
         [Required]
         public int IdEmpresa { get; set; }
@@ -38,15 +35,12 @@ namespace InfoDynamics.Aplicacion.dtos
     }
     public class ProyectoResponseDto
     {
-        public int IdProyecto { get; set; }
-
+        [Required, StringLength(7)]
         public string Codigo { get; set; } = null!;
 
-        public string Categoria { get; set; } = null!;
+        public bool EsCobrable { get; set; } 
 
         public int IdEmpresa { get; set; }
-
-        public string? NombreEmpresa { get; set; }
 
         public byte[] RowVersion { get; set; } = null!;
     }

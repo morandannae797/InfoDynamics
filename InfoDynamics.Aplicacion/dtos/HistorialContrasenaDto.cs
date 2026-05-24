@@ -1,0 +1,53 @@
+﻿using InfoDynamics.Dominio.interfaces;
+using System;
+using System.Collections.Generic;
+using System.ComponentModel.DataAnnotations;
+using System.Text;
+
+namespace InfoDynamics.Aplicacion.dtos
+{
+
+    public class HistorialContrasenaResponseDto
+    {
+        public int IdHistorial { get; set; }
+
+        public DateTime Fecharegistro { get; set; }
+
+        public bool EsTemporal { get; set; }
+
+        public int NoUsuario { get; set; }
+
+        public byte[] RowVersion { get; set; } = null!;
+    }
+
+    public class   HistorialContrasenaCreateDto
+    {
+        [Required]
+        public int NoUsuario { get; set; }
+
+        [Required]
+        [MinLength(12)]
+        public string Contrasena { get; set; } = null!;
+
+        public bool EsTemporal { get; set; } = true;
+    }
+
+    public class HistorialContrasenaUpdateDto : IConcurrencyDto
+    {
+        [Required]
+        public int IdHistorial { get; set; }
+
+        [Required]
+        public DateTime Fecharegistro { get; set; }
+
+        [Required]
+        public bool EsTemporal { get; set; }
+
+        [Required]
+        public int NoUsuario { get; set; } 
+
+        [Required]
+        public byte[] RowVersion { get; set; } = null!;
+    }
+  
+}
