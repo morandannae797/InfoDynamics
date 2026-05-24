@@ -14,11 +14,11 @@ using InfoDynamics.Infraestructura.Processors;
 using InfoDynamics.Infraestructura.Repositorio;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.EntityFrameworkCore;
-using Microsoft.Net.Http.Headers;
 using Scalar.AspNetCore;
+using Microsoft.Net.Http.Headers;
 using System.Security.Claims;
-using static InfoDynamics.Aplicacion.dtos.UsuarioUpdateDto;
 using static InfoDynamics.Aplicacion.dtos.VacacionDto;
+
 
 var builder = WebApplication.CreateBuilder(args);
 

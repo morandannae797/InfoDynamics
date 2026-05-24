@@ -1,7 +1,6 @@
-﻿using InfoDynamics.Dominio.Entidades;
-using System.ComponentModel.DataAnnotations;
+﻿using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
-
+using InfoDynamics.Dominio.Entidades;
 namespace InfoDynamics.Dominio.Entidades
 {
     public class Vacacion

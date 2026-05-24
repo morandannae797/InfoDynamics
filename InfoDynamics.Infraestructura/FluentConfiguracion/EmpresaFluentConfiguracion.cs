@@ -17,9 +17,6 @@ namespace InfoDynamics.Infraestructura.FluentConfiguracion
             builder.Property(e => e.RowVersion)
                 .IsRowVersion()
                 .IsConcurrencyToken();
-            builder.Property(e => e.descripcion)
-                .HasMaxLength(255)
-                .IsUnicode(false);
             builder.Property(e => e.nombre)
                 .HasMaxLength(100)
                 .IsUnicode(false);

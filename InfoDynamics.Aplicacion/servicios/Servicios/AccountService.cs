@@ -60,7 +60,7 @@ namespace InfoDynamics.Aplicacion.servicios.Servicios
                 );
             }
 
-            if (user.estado_cuenta != "Activa")
+            if (user.estado_cuenta != true)
             {
                 throw new UnauthorizedException(
                     "La cuenta no está activa."
@@ -137,7 +137,7 @@ namespace InfoDynamics.Aplicacion.servicios.Servicios
                     "Refresh token expirado.");
             }
 
-            if (user.estado_cuenta != "Activa")
+            if (user.estado_cuenta != true)
             {
                 throw new UnauthorizedAccessException(
                     "La cuenta no está activa.");

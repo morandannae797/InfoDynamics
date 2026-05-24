@@ -34,7 +34,7 @@ namespace InfoDynamics.Aplicacion.servicios.Servicios
 
             var proyecto = await _unitOfWork
                 .Repository<Proyecto>()
-                .GetByIdAsync(dto.ProyectoId);
+                .GetAsync(p => p.codigo == dto.Codigo);
 
 
 
@@ -91,10 +91,9 @@ namespace InfoDynamics.Aplicacion.servicios.Servicios
             }
 
 
-
             var proyecto = await _unitOfWork
                 .Repository<Proyecto>()
-                .GetByIdAsync(dto.ProyectoId);
+                .GetAsync(p => p.codigo == dto.Codigo);
 
             if (proyecto == null)
             {

@@ -14,10 +14,8 @@ namespace InfoDynamics.Dominio.Entidades
 
         public decimal horas { get; set; } // Decimal(4,2)
 
-
-
         public int no_usuario { get; set; }
-        public int id_proyecto { get; set; }
+        public string codigo { get; set; }
 
         public int id_periodo    { get; set; }
 

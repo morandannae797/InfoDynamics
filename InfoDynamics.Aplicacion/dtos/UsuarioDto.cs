@@ -1,13 +1,11 @@
 using InfoDynamics.Dominio.interfaces;
 using System.ComponentModel.DataAnnotations;
+using System.ComponentModel.DataAnnotations.Schema;
 
 namespace InfoDynamics.Aplicacion.dtos
 {
     public class UsuarioResponseDTO
     {
-     
-        public int? idAdministrador { get; set; }
-      
         public int NoUsuario { get; set; }
 
         public string NoUsuarioFormateado => NoUsuario.ToString("D7");
@@ -29,7 +27,7 @@ namespace InfoDynamics.Aplicacion.dtos
         public bool EsManager { get; set; }
 
         [Required]
-        public bool EstadoCuenta { get; set; } = true;
+        public bool EstadoCuenta { get; set; }
 
         [Required]
         public bool DebeCambiarPass { get; set; }
@@ -39,14 +37,18 @@ namespace InfoDynamics.Aplicacion.dtos
 
         public DateTime? HoraBloqueo { get; set; }
 
+        public string? Token { get; set; }
+
         [Required]
         public byte[] RowVersion { get; set; } = null!;
     }
 
     public class UsuarioCreateDTO
+
     {
+
         [Required]
-        public int NoUsuario { get; set; }
+        public int NoUsuario { get; set; } 
 
         [Required, StringLength(100)]
         public string Nombre { get; set; } = null!;
@@ -60,9 +62,12 @@ namespace InfoDynamics.Aplicacion.dtos
         [Required, EmailAddress, StringLength(100)]
         public string Email { get; set; } = null!;
 
-        [Required, MinLength(12, ErrorMessage = "La contraseña debe tener 12 caracteres como mínimo.")]
+        [Required]
+        [MinLength(12, ErrorMessage = "La contraseña debe tener 12 caracteres como mínimo.")]
         public string Contrasena { get; set; } = null!;
 
+        [Required]
+        [Column("es_admin")]
         public bool EsManager { get; set; } = false;
     }
 
@@ -83,18 +88,23 @@ namespace InfoDynamics.Aplicacion.dtos
         [Required, EmailAddress, StringLength(100)]
         public string Email { get; set; } = null!;
 
+        [Required]
+        [Column("es_admin")]
         public bool EsManager { get; set; } = false;
 
         [Required]
-        public bool EstadoCuenta { get; set; } = true;
+        public bool EstadoCuenta { get; set; }
 
-        public string Contrasena { get; set; } = null!;
+        [Required]
+        public bool DebeCambiarPass { get; set; }
+
+        public string? Token { get; set; }
 
         [Required]
         public byte[] RowVersion { get; set; } = null!;
     }
 
-    public class UsuarioDesactivarDto
+    public class UsuarioDesactivarDto : IConcurrencyDto
     {
         [Required]
         public byte[] RowVersion { get; set; } = null!;
@@ -113,6 +123,4 @@ namespace InfoDynamics.Aplicacion.dtos
         [Compare("NuevaContrasena", ErrorMessage = "Las contraseñas no coinciden.")]
         public string ConfirmarNuevaContrasena { get; set; } = null!;
     }
-
-    
 }

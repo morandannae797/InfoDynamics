@@ -20,11 +20,10 @@ namespace InfoDynamics.Infraestructura.FluentConfiguracion
             builder.Property(e => e.estado)
                 .HasMaxLength(15)
                 .IsUnicode(false);
-            builder.Property(e => e.fecha_aprobo).HasColumnType("datetime");
-            builder.Property(e => e.fecha_solicito).HasColumnType("datetime");
+
 
             builder.HasOne(d => d.id_administradorNavigation).WithMany(p => p.Vacacionid_administradorNavigations)
-                .HasForeignKey(d => d.id_administrador)
+                .HasForeignKey(d => d.no_usuario)
                 .HasConstraintName("FK_Vacacion_Administrador");
 
             builder.HasOne(d => d.no_usuarioNavigation).WithMany(p => p.Vacacionno_usuarioNavigations)

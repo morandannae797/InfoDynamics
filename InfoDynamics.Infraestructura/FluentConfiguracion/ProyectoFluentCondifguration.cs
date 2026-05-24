@@ -9,7 +9,7 @@ namespace InfoDynamics.Infraestructura.FluentConfiguracion
     {
         public void Configure(EntityTypeBuilder<Proyecto> builder)
         {
-            builder.HasKey(e => e.id_proyecto).HasName("PK__Proyecto__F38AD81D4DE706FE");
+            builder.HasKey(e => e.codigo).HasName("PK__Proyecto__F38AD81D4DE706FE");
 
             builder.ToTable("Proyecto");
 
@@ -18,7 +18,7 @@ namespace InfoDynamics.Infraestructura.FluentConfiguracion
             builder.Property(e => e.RowVersion)
                 .IsRowVersion()
                 .IsConcurrencyToken();
-            builder.Property(e => e.categoria)
+            builder.Property(e => e.es_cobrable)
                 .HasMaxLength(15)
                 .IsUnicode(false);
             builder.Property(e => e.codigo)
