@@ -133,4 +133,26 @@ namespace InfoDynamics.Aplicacion.servicios.Servicios
             await base.UpdateAsync(dto);
         }
     }
+    //ACOMODALO AQUI PORFA QUE SE ME HACE QUE
+    //ESTA MUY GRANDE LA CLASE, SEPARA LAS RESPONSABILIDADES EN OTRAS CLASES PARA QUE SEA MAS FACIL DE MANTENER Y ENTENDER, GRACIAS
+
+
+    public class JornadaValidacionService
+    {
+        // Validar código empresa
+        // Validar periodos (OJO QUE TAMBIEN TENEMOS EL SERVICXIO PERIODO ASI Q SE HARA HAYA TAMBIEN que el periodo son de dos semanas si no me equivoco)
+        // Validar clasificacion (cobrable o no cobrable )
+    }
+
+    public class JornadaRegistroService
+    {
+        // Registrar jornadas
+     
+    }
+
+    public class JornadaCalculoService
+    {
+        // Calcular horas semanales 
+
+    }
 }

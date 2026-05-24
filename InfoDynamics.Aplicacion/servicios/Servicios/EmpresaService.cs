@@ -9,7 +9,23 @@ using InfoDynamics.Dominio.Entidades;
 using InfoDynamics.Dominio.interfaces;
 using Microsoft.EntityFrameworkCore;
 
-namespace InfoDynamics.Aplicacion.servicios.Servicios
+namespace InfoDynamics.Aplicacion.Servicios.Servicios
 {
+    public class EmpresaValidacionService
+    {
+        // Validar datos empresa
+        // Validar codigos
+        // Validar duplicados
+    }
 
+    public class EmpresaRegistroService
+    {
+        // Registrar empresa
+        // Actualizar empresa
+    }
+
+    public class EmpresaAuditoriaService
+    {
+        // Registrar movimientos en auditoría (esto queda pendiente)
+    }
 }

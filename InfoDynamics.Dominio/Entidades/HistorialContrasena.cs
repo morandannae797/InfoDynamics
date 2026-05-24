@@ -10,7 +10,7 @@ public partial class HistorialContrasena
 
     public string contrasena_hash { get; set; } = null!;
 
-    public DateTime fecha_creacion { get; set; }
+    public DateTime fecha_registro { get; set; }
 
     public bool es_temporal { get; set; }
 

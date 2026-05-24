@@ -33,11 +33,11 @@ namespace InfoDynamics.Aplicacion.servicios.Servicios
         {
      
 
-            LoginValidation.Validar(loginDto);
+            LoginValidacion.Validar(loginDto);
 
       
 
-            LoginAttemptValidation.ValidarBloqueo(
+            LoginIntentosValidacion.ValidarBloqueo(
                 loginDto,
                 _blockedUsers,
                 _failedAttempts);
@@ -50,7 +50,7 @@ namespace InfoDynamics.Aplicacion.servicios.Servicios
 
             if (user == null)
             {
-                LoginAttemptValidation.ProcesarIntentoFallido(
+                LoginIntentosValidacion.ProcesarIntentoFallido(
                     loginDto,
                     _blockedUsers,
                     _failedAttempts);
@@ -177,7 +177,7 @@ namespace InfoDynamics.Aplicacion.servicios.Servicios
 
 
 
-    public static class LoginValidation
+    public  class LoginValidacion
     {
         public static void Validar(loginDto loginDto)
         {
@@ -207,7 +207,7 @@ namespace InfoDynamics.Aplicacion.servicios.Servicios
     }
 
 
-    public static class LoginAttemptValidation
+    public class LoginIntentosValidacion
     {
         public static void ValidarBloqueo(
             loginDto loginDto,

@@ -48,17 +48,25 @@ namespace InfoDynamics.Aplicacion.servicios.Servicios
             if (!usuarioEncontrado.estado_cuenta)
                 return null;
 
-            var contrasenaActual = usuarioEncontrado.Contrasenas
-                .OrderByDescending(c => c.fecha_creacion)
-                .FirstOrDefault();
-
-            if (contrasenaActual == null)
+            if (usuarioEncontrado == null)
                 return null;
 
-            bool esValida = BCrypt.Net.BCrypt.Verify(
-                contrasena,
-                contrasenaActual.contrasena_hash
-            );
+            if (!usuarioEncontrado.estado_cuenta)
+                return null;
+
+            bool esValida;
+
+            try
+            {
+                esValida = BCrypt.Net.BCrypt.Verify(
+                    contrasena,
+                    usuarioEncontrado.contrasena_hash
+                );
+            }
+            catch
+            {
+                return null;
+            }
 
             return esValida ? usuarioEncontrado : null;
         }
@@ -97,7 +105,7 @@ namespace InfoDynamics.Aplicacion.servicios.Servicios
             var contrasenaHistorial = new HistorialContrasena
             {
                 contrasena_hash = usuario.contrasena_hash,
-                fecha_creacion = DateTime.UtcNow,
+                fecha_registro = DateTime.UtcNow,
                 es_temporal = false,
                 no_usuario = dto.NoUsuario
             };
@@ -174,6 +182,21 @@ namespace InfoDynamics.Aplicacion.servicios.Servicios
                     "El usuario fue modificado por otro proceso. Recarga los datos y reintenta.",
                     ex);
             }
+        }
+
+        // AQUI ACOMODAs plis la verdad prefiero que lo hagas tu para que te familiarices con tu codigo de
+        // servicio, pero basicamente es un servicio de validacion que se encarga de validar los datos de entrada
+        // Ahi le agregas lo que falte de validaciones (SI ES QUE FALTAN),
+        // Las que deben de estar son como por ejemplo validar que el numero de empleado sea de 7 digitos,
+        // validar que el correo sea unico, validar que el numero de empleado sea unico, etc.
+
+
+        public class UsuarioValidacionService
+        {
+            // Validar campos obligatorios.
+            // Validar número de empleado de 7 digitos.
+            // Validar correo único.
+            // Validar número de empleado único.
         }
     }
 }

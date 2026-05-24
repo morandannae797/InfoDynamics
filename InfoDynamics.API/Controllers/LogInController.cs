@@ -92,5 +92,7 @@ namespace Employees.API.Controllers
 
             return Ok(new { message = "Sesion cerrada con exito." });
         }
+    
     }
+
 }

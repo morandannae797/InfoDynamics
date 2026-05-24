@@ -16,7 +16,7 @@ namespace InfoDynamics.Infraestructura.FluentConfiguracion
                 .HasMaxLength(255)
                 .IsUnicode(false);
 
-            builder.Property(e => e.fecha_creacion)
+            builder.Property(e => e.fecha_registro)
                 .HasColumnType("datetime");
 
             builder.Property(e => e.es_temporal);

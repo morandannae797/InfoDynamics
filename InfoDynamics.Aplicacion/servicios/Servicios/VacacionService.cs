@@ -6,7 +6,28 @@ using InfoDynamics.Dominio.interfaces;
 using Microsoft.EntityFrameworkCore;
 
 
-namespace InfoDynamics.Aplicacion.servicios.Servicios
+namespace InfoDynamics.Aplicacion.Servicios.Servicios
 {
 
+        public class VacacionValidacionService
+        {
+            // Valida solicitud y periodo solicitado.
+        }
+
+        public class VacacionSolicitudService
+        {
+            // Registra solicitud de vacaciones con estado pendiente.
+        }
+
+        public class VacacionDecisionService
+        {
+            // Aprueba o rechaza vacaciones.
+            // Si aprueba, registra horas automáticamente.
+        }
+
+        public class VacacionNotificacionService
+        {
+            // Notifica al administrador y al empleado por correo.
+        }
+    
 }
