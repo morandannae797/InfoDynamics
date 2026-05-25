@@ -1,6 +1,7 @@
 using InfoDynamics.Aplicacion.CustomException;
 using InfoDynamics.Aplicacion.dtos;
 using InfoDynamics.Aplicacion.servicio.IServicios;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 
@@ -21,6 +22,7 @@ namespace InfoDynamics.API.Controllers
             _writeService = writeService;
         }
 
+        [Authorize]
         [HttpGet]
         public async Task<ActionResult<IEnumerable<PeriodoResponseDto>>> GetAll()
         {
@@ -35,6 +37,7 @@ namespace InfoDynamics.API.Controllers
             }
         }
 
+        [Authorize]
         [HttpGet("{id:int}")]
         public async Task<ActionResult<PeriodoResponseDto>> GetById(int id)
         {
@@ -49,6 +52,7 @@ namespace InfoDynamics.API.Controllers
             }
         }
 
+        [Authorize(Roles = "Manager")]
         [HttpPost]
         public async Task<ActionResult> Create([FromBody] PeriodoCreateDto dto)
         {
@@ -60,6 +64,7 @@ namespace InfoDynamics.API.Controllers
             return Ok(new { message = "Periodo creado correctamente." });
         }
 
+        [Authorize(Roles = "Manager")]
         [HttpPost("{id:int}")]
         public async Task<ActionResult> Update(int id, [FromBody] PeriodoUpdateDto dto)
         {

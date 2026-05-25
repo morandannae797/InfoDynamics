@@ -3,6 +3,7 @@ using InfoDynamics.Aplicacion.dtos;
 using InfoDynamics.Aplicacion.servicio.IServicios;
 using InfoDynamics.Aplicacion.servicios.IServicios.IServicioMapping;
 using InfoDynamics.Dominio.Entidades;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 
@@ -28,6 +29,8 @@ namespace InfoDynamics.API.Controllers
             _usuarioServicio = usuarioServicio;
         }
 
+
+        [Authorize(Roles = "Manager")]
         [HttpGet]
         public async Task<ActionResult<IEnumerable<UsuarioResponseDTO>>> GetAll()
         {
@@ -56,6 +59,8 @@ namespace InfoDynamics.API.Controllers
             }
         }
 
+
+        [Authorize(Roles = "Manager")]
         [HttpPost]
         public async Task<ActionResult> Create([FromBody] UsuarioCreateDTO dto)
         {
@@ -81,6 +86,7 @@ namespace InfoDynamics.API.Controllers
             }
         }
 
+        [Authorize(Roles = "Manager")]
         [HttpPost("{id:int}")]
         public async Task<ActionResult> Update(int id, [FromBody] UsuarioUpdateDto dto)
         {
@@ -127,6 +133,7 @@ namespace InfoDynamics.API.Controllers
             }
         }
 
+        [Authorize(Roles = "Manager")]
         [HttpPost("{id:int}/desactivar")]
         public async Task<ActionResult> Desactivar(int id, [FromBody] UsuarioDesactivarDto dto)
         {
@@ -153,6 +160,7 @@ namespace InfoDynamics.API.Controllers
                 return Conflict(new { message = ex.Message });
             }
         }
+        [Authorize]
         [HttpPost("{id:int}/cambiar-contrasena")]
         public async Task<ActionResult> CambiarContrasena(int id, [FromBody] CambiarContrasenaDto dto)
         {
@@ -191,6 +199,8 @@ namespace InfoDynamics.API.Controllers
             }
         }
 
+
+        [Authorize]
         [HttpPost("{id:int}/restablecer-contrasena")]
         public async Task<ActionResult> RestablecerContrasena(int id, [FromBody] RestablecerContrasenaDto dto)
         {
