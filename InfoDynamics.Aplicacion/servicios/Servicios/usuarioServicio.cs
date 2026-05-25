@@ -106,7 +106,7 @@ namespace InfoDynamics.Aplicacion.servicios.Servicios
             {
                 contrasena_hash = usuario.contrasena_hash,
                 fecha_registro = DateTime.UtcNow,
-                es_temporal = false,
+         
                 no_usuario = dto.NoUsuario
             };
 

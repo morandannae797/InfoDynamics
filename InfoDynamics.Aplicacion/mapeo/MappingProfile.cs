@@ -162,8 +162,7 @@ CreateMap<PeriodoUpdateDto, Periodo>()
                     opt => opt.MapFrom(src => BCrypt.Net.BCrypt.HashPassword(src.Contrasena)))
                 .ForMember(dest => dest.fecha_registro,
                     opt => opt.MapFrom(src => DateTime.UtcNow))
-                .ForMember(dest => dest.es_temporal,
-                    opt => opt.MapFrom(src => src.EsTemporal))
+
                 .ForMember(dest => dest.RowVersion, opt => opt.Ignore())
                 .ForMember(dest => dest.no_usuarioNavigation, opt => opt.Ignore());
 
@@ -172,7 +171,6 @@ CreateMap<PeriodoUpdateDto, Periodo>()
             CreateMap<HistorialContrasenaUpdateDto, HistorialContrasena>()
                 .ForMember(dest => dest.id_historial, opt => opt.MapFrom(src => src.IdHistorial))
                 .ForMember(dest => dest.fecha_registro, opt => opt.MapFrom(src => src.Fecharegistro))
-                .ForMember(dest => dest.es_temporal, opt => opt.MapFrom(src => src.EsTemporal))
                 .ForMember(dest => dest.no_usuario, opt => opt.MapFrom(src => src.NoUsuario))
                 .ForMember(dest => dest.RowVersion, opt => opt.MapFrom(src => src.RowVersion))
                 .ForMember(dest => dest.contrasena_hash, opt => opt.Ignore())
@@ -183,7 +181,6 @@ CreateMap<PeriodoUpdateDto, Periodo>()
             CreateMap<HistorialContrasena, HistorialContrasenaResponseDto>()
                 .ForMember(dest => dest.IdHistorial, opt => opt.MapFrom(src => src.id_historial))
                 .ForMember(dest => dest.Fecharegistro, opt => opt.MapFrom(src => src.fecha_registro))
-                .ForMember(dest => dest.EsTemporal, opt => opt.MapFrom(src => src.es_temporal))
                 .ForMember(dest => dest.NoUsuario, opt => opt.MapFrom(src => src.no_usuario))
                 .ForMember(dest => dest.RowVersion, opt => opt.MapFrom(src => src.RowVersion));
 

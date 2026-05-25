@@ -68,7 +68,7 @@ namespace InfoDynamics.API.Controllers
 
             if (id != dto.RegistroId)
                 return BadRequest(new { message = "El ID de la ruta no coincide con el del objeto." });
-            //gggggggggggggggggggggggggjhjggggghhhhhhhhhhhg
+     
             try
             {
                 await _writeService.UpdateAsync(dto);

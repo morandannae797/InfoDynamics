@@ -12,8 +12,6 @@ public partial class HistorialContrasena
 
     public DateTime fecha_registro { get; set; }
 
-    public bool es_temporal { get; set; }
-
     public int no_usuario { get; set; }
 
     public byte[] RowVersion { get; set; } = null!;

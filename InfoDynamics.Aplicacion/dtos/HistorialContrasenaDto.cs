@@ -13,8 +13,6 @@ namespace InfoDynamics.Aplicacion.dtos
 
         public DateTime Fecharegistro { get; set; }
 
-        public bool EsTemporal { get; set; }
-
         public int NoUsuario { get; set; }
 
         public byte[] RowVersion { get; set; } = null!;
@@ -29,7 +27,6 @@ namespace InfoDynamics.Aplicacion.dtos
         [MinLength(12)]
         public string Contrasena { get; set; } = null!;
 
-        public bool EsTemporal { get; set; } = true;
     }
 
     public class HistorialContrasenaUpdateDto : IConcurrencyDto
@@ -40,8 +37,6 @@ namespace InfoDynamics.Aplicacion.dtos
         [Required]
         public DateTime Fecharegistro { get; set; }
 
-        [Required]
-        public bool EsTemporal { get; set; }
 
         [Required]
         public int NoUsuario { get; set; } 

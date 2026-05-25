@@ -123,4 +123,14 @@ namespace InfoDynamics.Aplicacion.dtos
         [Compare("NuevaContrasena", ErrorMessage = "Las contraseñas no coinciden.")]
         public string ConfirmarNuevaContrasena { get; set; } = null!;
     }
+    public class RestablecerContrasenaDto
+    {
+        [Required]
+        [MinLength(12, ErrorMessage = "La nueva contraseña debe tener 12 caracteres como mínimo.")]
+        public string NuevaContrasena { get; set; } = null!;
+
+        [Required]
+        [Compare("NuevaContrasena", ErrorMessage = "Las contraseñas no coinciden.")]
+        public string ConfirmarNuevaContrasena { get; set; } = null!;
+    }
 }

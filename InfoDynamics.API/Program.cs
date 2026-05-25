@@ -108,8 +108,8 @@ builder.Services.AddScoped<LoginIntentosValidacion>();
 builder.Services.AddScoped<BusquedaService>();
 
 // Contraseña
-builder.Services.AddScoped<RestablecerContraseñaService>();
-builder.Services.AddScoped<ContrasenaService>();
+builder.Services.AddScoped<IContrasenaService, ContrasenaService>();
+
 
 // Empresa
 builder.Services.AddScoped<EmpresaValidacionService>();

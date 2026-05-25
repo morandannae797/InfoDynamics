@@ -20,3 +20,31 @@ Content-Type: application/json
   "identificador": "arahel.sapi@empresa.com",
   "contrasena": "hash123"
 }
+
+### LOGIN COMO  EMPLEADO CON NUMERO
+POST https://localhost:7293/api/LogIn/login
+Content-Type: application/json
+
+{
+  "identificador": "1000002",
+  "contrasena": "hash123"
+}   
+
+### CAMBIAR CONTRASEÑA EMPLEADO
+POST https://localhost:7293/api/Usuario/1000002/cambiar-contrasena
+Content-Type: application/json
+
+{
+  "contrasenaActual": "Nuevascosas683!@$",
+  "nuevaContrasena": "Nuevascosas683!@$",
+  "confirmarNuevaContrasena": "Nuevascosas683!@$"
+}
+
+### RESTABLECER CONTRASEÑA EMPLEADO
+POST https://localhost:7293/api/Usuario/1000002/restablecer-contrasena
+Content-Type: application/json
+
+{
+  "nuevaContrasena": "Nuevascosas683!@$",
+  "confirmarNuevaContrasena": "Nuevascosas683!@$"
+}

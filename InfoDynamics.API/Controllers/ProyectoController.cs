@@ -36,7 +36,6 @@ namespace InfoDynamics.API.Controllers
                 return NotFound(new { message = ex.Message });
             }
         }
-        //ESTE NO SE SI ESTE BIEN POR QUE AL MOMENTO DE HACER LA BUSQUEDA AVANZADAA SE TIRENE QUE HACER CON EL CODIGO NO?
 
         [HttpGet("{id:int}")]
         public async Task<ActionResult<ProyectoResponseDto>> GetById(int id)

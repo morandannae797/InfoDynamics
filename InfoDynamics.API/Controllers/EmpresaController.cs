@@ -22,7 +22,7 @@ namespace InfoDynamics.API.Controllers
             _readService = readService;
             _writeService = writeService;
         }
-        [Authorize(Roles = "Administrador")]
+        [Authorize(Roles = "Manager")]
         [HttpGet]
         public async Task<ActionResult<IEnumerable<EmpresaResponseDto>>> GetAll()
         {
@@ -36,7 +36,7 @@ namespace InfoDynamics.API.Controllers
                 return NotFound(new { message = ex.Message });
             }
         }
-        [Authorize(Roles = "Administrador")]
+        [Authorize(Roles = "Manager")]
         [HttpGet("{id:int}")]
         public async Task<ActionResult<EmpresaResponseDto>> GetById(int id)
         {
@@ -50,7 +50,7 @@ namespace InfoDynamics.API.Controllers
                 return NotFound(new { message = ex.Message });
             }
         }
-        [Authorize(Roles = "Administrador")]
+        [Authorize(Roles = "Manager")]
         [HttpPost]
         public async Task<ActionResult> Create([FromBody] EmpresaCreateDto dto)
         {
@@ -61,7 +61,7 @@ namespace InfoDynamics.API.Controllers
 
             return Ok(new { message = "Empresa creada correctamente." });
         }
-        [Authorize(Roles = "Administrador")]
+        [Authorize(Roles = "Manager")]
         [HttpPost("update/{id:int}")]
         public async Task<ActionResult> Update(int id, [FromBody] EmpresaUpdateDto dto)
         {
