@@ -1,6 +1,7 @@
 using InfoDynamics.Aplicacion.CustomException;
 using InfoDynamics.Aplicacion.dtos;
 using InfoDynamics.Aplicacion.servicio.IServicios;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 
@@ -21,6 +22,7 @@ namespace InfoDynamics.API.Controllers
             _writeService = writeService;
         }
 
+        [Authorize(Roles = "Manager")]
         [HttpGet]
         public async Task<ActionResult<IEnumerable<VacacionDto.VacacionResponseDto>>> GetAll()
         {
@@ -34,7 +36,7 @@ namespace InfoDynamics.API.Controllers
                 return NotFound(new { message = ex.Message });
             }
         }
-
+        [Authorize]
         [HttpGet("{id:int}")]
         public async Task<ActionResult<VacacionDto.VacacionResponseDto>> GetById(int id)
         {
@@ -49,6 +51,7 @@ namespace InfoDynamics.API.Controllers
             }
         }
 
+        [Authorize]
         [HttpPost]
         public async Task<ActionResult> Create([FromBody] VacacionDto.VacacionCreateDto dto)
         {
@@ -60,6 +63,8 @@ namespace InfoDynamics.API.Controllers
             return Ok(new { mensaje = "Vacacion solicitada correctamente." });
         }
 
+
+        [Authorize(Roles = "Manager")]
         [HttpPost("{id:int}/evaluar")]
         public async Task<IActionResult> EvaluarVacacion(int id, [FromBody] VacacionDto.VacacionAprobacionDto dto)
         {

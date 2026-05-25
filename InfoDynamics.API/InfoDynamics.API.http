@@ -30,7 +30,7 @@ Content-Type: application/json
   "contrasena": "hash123"
 }   
 
-### CAMBIAR CONTRASEÑA EMPLEADO
+### CAMBIAR CONTRASENA EMPLEADO
 POST https://localhost:7293/api/Usuario/1000002/cambiar-contrasena
 Content-Type: application/json
 
@@ -40,7 +40,7 @@ Content-Type: application/json
   "confirmarNuevaContrasena": "Nuevascosas683!@$"
 }
 
-### RESTABLECER CONTRASEÑA EMPLEADO
+### RESTABLECER CONTRASENA EMPLEADO
 POST https://localhost:7293/api/Usuario/1000002/restablecer-contrasena
 Content-Type: application/json
 

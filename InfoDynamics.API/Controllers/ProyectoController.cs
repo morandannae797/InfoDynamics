@@ -1,6 +1,7 @@
 ﻿using InfoDynamics.Aplicacion.CustomException;
 using InfoDynamics.Aplicacion.dtos;
 using InfoDynamics.Aplicacion.servicio.IServicios;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 
@@ -21,7 +22,7 @@ namespace InfoDynamics.API.Controllers
             _readService = readService;
             _writeService = writeService;
         }
-
+        [Authorize]
         [HttpGet]
         public async Task<ActionResult<IEnumerable<ProyectoResponseDto>>> GetAll()
         {
@@ -37,6 +38,7 @@ namespace InfoDynamics.API.Controllers
             }
         }
 
+        [Authorize]
         [HttpGet("{id:int}")]
         public async Task<ActionResult<ProyectoResponseDto>> GetById(int id)
         {
@@ -51,7 +53,7 @@ namespace InfoDynamics.API.Controllers
                 return NotFound(new { message = ex.Message });
             }
         }
-
+        [Authorize(Roles = "Manager")]
         [HttpPost]
         public async Task<ActionResult> Create(
             [FromBody] ProyectoCreateDto dto)
@@ -67,6 +69,7 @@ namespace InfoDynamics.API.Controllers
             });
         }
 
+        [Authorize(Roles = "Manager")]
         [HttpPost("{codigo:int}")]
         public async Task<ActionResult> Update(string codigo, [FromBody] ProyectoUpdateDto dto)
         {
