@@ -139,20 +139,112 @@ namespace InfoDynamics.Aplicacion.servicios.Servicios
 
     public class JornadaValidacionService
     {
-        // Validar código empresa
-        // Validar periodos (OJO QUE TAMBIEN TENEMOS EL SERVICXIO PERIODO ASI Q SE HARA HAYA TAMBIEN que el periodo son de dos semanas si no me equivoco)
-        // Validar clasificacion (cobrable o no cobrable )
+       
+        // Validar periodo 
+        public void ValidarPeriodo(Periodo periodo)
+        {
+            if (periodo.estado != "Abierto")
+                throw new BadRequestException("Solo se pueden registrar horas en un periodo con estado Abierto.");
+        }
+
     }
 
     public class JornadaRegistroService
     {
         // Registrar jornadas
-     
+        private readonly IUnitOfWork _unitOfWork;
+        private readonly JornadaValidacionService _validacion;
+
+        public JornadaRegistroService(IUnitOfWork unitOfWork, JornadaValidacionService validacion)
+        {
+            _unitOfWork = unitOfWork;
+            _validacion = validacion;
+        }
+
+        // S5.3.1.6 
+        // S5.3.1.10 
+        // S5.5.1
+        public async Task RegistrarAsync(RegistroCreateDto dto)
+        {
+            var periodo = await _unitOfWork.Repository<Periodo>().GetByIdAsync(dto.PeriodoId);
+
+            if (periodo == null)
+                throw new EntityNotFoundException($"El periodo con ID {dto.PeriodoId} no existe.");
+
+            _validacion.ValidarPeriodo(periodo);
+
+            var duplicado = await _unitOfWork.Repository<Registro>()
+                .FirstOrDefaultAsync(
+                    r => r.no_usuario == dto.NoUsuario
+                      && r.fecha.Date == dto.Fecha.Date
+                      && r.codigo == dto.Codigo
+                );
+
+            if (duplicado != null)
+                throw new ConflictException("Ya existe un registro para ese usuario en ese dia y codigo.");
+
+            var registro = new Registro
+            {
+                fecha = dto.Fecha,
+                horas = dto.Horas,
+                no_usuario = dto.NoUsuario,
+                id_periodo = dto.PeriodoId,
+                codigo = dto.Codigo
+            };
+
+            await _unitOfWork.Repository<Registro>().AddAsync(registro);
+            await _unitOfWork.SaveChangesAsync(); // S5.5.1
+        }
+
+        // S5.6 / S5.6.1
+        public async Task EditarAsync(RegistroUpdateDto dto)
+        {
+            var registro = await _unitOfWork.Repository<Registro>().GetByIdAsync(dto.RegistroId);
+
+            if (registro == null)
+                throw new EntityNotFoundException("Registro no encontrado.");
+
+            var periodo = await _unitOfWork.Repository<Periodo>().GetByIdAsync(dto.PeriodoId);
+
+            if (periodo == null)
+                throw new EntityNotFoundException($"El periodo con ID {dto.PeriodoId} no existe.");
+
+            _validacion.ValidarPeriodo(periodo);
+
+            registro.fecha = dto.Fecha;
+            registro.horas = dto.Horas;
+            registro.id_periodo = dto.PeriodoId;
+            registro.codigo = dto.Codigo;
+
+            await _unitOfWork.Repository<Registro>().UpdateAsync(registro);
+            await _unitOfWork.SaveChangesAsync(); // S5.5.1
+        }
+
     }
 
     public class JornadaCalculoService
     {
-        // Calcular horas semanales 
+        private readonly IUnitOfWork _unitOfWork;
+
+    public JornadaCalculoService(IUnitOfWork unitOfWork)
+    {
+        _unitOfWork = unitOfWork;
+    }
+
+    // S5.4
+    public async Task<decimal> GetHorasSemanaAsync(int noUsuario, DateTime fecha)
+    {
+        var inicioSemana = fecha.Date.AddDays(-(int)fecha.DayOfWeek + 1);
+        var finSemana = inicioSemana.AddDays(6);
+
+        var registros = await _unitOfWork.Repository<Registro>().GetAllAsync();
+
+        return registros
+            .Where(r => r.no_usuario == noUsuario
+                     && r.fecha.Date >= inicioSemana
+                     && r.fecha.Date <= finSemana)
+            .Sum(r => r.horas);
+    }
 
     }
 }
