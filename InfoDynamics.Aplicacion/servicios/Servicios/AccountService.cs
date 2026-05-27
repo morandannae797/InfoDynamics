@@ -30,11 +30,10 @@ namespace InfoDynamics.Aplicacion.servicios.Servicios
             _userRepository = userRepository;
         }
 
-        public async Task<Usuario> LoginAsync(loginDto loginDto)
+        public async Task<LoginResponseDto> LoginAsync(loginDto loginDto)
         {
-     
 
-            LoginValidacion.Validar(loginDto);
+        LoginValidacion.Validar(loginDto);
 
             LoginIntentosValidacion.ValidarBloqueo(
                 loginDto,
@@ -108,7 +107,12 @@ namespace InfoDynamics.Aplicacion.servicios.Servicios
                 refreshToken,
                 refreshTokenExpirationDateInUtc);
 
-            return user;
+            return new LoginResponseDto
+            {
+                NoUsuario = user.no_usuario,
+                Token = jwtToken,
+                EsManager = user.es_manager
+            };
         }
 
         public async Task RefreshtokenAsync(string? refreshToken)

@@ -9,7 +9,7 @@ namespace InfoDynamics.Aplicacion.Abstracts
     public interface IAccountService
     {
         Task RefreshtokenAsync(string? refreshToken);
-
-        Task<Usuario> LoginAsync(loginDto loginDto);
+        Task<LoginResponseDto> LoginAsync(loginDto loginDto);
+        //Task<Usuario> LoginAsync(loginDto loginDto);
     }
 }
