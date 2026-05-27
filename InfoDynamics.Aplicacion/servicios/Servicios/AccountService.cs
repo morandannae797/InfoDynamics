@@ -183,8 +183,6 @@ namespace InfoDynamics.Aplicacion.servicios.Servicios
       
     }
 
-
-
     public  class LoginValidacion
     {
         public static void Validar(loginDto loginDto)
