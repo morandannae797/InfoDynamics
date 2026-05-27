@@ -11,8 +11,6 @@ namespace InfoDynamics.Aplicacion.dtos
 
 {
 
-    namespace InfoDynamics.Aplicacion.dtos
-    {
         public class UsuarioManagerResponseDto
         {
             [Required]
@@ -46,5 +44,4 @@ namespace InfoDynamics.Aplicacion.dtos
             public byte[] RowVersion { get; set; } = null!;
         }
     }
-}
 

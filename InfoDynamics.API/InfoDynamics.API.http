@@ -27,7 +27,7 @@ Content-Type: application/json
 
 {
   "identificador": "1000002",
-  "contrasena": "hash123"
+  "contrasena": "Nuevascosas683!@$"
 }   
 
 ### CAMBIAR CONTRASEÑA EMPLEADO
