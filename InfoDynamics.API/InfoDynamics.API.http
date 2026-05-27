@@ -48,3 +48,18 @@ Content-Type: application/json
   "nuevaContrasena": "Nuevascosas683!@$",
   "confirmarNuevaContrasena": "Nuevascosas683!@$"
 }
+
+### LOGIN COMO MANAGER
+POST https://localhost:7293/api/LogIn/login
+Content-Type: application/json
+
+{
+    "identificador": "1000001",
+    "contrasena": "hash123"
+}
+
+### EMPLEADO QUE SI PERTENECE AL MANAGER
+GET https://localhost:7293/api/Usuario/1000002
+
+### EMPLEADO QUE NO PERTENECE
+GET https://localhost:7293/api/Usuario/1000031
