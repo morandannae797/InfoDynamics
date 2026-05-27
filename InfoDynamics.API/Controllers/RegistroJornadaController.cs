@@ -1,6 +1,7 @@
 using InfoDynamics.Aplicacion.CustomException;
 using InfoDynamics.Aplicacion.dtos;
 using InfoDynamics.Aplicacion.servicio.IServicios;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 
@@ -21,6 +22,7 @@ namespace InfoDynamics.API.Controllers
             _writeService = writeService;
         }
 
+        [Authorize]
         [HttpGet]
         public async Task<ActionResult<IEnumerable<RegistroResponseDto>>> GetAll()
         {
@@ -35,6 +37,7 @@ namespace InfoDynamics.API.Controllers
             }
         }
 
+        [Authorize]
         [HttpGet("{id:int}")]
         public async Task<ActionResult<RegistroResponseDto>> GetById(int id)
         {
@@ -49,6 +52,7 @@ namespace InfoDynamics.API.Controllers
             }
         }
 
+        [Authorize]
         [HttpPost]
         public async Task<ActionResult> Create([FromBody] RegistroCreateDto dto)
         {
@@ -60,6 +64,8 @@ namespace InfoDynamics.API.Controllers
             return Ok(new { message = "Registro de jornada creado correctamente." });
         }
 
+        [Authorize]
+
         [HttpPost("{id:int}")]
         public async Task<ActionResult> Update(int id, [FromBody] RegistroUpdateDto dto)
         {
@@ -68,7 +74,7 @@ namespace InfoDynamics.API.Controllers
 
             if (id != dto.RegistroId)
                 return BadRequest(new { message = "El ID de la ruta no coincide con el del objeto." });
-            //gggggggggggggggggggggggggjhjggggghhhhhhhhhhhg
+     
             try
             {
                 await _writeService.UpdateAsync(dto);

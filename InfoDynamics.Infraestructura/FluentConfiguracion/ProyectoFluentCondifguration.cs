@@ -15,9 +15,6 @@ namespace InfoDynamics.Infraestructura.FluentConfiguracion
 
             builder.HasIndex(e => e.codigo, "UQ__Proyecto__40F9A2068ED98A87").IsUnique();
 
-            builder.Property(e => e.RowVersion)
-                .IsRowVersion()
-                .IsConcurrencyToken();
             builder.Property(e => e.es_cobrable)
                 .HasMaxLength(15)
                 .IsUnicode(false);

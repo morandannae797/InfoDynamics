@@ -4,10 +4,7 @@ using InfoDynamics.Aplicacion.dtos;
 using InfoDynamics.Aplicacion.servicios.IServicios.IServicioMapping;
 using InfoDynamics.Dominio.Entidades;
 using System.Collections.Concurrent;
-// Se deja de usar ConcurrentDictionary porque el control de intentos y bloqueo
-// ahora se maneja directamente con los campos intentos, hora_bloqueo y estado_cuenta del usuario.
-//using System.Collections.Concurrent;
-
+using System.Security.Claims;
 
 namespace InfoDynamics.Aplicacion.servicios.Servicios
 {
@@ -32,25 +29,11 @@ namespace InfoDynamics.Aplicacion.servicios.Servicios
             _usuarioService = usuarioService;
             _userRepository = userRepository;
         }
-        public async Task LoginAsync(loginDto loginDto)
+
+        public async Task<LoginResponseDto> LoginAsync(loginDto loginDto)
         {
-            LoginValidacion.Validar(loginDto);
 
-            Usuario? user;
-            // Se obtiene primero el usuario por número de empleado o correo.
-            // Esto permite revisar el estado del bloqueo antes de validar contraseña.
-
-
-            if (int.TryParse(loginDto.identificador, out int numeroUsuario))
-            {
-                user = await _usuarioService.FindByIdAsync(
-                    numeroUsuario);
-            }
-            else
-            {
-                user = await _usuarioService.FindByEmailAsync(
-                    loginDto.identificador);
-            }
+        LoginValidacion.Validar(loginDto);
 
             //Cambios:
             // Si la cuenta está bloqueada se revisa:
@@ -67,6 +50,7 @@ namespace InfoDynamics.Aplicacion.servicios.Servicios
                 loginDto.identificador,
                 loginDto.contrasena);
 
+            
 
             // Si la contraseña es incorrecta se incrementa el contador de intentos.
             // Al llegar a 3 intentos se bloquea la cuenta.
@@ -96,9 +80,7 @@ namespace InfoDynamics.Aplicacion.servicios.Servicios
                 usuarioValido,
                 usuarioValido.RowVersion);
 
-
-
-            var rowVersionOriginal = usuarioValido.RowVersion;
+            var rowVersionOriginal = user.RowVersion;
 
             var (jwtToken, expirationDateInUtc)
                 = _tokenProcessor.GenerateJwtToken(
@@ -124,10 +106,19 @@ namespace InfoDynamics.Aplicacion.servicios.Servicios
                 jwtToken,
                 expirationDateInUtc);
 
+
+
             _tokenProcessor.WriteAuthTokenAsHttpOnlyCookie(
                 "REFRESH_TOKEN",
                 refreshToken,
                 refreshTokenExpirationDateInUtc);
+
+            return new LoginResponseDto
+            {
+                NoUsuario = user.no_usuario,
+                Token = jwtToken,
+                EsManager = user.es_manager
+            };
         }
 
 
@@ -200,6 +191,7 @@ namespace InfoDynamics.Aplicacion.servicios.Servicios
                 "REFRESH_TOKEN",
                 newRefreshToken,
                 refreshTokenExpirationDateInUtc);
+
         }
 
 

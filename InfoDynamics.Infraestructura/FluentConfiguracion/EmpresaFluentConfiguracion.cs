@@ -14,9 +14,9 @@ namespace InfoDynamics.Infraestructura.FluentConfiguracion
 
             builder.ToTable("Empresa");
 
-            builder.Property(e => e.RowVersion)
-                .IsRowVersion()
-                .IsConcurrencyToken();
+           // builder.Property(e => e.RowVersion)
+            //    .IsRowVersion()
+            //    .IsConcurrencyToken();
             builder.Property(e => e.nombre)
                 .HasMaxLength(100)
                 .IsUnicode(false);

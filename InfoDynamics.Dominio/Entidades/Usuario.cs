@@ -17,8 +17,8 @@ namespace InfoDynamics.Dominio.Entidades
 
     public string email { get; set; } = null!;
     
-        [Column("es_admin")]
-        public bool es_manager { get; set; }
+    [Column("es_admin")]
+    public bool es_manager { get; set; }
 
     public bool estado_cuenta { get; set; }
 
