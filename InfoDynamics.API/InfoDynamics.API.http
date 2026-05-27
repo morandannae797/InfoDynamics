@@ -63,3 +63,55 @@ GET https://localhost:7293/api/Usuario/1000002
 
 ### EMPLEADO QUE NO PERTENECE
 GET https://localhost:7293/api/Usuario/1000031
+
+### TODAS LAS EMPRESAS
+GET https://localhost:7293/api/empresa
+Accept: application/json
+
+### POR ID
+GET https://localhost:7293/api/empresa/1
+Accept: application/json
+
+### CREAR UNA EMPRESA
+POST https://localhost:7293/api/empresa
+Content-Type: application/json
+
+{
+  "nombre": "Sony"
+}
+
+### ERROR DE DUPLICADO
+POST https://localhost:7293/api/empresa
+Content-Type: application/json
+
+{
+  "nombre": "Sony"
+}
+
+### ERROR NOMBRE VACIO
+POST https://localhost:7293/api/empresa
+Content-Type: application/json
+
+{
+  "nombre": ""
+}
+
+### ACTUALIZAR EMPRESA
+POST https://localhost:7293/api/empresa/update/1
+Content-Type: application/json
+
+{
+  "idEmpresa": 1,
+  "nombre": "Sony Updated",
+  "rowVersion": " "
+}
+
+### EL ID NO COINCIDE
+POST https://localhost:7293/api/empresa/update/2
+Content-Type: application/json
+
+{
+  "idEmpresa": 1,
+  "nombre": "Sony",
+  "rowVersion": " "
+}
