@@ -36,7 +36,7 @@ namespace InfoDynamics.Aplicacion.dtos
 
             public string? NombreAprobador { get; set; }
 
-            public byte[] RowVersion { get; set; } = null!;
+
         }
 
         public class VacacionAprobacionDto : IConcurrencyDto
@@ -48,8 +48,6 @@ namespace InfoDynamics.Aplicacion.dtos
             [RegularExpression("Aprobada|Rechazada", ErrorMessage = "El estado debe ser 'Aprobada' o 'Rechazada'.")]
             public string EstadoDecision { get; set; } = null!;
 
-            [Required]
-            public byte[] RowVersion { get; set; } = null!;
         }
     }
 

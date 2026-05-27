@@ -1,5 +1,6 @@
 ﻿using InfoDynamics.Aplicacion.CustomException;
 using InfoDynamics.Aplicacion.dtos;
+using InfoDynamics.Aplicacion.servicios.Servicios;
 using InfoDynamics.Dominio.Entidades;
 using InfoDynamics.Dominio.interfaces;
 using Microsoft.EntityFrameworkCore;
@@ -46,32 +47,37 @@ namespace InfoDynamics.Aplicacion.Servicios.Servicios
 
         public bool? EvaluarCodigo(string? codigo)
         {
-            if (string.IsNullOrWhiteSpace(codigo))
-                return null;
 
             if (codigo.StartsWith("L"))
                 return true;
 
             if (codigo.StartsWith("M"))
                 return false;
+                
 
             throw new BadRequestException("El código debe iniciar con L o M.");
+
+
         }
     }
 
     public class EmpresaRegistroService
     {
+
+        private readonly RegistroProyectoService _registroProyectoService;
         private readonly IGenericRepository<Empresa> _empresaRepo;
         private readonly IUnitOfWork _unitOfWork;
         private readonly EmpresaValidacionService _validacion;
 
         public EmpresaRegistroService(
             IUnitOfWork unitOfWork,
-            EmpresaValidacionService validacion)
+            EmpresaValidacionService validacion,
+            RegistroProyectoService registroProyectoService)
         {
             _unitOfWork = unitOfWork;
             _empresaRepo = unitOfWork.Repository<Empresa>();
             _validacion = validacion;
+            _registroProyectoService = registroProyectoService;
         }
 
         // =====================
@@ -88,6 +94,14 @@ namespace InfoDynamics.Aplicacion.Servicios.Servicios
             };
 
             await _empresaRepo.AddAsync(empresa);
+            //se guarda aqui primero para q tenga id
+            await _unitOfWork.SaveChangesAsync();
+
+            await _registroProyectoService
+            .CrearProyectosEmpresaAsync(
+            empresa.id_empresa,
+            dto.TipoProyecto);
+
             await _unitOfWork.SaveChangesAsync();
         }
 
@@ -120,7 +134,10 @@ namespace InfoDynamics.Aplicacion.Servicios.Servicios
                     "El registro fue modificado por otro usuario.");
             }
         }
+
+
     }
+
 
     public class EmpresaAuditoriaService
     {

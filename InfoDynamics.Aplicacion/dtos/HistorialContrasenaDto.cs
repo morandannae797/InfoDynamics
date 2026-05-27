@@ -7,16 +7,6 @@ using System.Text;
 namespace InfoDynamics.Aplicacion.dtos
 {
 
-    public class HistorialContrasenaResponseDto
-    {
-        public int IdHistorial { get; set; }
-
-        public DateTime Fecharegistro { get; set; }
-
-        public int NoUsuario { get; set; }
-
-        public byte[] RowVersion { get; set; } = null!;
-    }
 
     public class   HistorialContrasenaCreateDto
     {
@@ -29,7 +19,7 @@ namespace InfoDynamics.Aplicacion.dtos
 
     }
 
-    public class HistorialContrasenaUpdateDto : IConcurrencyDto
+    public class HistorialContrasenaAmbosDto : IConcurrencyDto
     {
         [Required]
         public int IdHistorial { get; set; }

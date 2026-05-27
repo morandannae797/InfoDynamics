@@ -6,6 +6,15 @@ namespace InfoDynamics.Aplicacion.servicio.IServicios
     {
         Task AddAsync(TCreateDto dto);
         Task UpdateAsync(TUpdateDto dto);
-        Task DeleteAsync(int id);
+
     }
-}
+
+        public interface IWriteServiceSingleAsync<TDto>
+            where TDto : class
+        {
+            Task AddAsync(TDto dto);
+
+            Task UpdateAsync(TDto dto);
+
+        }
+  }

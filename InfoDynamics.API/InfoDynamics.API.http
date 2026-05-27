@@ -93,7 +93,8 @@ POST https://localhost:7293/api/empresa
 Content-Type: application/json
 
 {
-  "nombre": ""
+  "nombre": "Dynamics",
+  "tipoProyecto": "Ambos"
 }
 
 ### ACTUALIZAR EMPRESA
@@ -103,7 +104,7 @@ Content-Type: application/json
 {
   "idEmpresa": 1,
   "nombre": "Sony Updated",
-  "rowVersion": " "
+  "tipoProyecto": "Ambos"
 }
 
 ### EL ID NO COINCIDE
@@ -112,6 +113,9 @@ Content-Type: application/json
 
 {
   "idEmpresa": 1,
-  "nombre": "Sony",
-  "rowVersion": " "
+  "nombre": "Sony"
+
 }
+
+### VER PROYECTOS
+GET https://localhost:7293/api/proyecto
