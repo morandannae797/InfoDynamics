@@ -7,7 +7,7 @@ public class EmpresaCreateDto
     public string Nombre { get; set; } = null!;
 
 }
-public class EmpresaUpdateDto : IConcurrencyDto
+public class EmpresaDto : IConcurrencyDto
 {
  
     public int IdEmpresa { get; set; }
@@ -20,12 +20,4 @@ public class EmpresaUpdateDto : IConcurrencyDto
     public byte[] RowVersion { get; set; } = null!;
 }
 
-public class EmpresaResponseDto
-{
-    public int IdEmpresa { get; set; }
 
-    public string Nombre { get; set; } = null!;
-
-
-    public byte[] RowVersion { get; set; } = null!;
-}

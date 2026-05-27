@@ -8,9 +8,31 @@ namespace InfoDynamics.Aplicacion.mapeo
     {
         public MappingProfile()
         {
-           
 
-            CreateMap<Empresa, EmpresaResponseDto>()
+
+            CreateMap<Usuario_manager, UsuarioManagerResponseDto>()
+                .ForMember(dest => dest.NoUsuario,
+                    opt => opt.MapFrom(src => src.no_usuario))
+                .ForMember(dest => dest.NoUsuarioManager,
+                    opt => opt.MapFrom(src => src.no_usuario_manager));
+
+
+            CreateMap<UsuarioManagerCreateDto, Usuario_manager>()
+                .ForMember(dest => dest.no_usuario,
+                    opt => opt.MapFrom(src => src.NoUsuario))
+                .ForMember(dest => dest.no_usuario_manager,
+                    opt => opt.MapFrom(src => src.NoUsuarioManager));
+
+
+            CreateMap<UsuarioManagerUpdateDto, Usuario_manager>()
+                .ForMember(dest => dest.no_usuario,
+                    opt => opt.MapFrom(src => src.NoUsuario))
+                .ForMember(dest => dest.no_usuario_manager,
+                    opt => opt.MapFrom(src => src.NoUsuarioManager));
+
+
+
+            CreateMap<Empresa, EmpresaDto>()
                 .ForMember(dest => dest.IdEmpresa, opt => opt.MapFrom(src => src.id_empresa))
                 .ForMember(dest => dest.Nombre, opt => opt.MapFrom(src => src.nombre))
                 .ForMember(dest => dest.RowVersion, opt => opt.MapFrom(src => src.RowVersion));
@@ -21,7 +43,7 @@ namespace InfoDynamics.Aplicacion.mapeo
                 .ForMember(dest => dest.RowVersion, opt => opt.Ignore())
                 .ForMember(dest => dest.Proyectos, opt => opt.Ignore());
 
-            CreateMap<EmpresaUpdateDto, Empresa>()
+            CreateMap<EmpresaDto, Empresa>()
        .ForMember(dest => dest.id_empresa, opt => opt.MapFrom(src => src.IdEmpresa))
        .ForMember(dest => dest.nombre, opt => opt.MapFrom(src => src.Nombre))
        .ForMember(dest => dest.RowVersion, opt => opt.MapFrom(src => src.RowVersion))
