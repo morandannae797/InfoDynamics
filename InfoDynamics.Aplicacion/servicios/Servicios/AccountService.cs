@@ -4,6 +4,7 @@ using InfoDynamics.Aplicacion.dtos;
 using InfoDynamics.Aplicacion.servicios.IServicios.IServicioMapping;
 using InfoDynamics.Dominio.Entidades;
 using System.Collections.Concurrent;
+using System.Security.Claims;
 
 namespace InfoDynamics.Aplicacion.servicios.Servicios
 {
@@ -29,13 +30,11 @@ namespace InfoDynamics.Aplicacion.servicios.Servicios
             _userRepository = userRepository;
         }
 
-        public async Task LoginAsync(loginDto loginDto)
+        public async Task<Usuario> LoginAsync(loginDto loginDto)
         {
      
 
             LoginValidacion.Validar(loginDto);
-
-      
 
             LoginIntentosValidacion.ValidarBloqueo(
                 loginDto,
@@ -46,7 +45,7 @@ namespace InfoDynamics.Aplicacion.servicios.Servicios
                 loginDto.identificador,
                 loginDto.contrasena);
 
-    
+            
 
             if (user == null)
             {
@@ -77,8 +76,6 @@ namespace InfoDynamics.Aplicacion.servicios.Servicios
                 loginDto.identificador,
                 out _);
 
-
-
             var rowVersionOriginal = user.RowVersion;
 
             var (jwtToken, expirationDateInUtc)
@@ -104,10 +101,14 @@ namespace InfoDynamics.Aplicacion.servicios.Servicios
                 jwtToken,
                 expirationDateInUtc);
 
+
+
             _tokenProcessor.WriteAuthTokenAsHttpOnlyCookie(
                 "REFRESH_TOKEN",
                 refreshToken,
                 refreshTokenExpirationDateInUtc);
+
+            return user;
         }
 
         public async Task RefreshtokenAsync(string? refreshToken)
@@ -172,7 +173,10 @@ namespace InfoDynamics.Aplicacion.servicios.Servicios
                 "REFRESH_TOKEN",
                 newRefreshToken,
                 refreshTokenExpirationDateInUtc);
+
         }
+
+      
     }
 
 

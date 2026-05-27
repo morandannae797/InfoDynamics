@@ -5,6 +5,7 @@ using InfoDynamics.Aplicacion.servicios.IServicios.IServicioMapping;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using InfoDynamics.Aplicacion.CustomException;
+using InfoDynamics.Dominio.Entidades;
 
 
 
@@ -38,8 +39,13 @@ namespace Employees.API.Controllers
 
             try
             {
-                await _accountService.LoginAsync(request);
-                return Ok(new { message = "Inicio de sesion exitoso." });
+
+
+                var user = await _accountService.LoginAsync(request);
+
+                return Ok(new { message = "Inicio de sesion exitoso.",                       
+                 user
+                });
             }
             catch (BadRequestException ex)
             {

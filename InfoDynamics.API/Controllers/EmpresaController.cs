@@ -1,7 +1,7 @@
 using InfoDynamics.Aplicacion.CustomException;
 using InfoDynamics.Aplicacion.dtos;
 using InfoDynamics.Aplicacion.servicio.IServicios;
-using InfoDynamics.Dominio.Entidades;
+using InfoDynamics.Aplicacion.Servicios.Servicios;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
@@ -13,15 +13,16 @@ namespace InfoDynamics.API.Controllers
     public class EmpresaController : ControllerBase
     {
         private readonly IReadServiceAsync<EmpresaDto> _readService;
-        private readonly IWriteServiceAsync<EmpresaCreateDto, EmpresaDto> _writeService;
+        private readonly EmpresaRegistroService _empresaService;
 
         public EmpresaController(
             IReadServiceAsync<EmpresaDto> readService,
-            IWriteServiceAsync<EmpresaCreateDto, EmpresaDto> writeService)
+            EmpresaRegistroService empresaService)
         {
             _readService = readService;
-            _writeService = writeService;
+            _empresaService = empresaService;
         }
+
         [Authorize(Roles = "Manager")]
         [HttpGet]
         public async Task<ActionResult<IEnumerable<EmpresaDto>>> GetAll()
@@ -36,6 +37,7 @@ namespace InfoDynamics.API.Controllers
                 return NotFound(new { message = ex.Message });
             }
         }
+
         [Authorize(Roles = "Manager")]
         [HttpGet("{id:int}")]
         public async Task<ActionResult<EmpresaDto>> GetById(int id)
@@ -50,6 +52,7 @@ namespace InfoDynamics.API.Controllers
                 return NotFound(new { message = ex.Message });
             }
         }
+
         [Authorize(Roles = "Manager")]
         [HttpPost]
         public async Task<ActionResult> Create([FromBody] EmpresaCreateDto dto)
@@ -57,34 +60,56 @@ namespace InfoDynamics.API.Controllers
             if (!ModelState.IsValid)
                 return BadRequest(ModelState);
 
-            await _writeService.AddAsync(dto);
+            try
+            {
+                await _empresaService.CreateAsync(dto);
 
-            return Ok(new { message = "Empresa creada correctamente." });
+                return Ok(new
+                {
+                    message = "Empresa creada correctamente."
+                });
+            }
+            catch (BadRequestException ex)
+            {
+                return BadRequest(new { message = ex.Message });
+            }
+            catch (ConflictException ex)
+            {
+                return Conflict(new { message = ex.Message });
+            }
         }
+
         [Authorize(Roles = "Manager")]
         [HttpPost("update/{id:int}")]
         public async Task<ActionResult> Update(int id, [FromBody] EmpresaDto dto)
         {
-            if (id != dto.IdEmpresa)
-                return BadRequest("El id de la URL no coincide con el id del body.");
-
             if (!ModelState.IsValid)
                 return BadRequest(ModelState);
 
             if (id != dto.IdEmpresa)
-                return BadRequest(new { message = "El ID de la ruta no coincide con el del objeto." });
-           
+                return BadRequest("El id de la URL no coincide con el id del body.");
+
             try
             {
-                await _writeService.UpdateAsync(dto);
-                return Ok("Actualizado correctamente.");
+                await _empresaService.UpdateAsync(dto);
+
+                return Ok(new
+                {
+                    message = "Actualizado correctamente."
+                });
+            }
+            catch (BadRequestException ex)
+            {
+                return BadRequest(new { message = ex.Message });
+            }
+            catch (ConflictException ex)
+            {
+                return Conflict(new { message = ex.Message });
             }
             catch (DbUpdateConcurrencyException)
             {
                 return Conflict("El registro fue modificado por otro usuario.");
             }
         }
-
-       
     }
 }
