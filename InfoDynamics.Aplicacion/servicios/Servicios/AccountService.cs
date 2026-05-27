@@ -221,7 +221,7 @@ namespace InfoDynamics.Aplicacion.servicios.Servicios
             }
 
             // Desbloqueo manual independiente del tiempoo
-            //jj
+            //jjjjjjjjjjjjjjjjjjj
             user.estado_cuenta = true;
             user.hora_bloqueo = null;
             user.intentos = 0;
