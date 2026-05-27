@@ -12,19 +12,19 @@ namespace InfoDynamics.API.Controllers
     [Route("api/[controller]")]
     public class EmpresaController : ControllerBase
     {
-        private readonly IReadServiceAsync<EmpresaResponseDto> _readService;
-        private readonly IWriteServiceAsync<EmpresaCreateDto, EmpresaUpdateDto> _writeService;
+        private readonly IReadServiceAsync<EmpresaDto> _readService;
+        private readonly IWriteServiceAsync<EmpresaCreateDto, EmpresaDto> _writeService;
 
         public EmpresaController(
-            IReadServiceAsync<EmpresaResponseDto> readService,
-            IWriteServiceAsync<EmpresaCreateDto, EmpresaUpdateDto> writeService)
+            IReadServiceAsync<EmpresaDto> readService,
+            IWriteServiceAsync<EmpresaCreateDto, EmpresaDto> writeService)
         {
             _readService = readService;
             _writeService = writeService;
         }
         [Authorize(Roles = "Manager")]
         [HttpGet]
-        public async Task<ActionResult<IEnumerable<EmpresaResponseDto>>> GetAll()
+        public async Task<ActionResult<IEnumerable<EmpresaDto>>> GetAll()
         {
             try
             {
@@ -38,7 +38,7 @@ namespace InfoDynamics.API.Controllers
         }
         [Authorize(Roles = "Manager")]
         [HttpGet("{id:int}")]
-        public async Task<ActionResult<EmpresaResponseDto>> GetById(int id)
+        public async Task<ActionResult<EmpresaDto>> GetById(int id)
         {
             try
             {
@@ -63,7 +63,7 @@ namespace InfoDynamics.API.Controllers
         }
         [Authorize(Roles = "Manager")]
         [HttpPost("update/{id:int}")]
-        public async Task<ActionResult> Update(int id, [FromBody] EmpresaUpdateDto dto)
+        public async Task<ActionResult> Update(int id, [FromBody] EmpresaDto dto)
         {
             if (id != dto.IdEmpresa)
                 return BadRequest("El id de la URL no coincide con el id del body.");
