@@ -78,11 +78,11 @@ builder.Services.AddScoped<
     IWriteServiceAsync<ProyectoCreateDto, ProyectoUpdateDto>,
     WriteServiceAsync<Proyecto, ProyectoCreateDto, ProyectoUpdateDto>>();
 
-
+/*
 builder.Services.AddScoped<
     IWriteServiceAsync<PeriodoCreateDto, PeriodoUpdateDto>,
     WriteServiceAsync<Periodo, PeriodoCreateDto, PeriodoUpdateDto>>();
-
+*/
 builder.Services.AddScoped<Iusuarioservicio, UsuarioServicio>();
 
 builder.Services.AddScoped<
@@ -98,6 +98,7 @@ builder.Services.AddScoped<Iusuarioservicio, UsuarioServicio>();
 builder.Services.AddScoped<IUserRepository, UserRepository>();
 builder.Services.AddScoped<IAccountService, AccountService>();
 builder.Services.AddScoped<IAuthTokenProcessor, AuthTokenProcessor>();
+builder.Services.AddScoped<PeriodoService>();
 builder.Services.AddHttpContextAccessor();
 
 // Account

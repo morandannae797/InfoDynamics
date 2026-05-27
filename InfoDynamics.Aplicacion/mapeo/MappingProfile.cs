@@ -31,12 +31,12 @@ namespace InfoDynamics.Aplicacion.mapeo
 
             CreateMap<Periodo, PeriodoResponseDto>()
                 .ForMember(dest => dest.PeriodoId, opt => opt.MapFrom(src => src.id_periodo))
-                .ForMember(dest => dest.FechaInicio, opt => opt.MapFrom(src => ToDateTime(src.fecha_inicio)))
-                .ForMember(dest => dest.FechaFin, opt => opt.MapFrom(src => ToDateTime(src.fecha_fin)))
+                .ForMember(dest => dest.FechaInicio, opt => opt.MapFrom(src =>src.fecha_inicio))
+                .ForMember(dest => dest.FechaFin, opt => opt.MapFrom(src => src.fecha_fin))
                 .ForMember(dest => dest.Estado, opt => opt.MapFrom(src => src.estado))
                 .ForMember(dest => dest.RowVersion, opt => opt.MapFrom(src => src.RowVersion));
 
-            CreateMap<PeriodoCreateDto, Periodo>()
+            /*CreateMap<PeriodoCreateDto, Periodo>()
                 .ForMember(dest => dest.id_periodo, opt => opt.Ignore())
                 .ForMember(dest => dest.fecha_inicio, opt => opt.MapFrom(src => ToDateOnly(src.FechaInicio)))
                 .ForMember(dest => dest.fecha_fin, opt => opt.MapFrom(src => ToDateOnly(src.FechaFin)))
@@ -50,7 +50,7 @@ CreateMap<PeriodoUpdateDto, Periodo>()
     .ForMember(dest => dest.estado, opt => opt.MapFrom(src => src.Estado))
     .ForMember(dest => dest.RowVersion, opt => opt.MapFrom(src => src.RowVersion))
     .ForMember(dest => dest.Registros, opt => opt.Ignore());
-
+*/
 
             // REGISTRO RESPONSE
             CreateMap<Registro, RegistroResponseDto>()

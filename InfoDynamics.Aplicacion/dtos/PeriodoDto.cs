@@ -3,6 +3,8 @@ using System.ComponentModel.DataAnnotations;
 
 namespace InfoDynamics.Aplicacion.dtos
 {
+
+    /*
     public class PeriodoCreateDto
     {
         [Required]
@@ -32,6 +34,8 @@ namespace InfoDynamics.Aplicacion.dtos
         [Required]
         public byte[] RowVersion { get; set; } = null!;
     }
+
+    */
     public class PeriodoResponseDto
     {
         public int PeriodoId { get; set; }

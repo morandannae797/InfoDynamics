@@ -27,7 +27,7 @@ Content-Type: application/json
 
 {
   "identificador": "1000002",
-  "contrasena": "hash123"
+  "contrasena": "Nuevascosas683!@$"
 }   
 
 ### CAMBIAR CONTRASEÑA EMPLEADO
@@ -47,4 +47,138 @@ Content-Type: application/json
 {
   "nuevaContrasena": "Nuevascosas683!@$",
   "confirmarNuevaContrasena": "Nuevascosas683!@$"
+}
+
+
+
+
+
+
+
+### GET TODOS LOS REGISTROS
+GET https://localhost:7293/api/RegistroJornada
+
+
+### GET REGISTRO POR ID
+GET https://localhost:7293/api/RegistroJornada/1
+
+
+### CREAR REGISTRO CORRECTO
+POST https://localhost:7293/api/RegistroJornada
+Content-Type: application/json
+
+{
+  "fecha": "2026-05-26",
+  "horas": 8,
+  "noUsuario": 1000002,
+  "periodoId": 1,
+  "codigo": "L001"
+}
+
+
+### VALIDAR HORAS NEGATIVAS
+POST https://localhost:7293/api/RegistroJornada
+Content-Type: application/json
+
+{
+  "fecha": "2026-05-26",
+  "horas": -5,
+  "noUsuario": 1000002,
+  "periodoId": 1,
+  "codigo": "L001"
+}
+
+
+### VALIDAR HORAS MAYORES A 24
+POST https://localhost:7293/api/RegistroJornada
+Content-Type: application/json
+
+{
+  "fecha": "2026-05-26",
+  "horas": 25,
+  "noUsuario": 1000002,
+  "periodoId": 1,
+  "codigo": "L001"
+}
+
+
+### VALIDAR PROYECTO INEXISTENTE
+POST https://localhost:7293/api/RegistroJornada
+Content-Type: application/json
+
+{
+  "fecha": "2026-05-26",
+  "horas": 8,
+  "noUsuario": 1000002,
+  "periodoId": 1,
+  "codigo": "X999"
+}
+
+
+### VALIDAR CODIGO INVALIDO
+POST https://localhost:7293/api/RegistroJornada
+Content-Type: application/json
+
+{
+  "fecha": "2026-05-26",
+  "horas": 8,
+  "noUsuario": 1000002,
+  "periodoId": 1,
+  "codigo": "A001"
+}
+
+
+### UPDATE CORRECTO
+POST https://localhost:7293/api/RegistroJornada/1
+Content-Type: application/json
+
+{
+  "registroId": 1,
+  "fecha": "2026-05-26",
+  "horas": 6,
+  "periodoId": 1,
+  "codigo": "L001",
+  "rowVersion": "AAAAAAAAB9E="
+}
+
+
+### VALIDAR ID RUTA NO COINCIDE CON DTO
+POST https://localhost:7293/api/RegistroJornada/2
+Content-Type: application/json
+
+{
+  "registroId": 1,
+  "fecha": "2026-05-26",
+  "horas": 6,
+  "periodoId": 1,
+  "codigo": "L001",
+  "rowVersion": "AAAAAAAAB9E="
+}
+
+
+### VALIDAR UPDATE CON HORAS NEGATIVAS
+POST https://localhost:7293/api/RegistroJornada/1
+Content-Type: application/json
+
+{
+  "registroId": 1,
+  "fecha": "2026-05-26",
+  "horas": -3,
+  "periodoId": 1,
+  "codigo": "L001",
+  "rowVersion": "AAAAAAAAB9E="
+}
+
+
+### VALIDAR UPDATE CON CODIGO INEXISTENTE
+POST https://localhost:7293/api/RegistroJornada/1
+Content-Type: application/json
+
+{
+  "registroId": 1,
+  "fecha": "2026-05-26",
+  "horas": 6,
+  "periodoId": 1,
+  "codigo": "X999",
+  "rowVersion": "AAAAAAAAB9E="
 }
