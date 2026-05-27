@@ -41,8 +41,7 @@ namespace InfoDynamics.Aplicacion.dtos
         [Required]
         public string Codigo { get; set; }
 
-        [Required]
-        public byte[] RowVersion { get; set; } = null!;
+      
     }
     public class RegistroResponseDto
     {
@@ -58,6 +57,6 @@ namespace InfoDynamics.Aplicacion.dtos
 
         public string  Codigo { get; set; }
 
-        public byte[] RowVersion { get; set; } = null!;
+
     }
 }

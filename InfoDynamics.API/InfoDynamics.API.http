@@ -30,7 +30,7 @@ Content-Type: application/json
   "contrasena": "Nuevascosas683!@$"
 }   
 
-### CAMBIAR CONTRASEÑA EMPLEADO
+### CAMBIAR CONTRASENA EMPLEADO
 POST https://localhost:7293/api/Usuario/1000002/cambiar-contrasena
 Content-Type: application/json
 
@@ -40,7 +40,7 @@ Content-Type: application/json
   "confirmarNuevaContrasena": "Nuevascosas683!@$"
 }
 
-### RESTABLECER CONTRASEÑA EMPLEADO
+### RESTABLECER CONTRASENA EMPLEADO
 POST https://localhost:7293/api/Usuario/1000002/restablecer-contrasena
 Content-Type: application/json
 
@@ -48,3 +48,74 @@ Content-Type: application/json
   "nuevaContrasena": "Nuevascosas683!@$",
   "confirmarNuevaContrasena": "Nuevascosas683!@$"
 }
+
+### LOGIN COMO MANAGER
+POST https://localhost:7293/api/LogIn/login
+Content-Type: application/json
+
+{
+    "identificador": "1000001",
+    "contrasena": "hash123"
+}
+
+### EMPLEADO QUE SI PERTENECE AL MANAGER
+GET https://localhost:7293/api/Usuario/1000002
+
+### EMPLEADO QUE NO PERTENECE
+GET https://localhost:7293/api/Usuario/1000031
+
+### TODAS LAS EMPRESAS
+GET https://localhost:7293/api/empresa
+Accept: application/json
+
+### POR ID
+GET https://localhost:7293/api/empresa/1
+Accept: application/json
+
+### CREAR UNA EMPRESA
+POST https://localhost:7293/api/empresa
+Content-Type: application/json
+
+{
+  "nombre": "Sony"
+}
+
+### ERROR DE DUPLICADO
+POST https://localhost:7293/api/empresa
+Content-Type: application/json
+
+{
+  "nombre": "Sony"
+}
+
+### ERROR NOMBRE VACIO
+POST https://localhost:7293/api/empresa
+Content-Type: application/json
+
+{
+  "nombre": "Dynamics",
+  "tipoProyecto": "Ambos"
+}
+
+### ACTUALIZAR EMPRESA
+POST https://localhost:7293/api/empresa/update/1
+Content-Type: application/json
+
+{
+  "idEmpresa": 1,
+  "nombre": "Sony Updated",
+  "tipoProyecto": "Ambos"
+}
+
+### EL ID NO COINCIDE
+POST https://localhost:7293/api/empresa/update/2
+Content-Type: application/json
+
+{
+  "idEmpresa": 1,
+  "nombre": "Sony"
+
+}
+
+### VER PROYECTOS
+GET https://localhost:7293/api/proyecto

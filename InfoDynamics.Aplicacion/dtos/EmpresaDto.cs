@@ -6,8 +6,10 @@ public class EmpresaCreateDto
     [Required, StringLength(100)]
     public string Nombre { get; set; } = null!;
 
+    public string TipoProyecto { get; set; } = null!;
+
 }
-public class EmpresaDto : IConcurrencyDto
+public class EmpresaDto //: IConcurrencyDto
 {
  
     public int IdEmpresa { get; set; }
@@ -16,8 +18,7 @@ public class EmpresaDto : IConcurrencyDto
     public string Nombre { get; set; } = null!;
 
 
-    [Required]
-    public byte[] RowVersion { get; set; } = null!;
+  
 }
 
 

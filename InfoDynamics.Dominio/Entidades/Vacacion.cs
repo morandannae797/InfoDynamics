@@ -17,8 +17,8 @@ namespace InfoDynamics.Dominio.Entidades
 
         public byte[] RowVersion { get; set; } = null!;
 
-        public virtual Usuario? id_administradorNavigation { get; set; }
 
+        public virtual Usuario? id_administradorNavigation { get; set; }
         public virtual Usuario no_usuarioNavigation { get; set; } = null!;
 
     }

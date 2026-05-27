@@ -1,10 +1,13 @@
 using InfoDynamics.Aplicacion.CustomException;
 using InfoDynamics.Aplicacion.dtos;
 using InfoDynamics.Aplicacion.servicio.IServicios;
+using InfoDynamics.Aplicacion.servicios.Servicios;
 using InfoDynamics.Aplicacion.servicios.IServicios.IServicioMapping;
 using InfoDynamics.Dominio.Entidades;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
+using System.Security.Claims;
 
 namespace InfoDynamics.API.Controllers
 {
@@ -28,6 +31,8 @@ namespace InfoDynamics.API.Controllers
             _usuarioServicio = usuarioServicio;
         }
 
+
+        [Authorize(Roles = "Manager")]
         [HttpGet]
         public async Task<ActionResult<IEnumerable<UsuarioResponseDTO>>> GetAll()
         {
@@ -42,20 +47,70 @@ namespace InfoDynamics.API.Controllers
             }
         }
 
+        // METODO CAMBIADO PARA QUE SE PUEDAN CONSULTAR EMPLEADOS ASIGNADOR Y NO AJENOS
+        [Authorize]
         [HttpGet("{id:int}")]
         public async Task<ActionResult<UsuarioResponseDTO>> GetById(int id)
         {
             try
             {
-                var usuario = await _readService.GetByIdAsync(id);
-                return Ok(usuario);
+                var claimUsuario = User.Claims.FirstOrDefault(
+                    c => c.Type.Contains("nameidentifier"));
+
+                if (claimUsuario == null)
+                {
+                    return Unauthorized(new
+                    {
+                        message = "No se encontró el ID del usuario en el token."
+                    });
+                }
+
+                int usuarioAutenticado = int.Parse(claimUsuario.Value);
+
+                // Si consulta su propio perfil
+                if (usuarioAutenticado == id)
+                {
+                    var usuario = await _usuarioServicio.FindByIdAsync(id);
+
+                    if (usuario == null)
+                    {
+                        return NotFound(new
+                        {
+                            message = "Usuario no encontrado."
+                        });
+                    }
+
+                    return Ok(usuario);
+                }
+
+                bool esManager = User.IsInRole("Manager");
+
+                var servicioConcreto = (UsuarioServicio)_usuarioServicio;
+
+                bool pertenece = await servicioConcreto.ManagerTieneEmpleado(
+                    usuarioAutenticado,
+                    id);
+
+                return Ok(new
+                {
+                    managerAutenticado = usuarioAutenticado,
+                    empleadoSolicitado = id,
+                    esManager = esManager,
+                    pertenece = pertenece
+                });
             }
-            catch (EntityNotFoundException ex)
+            catch (Exception ex)
             {
-                return NotFound(new { message = ex.Message });
+                return StatusCode(500, new
+                {
+                    message = "Ocurrió un error inesperado.",
+                    detail = ex.Message
+                });
             }
         }
 
+
+        [Authorize(Roles = "Manager")]
         [HttpPost]
         public async Task<ActionResult> Create([FromBody] UsuarioCreateDTO dto)
         {
@@ -81,6 +136,7 @@ namespace InfoDynamics.API.Controllers
             }
         }
 
+        [Authorize(Roles = "Manager")]
         [HttpPost("{id:int}")]
         public async Task<ActionResult> Update(int id, [FromBody] UsuarioUpdateDto dto)
         {
@@ -127,6 +183,7 @@ namespace InfoDynamics.API.Controllers
             }
         }
 
+        [Authorize(Roles = "Manager")]
         [HttpPost("{id:int}/desactivar")]
         public async Task<ActionResult> Desactivar(int id, [FromBody] UsuarioDesactivarDto dto)
         {
@@ -153,6 +210,7 @@ namespace InfoDynamics.API.Controllers
                 return Conflict(new { message = ex.Message });
             }
         }
+        [Authorize]
         [HttpPost("{id:int}/cambiar-contrasena")]
         public async Task<ActionResult> CambiarContrasena(int id, [FromBody] CambiarContrasenaDto dto)
         {
@@ -191,6 +249,8 @@ namespace InfoDynamics.API.Controllers
             }
         }
 
+
+        [Authorize]
         [HttpPost("{id:int}/restablecer-contrasena")]
         public async Task<ActionResult> RestablecerContrasena(int id, [FromBody] RestablecerContrasenaDto dto)
         {
@@ -227,4 +287,4 @@ namespace InfoDynamics.API.Controllers
 
     }
 
-    }
+}

@@ -1,6 +1,7 @@
 ﻿using InfoDynamics.Aplicacion.CustomException;
 using InfoDynamics.Aplicacion.dtos;
 using InfoDynamics.Aplicacion.servicio.IServicios;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 
@@ -11,19 +12,19 @@ namespace InfoDynamics.API.Controllers
     [Route("api/[controller]")]
     public class ProyectoController : ControllerBase
     {
-        private readonly IReadServiceAsync<ProyectoResponseDto> _readService;
-        private readonly IWriteServiceAsync<ProyectoCreateDto, ProyectoUpdateDto> _writeService;
+        private readonly IReadServiceAsync<ProyectoDto> _readService;
+        private readonly IWriteServiceSingleAsync<ProyectoDto> _writeService;
 
         public ProyectoController(
-            IReadServiceAsync<ProyectoResponseDto> readService,
-            IWriteServiceAsync<ProyectoCreateDto, ProyectoUpdateDto> writeService)
+            IReadServiceAsync<ProyectoDto> readService,
+            IWriteServiceSingleAsync<ProyectoDto> writeService)
         {
             _readService = readService;
             _writeService = writeService;
         }
-
+        [Authorize]
         [HttpGet]
-        public async Task<ActionResult<IEnumerable<ProyectoResponseDto>>> GetAll()
+        public async Task<ActionResult<IEnumerable<ProyectoDto>>> GetAll()
         {
             try
             {
@@ -37,8 +38,9 @@ namespace InfoDynamics.API.Controllers
             }
         }
 
+        [Authorize]
         [HttpGet("{id:int}")]
-        public async Task<ActionResult<ProyectoResponseDto>> GetById(int id)
+        public async Task<ActionResult<ProyectoDto>> GetById(int id)
         {
             try
             {
@@ -51,10 +53,10 @@ namespace InfoDynamics.API.Controllers
                 return NotFound(new { message = ex.Message });
             }
         }
-
+        [Authorize(Roles = "Manager")]
         [HttpPost]
         public async Task<ActionResult> Create(
-            [FromBody] ProyectoCreateDto dto)
+            [FromBody] ProyectoDto dto)
         {
             if (!ModelState.IsValid)
                 return BadRequest(ModelState);
@@ -67,8 +69,9 @@ namespace InfoDynamics.API.Controllers
             });
         }
 
+        [Authorize(Roles = "Manager")]
         [HttpPost("{codigo:int}")]
-        public async Task<ActionResult> Update(string codigo, [FromBody] ProyectoUpdateDto dto)
+        public async Task<ActionResult> Update(string codigo, [FromBody] ProyectoDto dto)
         {
             if (!ModelState.IsValid)
                 return BadRequest(ModelState);
