@@ -1,46 +1,50 @@
-@InfoDynamics.API_HostAddress = http://localhost:7293
+###COMO DESDE EL PRINCIPIO AQUI TODOS TIENE LA MISMA CONTRA
+### AQUI SOLO EXISTE UN ADMIN (MANAGER) YA QUE ES LA BD OFICIAL
+### OJO YA LOS ADMINISTRADORES SON MANAGERSSSS EL CONCEPTO DE 
+### ADMINISTRADOR YA NO EXISTE, SOLO MANAGERSSSS
 
-GET https://localhost:7293/api/empresa
-Accept: application/json
-
-### Creacion de EMPRESA SOLO ADMIN PUEDE
-POST https://localhost:7293/api/empresa
-Content-Type: application/json
-
-{
-  "nombre": "OXXO",
-  "descripcion": "Tienda"
-}
-
-
-### Consulta de usuarios (Debe de mostrar solo los usuarios 
-### de la empresa a la que pertenece el empleado) FALTA LOGICA DE EMPLEADO PARA QUE
-###SOLO MUESTRE LOS USUARIOS DE SU EMPRESA
-GET https://localhost:7293/api/usuario
-Accept: application/json
-
-
-### INICIO SESION DE ADMIN
+### LOGIN COMO  MANAGER CON NUMERO
 POST https://localhost:7293/api/LogIn/login
 Content-Type: application/json
-Accept: application/json
 
 {
-  "identificador": "1",
-  "contrasena": "12345678"
-}
+  "identificador": "1000001",
+  "contrasena": "hash123"
+}     
 
-### INICIO DE SESIÃ“N EMPLEADO (No debe de dejar ni ver empresas ni usuarios)
-
+### LOGIN COMO MANAGER CON CORREO
 POST https://localhost:7293/api/LogIn/login
 Content-Type: application/json
-Accept: application/json
 
 {
-  "identificador": "2",
-  "contrasena": "12345678"
+  "identificador": "arahel.sapi@empresa.com",
+  "contrasena": "hash123"
 }
 
+### LOGIN COMO  EMPLEADO CON NUMERO
+POST https://localhost:7293/api/LogIn/login
+Content-Type: application/json
 
-### Cierre Sesion
-POST https://localhost:7293/api/Login/logout
+{
+  "identificador": "1000002",
+  "contrasena": "Nuevascosas683!@$"
+}   
+
+### CAMBIAR CONTRASEÑA EMPLEADO
+POST https://localhost:7293/api/Usuario/1000002/cambiar-contrasena
+Content-Type: application/json
+
+{
+  "contrasenaActual": "Nuevascosas683!@$",
+  "nuevaContrasena": "Nuevascosas683!@$",
+  "confirmarNuevaContrasena": "Nuevascosas683!@$"
+}
+
+### RESTABLECER CONTRASEÑA EMPLEADO
+POST https://localhost:7293/api/Usuario/1000002/restablecer-contrasena
+Content-Type: application/json
+
+{
+  "nuevaContrasena": "Nuevascosas683!@$",
+  "confirmarNuevaContrasena": "Nuevascosas683!@$"
+}

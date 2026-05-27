@@ -9,12 +9,6 @@ namespace InfoDynamics.Aplicacion.dtos
         public DateTime Fecha { get; set; }
 
         [Required]
-        public TimeSpan HoraInicio { get; set; }
-
-        [Required]
-        public TimeSpan HoraFin { get; set; }
-
-        [Required]
         [Range(0, 24)]
         public decimal Horas { get; set; }
 
@@ -25,7 +19,7 @@ namespace InfoDynamics.Aplicacion.dtos
         public int PeriodoId { get; set; }
 
         [Required]
-        public int ProyectoId { get; set; }
+        public string Codigo { get; set; }
     }
 
     public class RegistroUpdateDto : IConcurrencyDto
@@ -36,11 +30,6 @@ namespace InfoDynamics.Aplicacion.dtos
         [Required]
         public DateTime Fecha { get; set; }
 
-        [Required]
-        public TimeSpan HoraInicio { get; set; }
-
-        [Required]
-        public TimeSpan HoraFin { get; set; }
 
         [Required]
         [Range(0, 24)]
@@ -50,7 +39,7 @@ namespace InfoDynamics.Aplicacion.dtos
         public int PeriodoId { get; set; }
 
         [Required]
-        public int ProyectoId { get; set; }
+        public string Codigo { get; set; }
 
         [Required]
         public byte[] RowVersion { get; set; } = null!;
@@ -61,21 +50,13 @@ namespace InfoDynamics.Aplicacion.dtos
 
         public DateTime Fecha { get; set; }
 
-        public TimeSpan HoraInicio { get; set; }
-
-        public TimeSpan HoraFin { get; set; }
-
         public decimal Horas { get; set; }
 
         public int NoUsuario { get; set; }
 
-        public string? NombreUsuario { get; set; }
-
         public int PeriodoId { get; set; }
 
-        public int ProyectoId { get; set; }
-
-        public string? CodigoProyecto { get; set; }
+        public string  Codigo { get; set; }
 
         public byte[] RowVersion { get; set; } = null!;
     }

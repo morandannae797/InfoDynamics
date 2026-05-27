@@ -1,31 +1,25 @@
-@baseUrl = https://localhost:7293
+@baseUrl = https://localhost:5248
 
 ### Obtener empresa por id
-GET {{baseUrl}}/api/Empresa
-### Obtener 
-GET {{baseUrl}}/api/Usuario/
+GET https://localhost:5248/api/Empresa
 
 
 Accept: application/json
 
-### Crear Usuario admin
-POST {{baseUrl}}/api/Usuario
+### Actualizar empresa
+POST https://localhost:5248/api/Empresa/update/4
 Content-Type: application/json
 Accept: application/json
 
 {
- "noUsuario": 56,
-    "nombre": "Johny",
-    "apPaterno": "Guitar",
-    "apMaterno": "lopez",
-    "email": "johny@gmail.com",
-    "rol": "Administrador",
-  
-    "contrasena": "batmanwashere"
+  "idEmpresa": 4,
+  "nombre": "OXXO",
+  "descripcion": "Siempre listos siempre hola",
+  "rowVersion": "AAAAAAAARlE="
 }
 
 ####hola
-POST {{baseUrl}}/api/Empresa/
+POST https://localhost:5248/api/Empresa
 Content-Type: application/json
 Accept: application/json
 
@@ -38,21 +32,22 @@ Accept: application/json
 
 
 ### Login
-POST {{baseUrl}}/api/LogIn/login
+POST https://localhost:5248/api/LogIn/login
 Content-Type: application/json
 Accept: application/json
 
 {
-  "identificador":  "holacomoestas@gmail.com",
-  "contrasena":  "batmaneljefe"
+  "identificador": "holacomoestas@gmail.com",
+  "contrasena": "batmaneljefe"
 }
-### Logout
-POST {{baseUrl}}/api/LogIn/logout
-Content-Type: application/json
-Accept: application/json
+
 
 ### copias el set cookie desde el login 
-
-GET {{baseUrl}}/api/test/testadminonly
+### Probar endpoint protegido con access token
+GET https://localhost:5248/api/test/omg
 Accept: application/json
-Set-Cookie: eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiI0NTYiLCJqdGkiOiJmZDdlNzIwYS02ZTM5LTQ1NWUtYTBmMi01Y2I0ZDI0OTc0MWIiLCJlbWFpbCI6ImhvbGFjb21vZXN0YXNAZ21haWwuY29tIiwiaHR0cDovL3NjaGVtYXMubWljcm9zb2Z0LmNvbS93cy8yMDA4LzA2L2lkZW50aXR5L2NsYWltcy9yb2xlIjoiRW1wbGVhZG8iLCJleHAiOjE3Nzg3OTQwMDcsImlzcyI6Imh0dHBzOi8vbG9jYWxob3N0OjcyOTMiLCJhdWQiOiJodHRwczovL2xvY2FsaG9zdDo3MjkzIn0.nLkavwx3j1WkAQ3bp-woXUBJBMGQVYNaHqmFCChmyMU
+Set-Cookie: eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiI0NTYiLCJqdGkiOiI1ZTE5ZDg4Ni0zZTAzLTQ5ZmEtOTZlNy1kYjhmZTA1ZGQxZDkiLCJlbWFpbCI6ImhvbGFjb21vZXN0YXNAZ21haWwuY29tIiwiaHR0cDovL3NjaGVtYXMubWljcm9zb2Z0LmNvbS93cy8yMDA4LzA2L2lkZW50aXR5L2NsYWltcy9yb2xlIjoiRW1wbGVhZG8iLCJleHAiOjE3Nzg2MzQyMzUsImlzcyI6Imh0dHBzOi8vbG9jYWxob3N0OjcyOTMiLCJhdWQiOiJodHRwczovL2xvY2FsaG9zdDo3MjkzIn0.65WjYvC7eZtPnNTUKRUlUTCScH2m3VWISULSeFDkhBw
+
+
+### test
+GET {{baseUrl}}/api/empresa/test

@@ -1,0 +1,99 @@
+﻿using InfoDynamics.Aplicacion.CustomException;
+using InfoDynamics.Aplicacion.dtos;
+using InfoDynamics.Aplicacion.servicio.IServicios;
+using Microsoft.AspNetCore.Mvc;
+using Microsoft.EntityFrameworkCore;
+
+
+namespace InfoDynamics.API.Controllers
+{
+    [ApiController]
+    [Route("api/[controller]")]
+    public class ProyectoController : ControllerBase
+    {
+        private readonly IReadServiceAsync<ProyectoResponseDto> _readService;
+        private readonly IWriteServiceAsync<ProyectoCreateDto, ProyectoUpdateDto> _writeService;
+
+        public ProyectoController(
+            IReadServiceAsync<ProyectoResponseDto> readService,
+            IWriteServiceAsync<ProyectoCreateDto, ProyectoUpdateDto> writeService)
+        {
+            _readService = readService;
+            _writeService = writeService;
+        }
+
+        [HttpGet]
+        public async Task<ActionResult<IEnumerable<ProyectoResponseDto>>> GetAll()
+        {
+            try
+            {
+                var proyectos = await _readService.GetAllAsync();
+
+                return Ok(proyectos);
+            }
+            catch (EntityNotFoundException ex)
+            {
+                return NotFound(new { message = ex.Message });
+            }
+        }
+
+        [HttpGet("{id:int}")]
+        public async Task<ActionResult<ProyectoResponseDto>> GetById(int id)
+        {
+            try
+            {
+                var proyecto = await _readService.GetByIdAsync(id);
+
+                return Ok(proyecto);
+            }
+            catch (EntityNotFoundException ex)
+            {
+                return NotFound(new { message = ex.Message });
+            }
+        }
+
+        [HttpPost]
+        public async Task<ActionResult> Create(
+            [FromBody] ProyectoCreateDto dto)
+        {
+            if (!ModelState.IsValid)
+                return BadRequest(ModelState);
+
+            await _writeService.AddAsync(dto);
+
+            return Ok(new
+            {
+                message = "Proyecto creado correctamente."
+            });
+        }
+
+        [HttpPost("{codigo:int}")]
+        public async Task<ActionResult> Update(string codigo, [FromBody] ProyectoUpdateDto dto)
+        {
+            if (!ModelState.IsValid)
+                return BadRequest(ModelState);
+
+            if (codigo != dto.Codigo)
+            {
+                return BadRequest(new
+                {
+                    message = "El ID de la ruta no coincide con el del objeto."
+                });
+            }
+
+            try
+            {
+                await _writeService.UpdateAsync(dto);
+
+                return NoContent();
+            }
+            catch (DbUpdateConcurrencyException)
+            {
+                return Conflict(new
+                {
+                    message = "El proyecto fue modificado por otro proceso."
+                });
+            }
+        }
+    }
+}

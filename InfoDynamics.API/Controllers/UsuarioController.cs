@@ -12,13 +12,18 @@ namespace InfoDynamics.API.Controllers
     [Route("api/[controller]")]
     public class UsuarioController : ControllerBase
     {
+
+        private readonly IContrasenaService _contrasenaService;
         private readonly IReadServiceAsync<UsuarioResponseDTO> _readService;
         private readonly Iusuarioservicio _usuarioServicio;
 
         public UsuarioController(
+
+            IContrasenaService contrasenaService,
             IReadServiceAsync<UsuarioResponseDTO> readService,
             Iusuarioservicio usuarioServicio)
         {
+            _contrasenaService = contrasenaService;
             _readService = readService;
             _usuarioServicio = usuarioServicio;
         }
@@ -94,7 +99,7 @@ namespace InfoDynamics.API.Controllers
                     ap_paterno = dto.ApPaterno,
                     ap_materno = dto.ApMaterno,
                     email = dto.Email,
-                    rol = dto.Rol,
+                    es_manager = dto.EsManager,
                     estado_cuenta = dto.EstadoCuenta
                 };
 
@@ -116,6 +121,10 @@ namespace InfoDynamics.API.Controllers
             {
                 return Conflict(new { message = "El usuario fue modificado por otro proceso. Recarga los datos y reintenta." });
             }
+            catch (Exception ex)
+            {
+                return StatusCode(500, new { message = "Ocurrió un error inesperado.", detail = ex.Message });
+            }
         }
 
         [HttpPost("{id:int}/desactivar")]
@@ -131,7 +140,7 @@ namespace InfoDynamics.API.Controllers
                 if (usuario == null)
                     return NotFound(new { message = "Usuario no encontrado." });
 
-                usuario.estado_cuenta = "Desactivada";
+                usuario.estado_cuenta = false;
 
                 await _usuarioServicio.UpdateWithConcurrencyAsync(
                     usuario,
@@ -144,5 +153,78 @@ namespace InfoDynamics.API.Controllers
                 return Conflict(new { message = ex.Message });
             }
         }
+        [HttpPost("{id:int}/cambiar-contrasena")]
+        public async Task<ActionResult> CambiarContrasena(int id, [FromBody] CambiarContrasenaDto dto)
+        {
+            if (!ModelState.IsValid)
+                return BadRequest(ModelState);
+
+            try
+            {
+                await _contrasenaService.CambiarContrasenaAsync(
+                    id,
+                    dto.ContrasenaActual,
+                    dto.NuevaContrasena,
+                    dto.ConfirmarNuevaContrasena);
+
+                return Ok(new { message = "Contraseña cambiada correctamente." });
+            }
+            catch (EntityNotFoundException ex)
+            {
+                return NotFound(new { message = ex.Message });
+            }
+            catch (UnauthorizedException ex)
+            {
+                return Unauthorized(new { message = ex.Message });
+            }
+            catch (ConflictException ex)
+            {
+                return Conflict(new { message = ex.Message });
+            }
+            catch (BadRequestException ex)
+            {
+                return BadRequest(new { message = ex.Message });
+            }
+            catch (Exception ex)
+            {
+                return StatusCode(500, new { message = "Ocurrió un error inesperado.", detail = ex.Message });
+            }
+        }
+
+        [HttpPost("{id:int}/restablecer-contrasena")]
+        public async Task<ActionResult> RestablecerContrasena(int id, [FromBody] RestablecerContrasenaDto dto)
+        {
+            if (!ModelState.IsValid)
+                return BadRequest(ModelState);
+
+            try
+            {
+                await _contrasenaService.RestablecerContrasenaAsync(
+                    id,
+                    dto.NuevaContrasena,
+                    dto.ConfirmarNuevaContrasena);
+
+                return Ok(new { message = "Contraseña restablecida correctamente." });
+            }
+            catch (EntityNotFoundException ex)
+            {
+                return NotFound(new { message = ex.Message });
+            }
+            catch (ConflictException ex)
+            {
+                return Conflict(new { message = ex.Message });
+            }
+            catch (BadRequestException ex)
+            {
+                return BadRequest(new { message = ex.Message });
+            }
+            catch (Exception ex)
+            {
+                return StatusCode(500, new { message = "Ocurrió un error inesperado.", detail = ex.Message });
+            }
+        }
+
+
     }
-}
+
+    }

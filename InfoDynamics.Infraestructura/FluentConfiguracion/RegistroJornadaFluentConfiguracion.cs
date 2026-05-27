@@ -25,7 +25,7 @@ namespace InfoDynamics.Infraestructura.FluentConfiguracion
                 .HasConstraintName("FK_Registro_Periodo");
 
             builder.HasOne(d => d.id_proyectoNavigation).WithMany(p => p.Registros)
-                .HasForeignKey(d => d.id_proyecto)
+                .HasForeignKey(d => d.codigo)
                 .OnDelete(DeleteBehavior.ClientSetNull)
                 .HasConstraintName("FK_Registro_Proyecto");
 

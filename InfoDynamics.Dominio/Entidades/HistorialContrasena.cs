@@ -4,17 +4,13 @@ using System.Collections.Generic;
 
 namespace InfoDynamics.Dominio.Entidades;
 
-public partial class Contrasena
+public partial class HistorialContrasena
 {
-    public int id_contrasena { get; set; }
+    public int id_historial { get; set; }
 
-    public string contrasena { get; set; } = null!;
+    public string contrasena_hash { get; set; } = null!;
 
-    public DateTime fecha_creacion { get; set; }
-
-    public string estado { get; set; } = null!;
-
-    public bool es_temporal { get; set; }
+    public DateTime fecha_registro { get; set; }
 
     public int no_usuario { get; set; }
 

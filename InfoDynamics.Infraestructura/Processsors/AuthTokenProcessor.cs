@@ -34,7 +34,7 @@ namespace InfoDynamics.Infraestructura.Processors
                 new Claim(JwtRegisteredClaimNames.Sub, user.no_usuario.ToString()),
                 new Claim(JwtRegisteredClaimNames.Jti, Guid.NewGuid().ToString()),
                 new Claim(JwtRegisteredClaimNames.Email, user.email),
-                new Claim(ClaimTypes.Role, user.rol)
+                new Claim(ClaimTypes.Role, user.es_manager.ToString())
             };
 
             var expires = DateTime.UtcNow.AddMinutes(_jwtOptions.ExpirationTimeInMinutes);
