@@ -30,13 +30,16 @@ public partial class EmployeesDbContext : DbContext
     public virtual DbSet<HistorialContrasena> Contrasenas { get; set; }
     public virtual DbSet<Proyecto> Proyectos { get; set; }
 
-
+    public virtual DbSet<Usuario_manager> UsuarioManagers { get; set; }
 
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {
+
+       
         base.OnModelCreating(modelBuilder);
+        modelBuilder.ApplyConfiguration(new FluentConfiguracion.UsuarioManager_FluentConfiguration());
         modelBuilder.ApplyConfiguration(new FluentConfiguracion.Empresa_FluentConfiguration());
- modelBuilder.ApplyConfiguration(new FluentConfiguracion.Vacacion_FluentConfiguration());
+        modelBuilder.ApplyConfiguration(new FluentConfiguracion.Vacacion_FluentConfiguration());
         modelBuilder.ApplyConfiguration(new FluentConfiguracion.Periodo_FluentConfiguration());
         modelBuilder.ApplyConfiguration(new FluentConfiguracion.Registro_FluentConfiguration());
         modelBuilder.ApplyConfiguration(new FluentConfiguracion.Usuario_FluentConfiguration());
