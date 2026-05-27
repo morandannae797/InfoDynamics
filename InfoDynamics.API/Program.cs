@@ -47,8 +47,8 @@ builder.Services.AddScoped(typeof(IGenericRepository<>), typeof(GenericRepositor
 builder.Services.AddScoped<IUnitOfWork, UnitOfWork>();
 // lADO DE LECTURA 
 builder.Services.AddScoped<
-    IReadServiceAsync<EmpresaResponseDto>,
-    ReadServiceAsync<Empresa, EmpresaResponseDto>>();
+    IReadServiceAsync<EmpresaDto>,
+    ReadServiceAsync<Empresa, EmpresaDto>>();
 
 builder.Services.AddScoped<
     IReadServiceAsync<PeriodoResponseDto>,
@@ -71,8 +71,8 @@ builder.Services.AddScoped<
 
 // lado lectura
 builder.Services.AddScoped<
-    IWriteServiceAsync<EmpresaCreateDto, EmpresaUpdateDto>,
-    WriteServiceAsync<Empresa, EmpresaCreateDto, EmpresaUpdateDto>>();
+    IWriteServiceAsync<EmpresaCreateDto, EmpresaDto>,
+    WriteServiceAsync<Empresa, EmpresaCreateDto, EmpresaDto>>();
 //Agregacion de proyecto
 builder.Services.AddScoped<
     IWriteServiceAsync<ProyectoCreateDto, ProyectoUpdateDto>,
