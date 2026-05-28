@@ -171,15 +171,7 @@ namespace InfoDynamics.Aplicacion.servicios.Servicios
             usuarioExistente.estado_cuenta = usuarioActualizado.estado_cuenta;
             usuarioExistente.debe_cambiar_pass = usuarioActualizado.debe_cambiar_pass;
 
-            // No actualizo contrasena_hash aquí porque el cambio de contraseña
-            // debe hacerse en CambiarContrasenaDto o en otro metodo especifico.
-            // Asi evitas modificar contraseñas por accidente desde Update.
 
-            // No actualizo intentos ni hora_bloqueo aquí porque son campos de seguridad/login.
-            // Se deberian modificar desde la logica de autenticacion.
-
-            // No actualizo RefreshToken aquí porque se maneja desde login/refresh token.
-            // Se mantiene la logica original de seguridad separada.
 
             _usuarioRepo.SetOriginalConcurrencyToken(usuarioExistente, rowVersion);
 
@@ -198,12 +190,6 @@ namespace InfoDynamics.Aplicacion.servicios.Servicios
             }
         }
 
-        // AQUI ACOMODAs plis la verdad prefiero que lo hagas tu para que te familiarices con tu codigo de
-        // servicio, pero basicamente es un servicio de validacion que se encarga de validar los datos de entrada
-        // Ahi le agregas lo que falte de validaciones (SI ES QUE FALTAN),
-        // Las que deben de estar son como por ejemplo validar que el numero de empleado sea de 7 digitos,
-        // validar que el correo sea unico, validar que el numero de empleado sea unico, etc.
-
 
         public class UsuarioValidacionService
         {
@@ -214,7 +200,7 @@ namespace InfoDynamics.Aplicacion.servicios.Servicios
                 _usuarioRepo = unitOfWork.Repository<Usuario>();
             }
 
-            
+
 
             public void ValidarNumeroEmpleado(int noUsuario)
             {
