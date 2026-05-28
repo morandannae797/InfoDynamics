@@ -33,10 +33,7 @@ namespace InfoDynamics.Aplicacion.servicios.Servicios
         public async Task<LoginResponseDto> LoginAsync(loginDto loginDto)
         {
 
-
             LoginValidacion.Validar(loginDto);
-
-
 
             LoginIntentosValidacion.ValidarBloqueo(
                 loginDto,
