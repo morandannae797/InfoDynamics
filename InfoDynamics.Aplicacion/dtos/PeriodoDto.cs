@@ -29,8 +29,6 @@ namespace InfoDynamics.Aplicacion.dtos
         [Required, RegularExpression("Abierto|Cerrado")]
         public string Estado { get; set; } = null!;
 
-        [Required]
-        public byte[] RowVersion { get; set; } = null!;
     }
     public class PeriodoResponseDto
     {
@@ -42,6 +40,6 @@ namespace InfoDynamics.Aplicacion.dtos
 
         public string Estado { get; set; } = null!;
 
-        public byte[] RowVersion { get; set; } = null!;
+
     }
 }
