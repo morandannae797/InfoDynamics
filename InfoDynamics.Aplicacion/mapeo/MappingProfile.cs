@@ -49,6 +49,23 @@ namespace InfoDynamics.Aplicacion.mapeo
        //.ForMember(dest => dest.RowVersion, opt => opt.MapFrom(src => src.RowVersion))
        .ForMember(dest => dest.Proyectos, opt => opt.Ignore());
 
+            CreateMap<AuditoriaDto, Auditoria>()
+    .ForMember(dest => dest.id_auditoria, opt => opt.Ignore())
+    .ForMember(dest => dest.fecha, opt => opt.MapFrom(src => DateOnly.FromDateTime(src.Fecha)))
+    .ForMember(dest => dest.fecha_accion, opt => opt.MapFrom(src => DateTime.Now));
+
+            CreateMap<Auditoria, AuditoriaDto>()
+                .ForMember(dest => dest.IdAuditoria, opt => opt.MapFrom(src => src.id_auditoria))
+                .ForMember(dest => dest.IdRegistro, opt => opt.MapFrom(src => src.id_registro))
+                .ForMember(dest => dest.Fecha, opt => opt.MapFrom(src => src.fecha.ToDateTime(TimeOnly.MinValue)))
+                .ForMember(dest => dest.Horas, opt => opt.MapFrom(src => src.horas))
+                .ForMember(dest => dest.NoUsuario, opt => opt.MapFrom(src => src.no_usuario))
+                .ForMember(dest => dest.IdPeriodo, opt => opt.MapFrom(src => src.id_periodo))
+                .ForMember(dest => dest.Codigo, opt => opt.MapFrom(src => src.codigo))
+                .ForMember(dest => dest.Accion, opt => opt.MapFrom(src => src.accion))
+                .ForMember(dest => dest.UsuarioAccion, opt => opt.MapFrom(src => src.usuario_accion))
+                .ForMember(dest => dest.FechaAccion, opt => opt.MapFrom(src => src.fecha_accion));
+
 
 
             CreateMap<Periodo, PeriodoResponseDto>()

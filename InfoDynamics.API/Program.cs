@@ -5,6 +5,7 @@ using InfoDynamics.Aplicacion.mapeo;
 using InfoDynamics.Aplicacion.servicio;
 using InfoDynamics.Aplicacion.servicio.IServicios;
 using InfoDynamics.Aplicacion.servicios;
+using InfoDynamics.Aplicacion.servicios.IServicios;
 using InfoDynamics.Aplicacion.servicios.IServicios.IServicioMapping;
 using InfoDynamics.Aplicacion.servicios.Servicios;
 using InfoDynamics.Aplicacion.Servicios.Servicios;
@@ -17,6 +18,7 @@ using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Net.Http.Headers;
 using Scalar.AspNetCore;
+using System.Reflection.Emit;
 using System.Security.Claims;
 using static InfoDynamics.Aplicacion.dtos.VacacionDto;
 
@@ -134,7 +136,11 @@ builder.Services.AddScoped<VacacionSolicitudService>();
 builder.Services.AddScoped<VacacionDecisionService>();
 builder.Services.AddScoped<VacacionNotificacionService>();
 
+
+
 builder.Services.AddScoped<IHmacServicio, HmacServicio>();
+//En caso de auditoria, se puede agregar un servicio que se encargue de registrar las acciones 
+//builder.Services.AddScoped<IAuditoriaService, AuditoriaService>();
 
 // JWT Options
 builder.Services.Configure<JwtOptions>(builder.Configuration.GetSection(JwtOptions.JwtOptionKey));
@@ -234,6 +240,7 @@ builder.Services.AddAuthentication(opt =>
         }
     };
 });
+
 
 builder.Services.AddAuthorization();
 builder.Services.AddExceptionHandler<GlobalExceptionHandler>();
