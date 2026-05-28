@@ -88,7 +88,7 @@ Content-Type: application/json
   "nombre": "Sony"
 }
 
-### ERROR NOMBRE VACIO
+### CREAR OTRA EMPRESA
 POST https://localhost:7293/api/empresa
 Content-Type: application/json
 
@@ -119,3 +119,87 @@ Content-Type: application/json
 
 ### VER PROYECTOS
 GET https://localhost:7293/api/proyecto
+
+
+
+##################################################
+### EMPLEADO SOLICITA VACACIONES
+##################################################
+
+POST https://localhost:7293/api/Vacacion
+Content-Type: application/json
+
+{
+  "fechaInicio": "2026-06-10",
+  "fechaFin": "2026-06-15"
+}
+
+
+
+##################################################
+### ERROR FECHA INVALIDA
+##################################################
+
+POST https://localhost:7293/api/Vacacion
+Authorization: Bearer TOKEN_EMPLEADO
+Content-Type: application/json
+
+{
+  "fechaInicio": "2026-06-20",
+  "fechaFin": "2026-06-10"
+}
+
+
+
+##################################################
+### MANAGER CONSULTA SOLICITUDES
+##################################################
+
+GET https://localhost:7293/api/Vacacion
+
+
+
+##################################################
+### VER UNA SOLICITUD
+##################################################
+
+GET https://localhost:7293/api/Vacacion/1
+
+
+
+##################################################
+### APROBAR SOLICITUD
+##################################################
+
+POST https://localhost:7293/api/Vacacion/1/evaluar
+Content-Type: application/json
+
+{
+  "estadoDecision": "Aprobada"
+}
+
+
+
+##################################################
+### RECHAZAR SOLICITUD
+##################################################
+
+POST https://localhost:7293/api/Vacacion/2/evaluar
+Content-Type: application/json
+
+{
+  "estadoDecision": "Rechazada"
+}
+
+
+##################################################
+### ERROR ESTADO INVALIDO
+##################################################
+
+POST https://localhost:7293/api/Vacacion/1/evaluar
+Authorization: Bearer TOKEN_MANAGER
+Content-Type: application/json
+
+{
+  "estadoDecision": "Pendiente"
+}

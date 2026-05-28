@@ -40,9 +40,7 @@ namespace InfoDynamics.Dominio.Entidades
 
     public virtual ICollection<Registro> Registros { get; set; } = new List<Registro>();
 
-    public virtual ICollection<Vacacion> Vacacionid_administradorNavigations { get; set; } = new List<Vacacion>();
 
-    public virtual ICollection<Vacacion> Vacacionno_usuarioNavigations { get; set; } = new List<Vacacion>();
     public virtual ICollection<HistorialContrasena> Contrasenas { get; set; } = new List<HistorialContrasena>();
     }
 

@@ -8,10 +8,10 @@ using InfoDynamics.Dominio.interfaces;
 
 
 namespace InfoDynamics.Aplicacion.dtos
-
 {
 
-        public class UsuarioManagerResponseDto
+
+        public class UsuarioManagerDto : IConcurrencyDto
         {
             [Required]
             public int NoUsuario { get; set; }
@@ -19,29 +19,6 @@ namespace InfoDynamics.Aplicacion.dtos
             [Required]
             public int NoUsuarioManager { get; set; }
 
-            [Required]
-            public byte[] RowVersion { get; set; } = null!;
-        }
-
-        public class UsuarioManagerCreateDto
-        {
-            [Required]
-            public int NoUsuario { get; set; }
-
-            [Required]
-            public int NoUsuarioManager { get; set; }
-        }
-
-        public class UsuarioManagerUpdateDto : IConcurrencyDto
-        {
-            [Required]
-            public int NoUsuario { get; set; }
-
-            [Required]
-            public int NoUsuarioManager { get; set; }
-
-            [Required]
-            public byte[] RowVersion { get; set; } = null!;
         }
     }
 

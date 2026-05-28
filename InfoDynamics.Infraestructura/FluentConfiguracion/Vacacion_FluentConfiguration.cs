@@ -14,22 +14,11 @@ namespace InfoDynamics.Infraestructura.FluentConfiguracion
 
             builder.ToTable("Vacacion");
 
-            builder.Property(e => e.RowVersion)
-                .IsRowVersion()
-                .IsConcurrencyToken();
             builder.Property(e => e.estado)
                 .HasMaxLength(15)
                 .IsUnicode(false);
 
 
-            builder.HasOne(d => d.id_administradorNavigation).WithMany(p => p.Vacacionid_administradorNavigations)
-                .HasForeignKey(d => d.no_usuario)
-                .HasConstraintName("FK_Vacacion_Administrador");
-
-            builder.HasOne(d => d.no_usuarioNavigation).WithMany(p => p.Vacacionno_usuarioNavigations)
-                .HasForeignKey(d => d.no_usuario)
-                .OnDelete(DeleteBehavior.ClientSetNull)
-                .HasConstraintName("FK_Vacacion_Usuario");
         }
 
 

@@ -1,11 +1,9 @@
-﻿using InfoDynamics.Dominio.interfaces;
-using System.ComponentModel.DataAnnotations;
+﻿using System.ComponentModel.DataAnnotations;
 
 namespace InfoDynamics.Aplicacion.dtos
 {
     public class VacacionDto
     {
-
         public class VacacionCreateDto
         {
             [Required]
@@ -14,11 +12,10 @@ namespace InfoDynamics.Aplicacion.dtos
             [Required]
             public DateTime FechaFin { get; set; }
 
-            [Required]
             public int SolicitanteId { get; set; }
         }
 
-        public class VacacionResponseDto 
+        public class VacacionResponseDto
         {
             public int VacacionId { get; set; }
 
@@ -26,29 +23,16 @@ namespace InfoDynamics.Aplicacion.dtos
 
             public DateTime FechaFin { get; set; }
 
-            public string EstadoAprobacion { get; set; } = null!;
+            public string Estado { get; set; } = null!;
 
             public int SolicitanteId { get; set; }
-
-            public string NombreSolicitante { get; set; } = null!;
-
-            public int? AprobadorId { get; set; }
-
-            public string? NombreAprobador { get; set; }
-
-
         }
 
-        public class VacacionAprobacionDto : IConcurrencyDto
+        public class VacacionAprobacionDto
         {
-            [Required]
-            public int VacacionId { get; set; }
-
             [Required]
             [RegularExpression("Aprobada|Rechazada", ErrorMessage = "El estado debe ser 'Aprobada' o 'Rechazada'.")]
             public string EstadoDecision { get; set; } = null!;
-
         }
     }
-
 }
