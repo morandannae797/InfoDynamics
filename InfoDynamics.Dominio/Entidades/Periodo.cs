@@ -12,7 +12,6 @@ namespace InfoDynamics.Dominio.Entidades
 
         public string estado { get; set; } = null!;
 
-        public byte[] RowVersion { get; set; } = null!;
 
         public virtual ICollection<Registro> Registros { get; set; } = new List<Registro>();
     }

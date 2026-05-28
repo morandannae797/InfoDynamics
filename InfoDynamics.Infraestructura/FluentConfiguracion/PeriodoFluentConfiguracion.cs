@@ -15,9 +15,6 @@ namespace InfoDynamics.Infraestructura.FluentConfiguracion
 
             builder.ToTable("Periodo");
 
-            builder.Property(e => e.RowVersion)
-                .IsRowVersion()
-                .IsConcurrencyToken();
             builder.Property(e => e.estado)
                 .HasMaxLength(15)
                 .IsUnicode(false);
