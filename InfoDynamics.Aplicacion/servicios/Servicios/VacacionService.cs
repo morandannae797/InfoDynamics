@@ -1,33 +1,54 @@
 ﻿using InfoDynamics.Aplicacion.CustomException;
 using InfoDynamics.Aplicacion.dtos;
-using InfoDynamics.Aplicacion.servicios.IServicios.IServicioMapping;
+using InfoDynamics.Aplicacion.servicio.IServicios;
 using InfoDynamics.Dominio.Entidades;
 using InfoDynamics.Dominio.interfaces;
-using Microsoft.EntityFrameworkCore;
 
-
-namespace InfoDynamics.Aplicacion.Servicios.Servicios
+namespace InfoDynamics.Aplicacion.servicios
 {
+    public class VacacionAprobacionService : IVacacionAprobacionService
+    {
+        private readonly IGenericRepository<Vacacion> _vacacionRepository;
+        private readonly IGenericRepository<Usuario_manager> _usuarioManagerRepository;
+        private readonly IUnitOfWork _unitOfWork;
 
-        public class VacacionValidacionService
+        public VacacionAprobacionService(
+            IGenericRepository<Vacacion> vacacionRepository,
+            IGenericRepository<Usuario_manager> usuarioManagerRepository,
+            IUnitOfWork unitOfWork)
         {
-            // Valida solicitud y periodo solicitado.
+            _vacacionRepository = vacacionRepository;
+            _usuarioManagerRepository = usuarioManagerRepository;
+            _unitOfWork = unitOfWork;
         }
 
-        public class VacacionSolicitudService
+        public async Task EvaluarVacacionAsync(
+            int idVacacion,
+            VacacionDto.VacacionAprobacionDto dto,
+            int noUsuarioManager)
         {
-            // Registra solicitud de vacaciones con estado pendiente.
-        }
+            var vacacion = await _vacacionRepository.GetByIdAsync(idVacacion);
 
-        public class VacacionDecisionService
-        {
-            // Aprueba o rechaza vacaciones.
-            // Si aprueba, registra horas automáticamente.
-        }
+            if (vacacion == null)
+                throw new EntityNotFoundException("La solicitud de vacaciones no existe.");
 
-        public class VacacionNotificacionService
-        {
-            // Notifica al administrador y al empleado por correo.
+            if (vacacion.estado != "Pendiente")
+                throw new ConflictException("La solicitud ya fue evaluada anteriormente.");
+
+            var relaciones = await _usuarioManagerRepository.GetAllAsync();
+
+            bool pertenece = relaciones.Any(x =>
+                x.no_usuario_manager == noUsuarioManager &&
+                x.no_usuario == vacacion.no_usuario);
+
+            if (!pertenece)
+                throw new UnauthorizedException("No puedes modificar solicitudes de otro equipo.");
+
+            vacacion.estado = dto.EstadoDecision;
+
+            await _vacacionRepository.UpdateAsync(vacacion);
+
+            await _unitOfWork.SaveChangesAsync();
         }
-    
+    }
 }

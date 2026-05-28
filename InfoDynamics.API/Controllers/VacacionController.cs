@@ -4,6 +4,7 @@ using InfoDynamics.Aplicacion.servicio.IServicios;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
+using System.Security.Claims;
 
 namespace InfoDynamics.API.Controllers
 {
@@ -13,13 +14,16 @@ namespace InfoDynamics.API.Controllers
     {
         private readonly IReadServiceAsync<VacacionDto.VacacionResponseDto> _readService;
         private readonly IWriteServiceAsync<VacacionDto.VacacionCreateDto, VacacionDto.VacacionAprobacionDto> _writeService;
+        private readonly IVacacionAprobacionService _vacacionAprobacionService;
 
         public VacacionController(
             IReadServiceAsync<VacacionDto.VacacionResponseDto> readService,
-            IWriteServiceAsync<VacacionDto.VacacionCreateDto, VacacionDto.VacacionAprobacionDto> writeService)
+            IWriteServiceAsync<VacacionDto.VacacionCreateDto, VacacionDto.VacacionAprobacionDto> writeService,
+            IVacacionAprobacionService vacacionAprobacionService)
         {
             _readService = readService;
             _writeService = writeService;
+            _vacacionAprobacionService = vacacionAprobacionService;
         }
 
         [Authorize(Roles = "Manager")]
@@ -36,6 +40,7 @@ namespace InfoDynamics.API.Controllers
                 return NotFound(new { message = ex.Message });
             }
         }
+
         [Authorize]
         [HttpGet("{id:int}")]
         public async Task<ActionResult<VacacionDto.VacacionResponseDto>> GetById(int id)
@@ -51,18 +56,24 @@ namespace InfoDynamics.API.Controllers
             }
         }
 
-        [Authorize]
+        [Authorize(Roles = "Empleado")]
         [HttpPost]
         public async Task<ActionResult> Create([FromBody] VacacionDto.VacacionCreateDto dto)
         {
             if (!ModelState.IsValid)
                 return BadRequest(ModelState);
 
+            var claim = User.FindFirst(ClaimTypes.NameIdentifier);
+
+            if (claim == null)
+                throw new UnauthorizedException("Usuario no autenticado.");
+
+            dto.SolicitanteId = int.Parse(claim.Value);
+
             await _writeService.AddAsync(dto);
 
             return Ok(new { mensaje = "Vacacion solicitada correctamente." });
         }
-
 
         [Authorize(Roles = "Manager")]
         [HttpPost("{id:int}/evaluar")]
@@ -71,23 +82,30 @@ namespace InfoDynamics.API.Controllers
             if (!ModelState.IsValid)
                 return BadRequest(ModelState);
 
-            if (id != dto.VacacionId)
-                return BadRequest(new { message = "El ID de la ruta no coincide con el del objeto." });
-
             try
             {
-                var vacacion = await _readService.GetByIdAsync(id);
+                var claim = User.FindFirst(ClaimTypes.NameIdentifier);
 
-                if (vacacion.Estado != "Pendiente")
-                    return BadRequest(new { mensaje = "Esta solicitud ya fue evaluada anteriormente." });
+                if (claim == null)
+                    throw new UnauthorizedException("Usuario no autenticado.");
 
-                await _writeService.UpdateAsync(dto);
+                int noUsuarioManager = int.Parse(claim.Value);
+
+                await _vacacionAprobacionService.EvaluarVacacionAsync(id, dto, noUsuarioManager);
 
                 return Ok(new { mensaje = "Estado de la vacacion actualizado exitosamente." });
             }
             catch (EntityNotFoundException ex)
             {
                 return NotFound(new { message = ex.Message });
+            }
+            catch (UnauthorizedException ex)
+            {
+                return StatusCode(403, new { message = ex.Message });
+            }
+            catch (ConflictException ex)
+            {
+                return Conflict(new { message = ex.Message });
             }
             catch (DbUpdateConcurrencyException)
             {

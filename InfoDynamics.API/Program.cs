@@ -130,13 +130,14 @@ builder.Services.AddScoped<JornadaCalculoService>();
 //Proyeto
 builder.Services.AddScoped<RegistroProyectoService>();
 
-// Vacaciones
+/* Vacaciones
 builder.Services.AddScoped<VacacionValidacionService>();
 builder.Services.AddScoped<VacacionSolicitudService>();
 builder.Services.AddScoped<VacacionDecisionService>();
 builder.Services.AddScoped<VacacionNotificacionService>();
+ */
 
-
+builder.Services.AddScoped<IVacacionAprobacionService, VacacionAprobacionService>();
 
 builder.Services.AddScoped<IHmacServicio, HmacServicio>();
 //En caso de auditoria, se puede agregar un servicio que se encargue de registrar las acciones 

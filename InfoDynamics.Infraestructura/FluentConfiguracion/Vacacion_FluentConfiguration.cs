@@ -19,14 +19,6 @@ namespace InfoDynamics.Infraestructura.FluentConfiguracion
                 .IsUnicode(false);
 
 
-            builder.HasOne(d => d.id_administradorNavigation).WithMany(p => p.Vacacionid_administradorNavigations)
-                .HasForeignKey(d => d.no_usuario)
-                .HasConstraintName("FK_Vacacion_Administrador");
-
-            builder.HasOne(d => d.no_usuarioNavigation).WithMany(p => p.Vacacionno_usuarioNavigations)
-                .HasForeignKey(d => d.no_usuario)
-                .OnDelete(DeleteBehavior.ClientSetNull)
-                .HasConstraintName("FK_Vacacion_Usuario");
         }
 
 

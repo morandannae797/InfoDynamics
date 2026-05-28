@@ -38,7 +38,7 @@ public partial class EmployeesDbContext : DbContext
        
         base.OnModelCreating(modelBuilder);
 
-        modelBuilder.ApplyConfiguration(new Auditoria_FluentConfiguration());
+        modelBuilder.ApplyConfiguration(new FluentConfiguracion.Auditoria_FluentConfiguration());
         modelBuilder.ApplyConfiguration(new FluentConfiguracion.UsuarioManager_FluentConfiguration());
         modelBuilder.ApplyConfiguration(new FluentConfiguracion.Empresa_FluentConfiguration());
         modelBuilder.ApplyConfiguration(new FluentConfiguracion.Vacacion_FluentConfiguration());
