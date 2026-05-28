@@ -1,6 +1,7 @@
 using InfoDynamics.Aplicacion.CustomException;
 using InfoDynamics.Aplicacion.dtos;
 using InfoDynamics.Aplicacion.servicio.IServicios;
+using InfoDynamics.Aplicacion.servicios.Servicios;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
@@ -11,20 +12,20 @@ namespace InfoDynamics.API.Controllers
     [Route("api/[controller]")]
     public class PeriodoController : ControllerBase
     {
-        private readonly IReadServiceAsync<PeriodoResponseDto> _readService;
-        //private readonly IWriteServiceAsync<PeriodoDto, PeriodoDto> _writeService;
+        private readonly IReadServiceAsync<PeriodoDto> _readService;
+        private readonly IWriteServiceAsync<PeriodoDto, PeriodoDto> _writeService;
+        private readonly PeriodoService _periodoService;
 
-        public PeriodoController(
-            IReadServiceAsync<PeriodoResponseDto> readService)
-            //IWriteServiceAsync<PeriodoCreateDto, PeriodoUpdateDto> writeService)
+        public PeriodoController(IReadServiceAsync<PeriodoDto> readService, IWriteServiceAsync<PeriodoDto, PeriodoDto> writeService, PeriodoService periodoService)
         {
             _readService = readService;
-            //_writeService = writeService;
+            _writeService = writeService;
+            _periodoService = periodoService;
         }
 
         [Authorize]
         [HttpGet]
-        public async Task<ActionResult<IEnumerable<PeriodoResponseDto>>> GetAll()
+        public async Task<ActionResult<IEnumerable<PeriodoDto>>> GetAll()
         {
             try
             {
@@ -39,7 +40,7 @@ namespace InfoDynamics.API.Controllers
 
         [Authorize]
         [HttpGet("{id:int}")]
-        public async Task<ActionResult<PeriodoResponseDto>> GetById(int id)
+        public async Task<ActionResult<PeriodoDto>> GetById(int id)
         {
             try
             {
@@ -53,20 +54,29 @@ namespace InfoDynamics.API.Controllers
         }
 
         [Authorize(Roles = "Manager")]
-        [HttpPost]
-        public async Task<ActionResult> Create([FromBody] PeriodoCreateDto dto)
+        [HttpPost("generar")]
+        public async Task<ActionResult> GenerarPeriodo()
         {
-            if (!ModelState.IsValid)
-                return BadRequest(ModelState);
+            try
+            {
+                var periodo = await _periodoService.GenerarPeriodoAsync();
 
-            await _writeService.AddAsync(dto);
-
-            return Ok(new { message = "Periodo creado correctamente." });
+                return Ok(new
+                {
+                    message = "Periodo generado correctamente.",
+                    periodo
+                });
+            }
+            catch (BadRequestException ex)
+            {
+                return BadRequest(new { message = ex.Message });
+            }
         }
+
 
         [Authorize(Roles = "Manager")]
         [HttpPost("{id:int}")]
-        public async Task<ActionResult> Update(int id, [FromBody] PeriodoUpdateDto dto)
+        public async Task<ActionResult> Update(int id, [FromBody] PeriodoDto dto)
         {
             if (!ModelState.IsValid)
                 return BadRequest(ModelState);
@@ -84,9 +94,5 @@ namespace InfoDynamics.API.Controllers
                 return Conflict(new { message = "El periodo fue modificado por otro proceso. Recarga los datos y reintenta." });
             }
         }
-
-        */
-
-    
     }
 }
