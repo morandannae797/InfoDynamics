@@ -18,7 +18,7 @@ public partial class EmployeesDbContext : DbContext
         : base(options)
     {
     }
-
+    public virtual DbSet<Auditoria> Auditorias { get; set; }
     public virtual DbSet<Periodo> Periodos { get; set; }
 
     public virtual DbSet<Registro> Registro { get; set; }
@@ -37,6 +37,8 @@ public partial class EmployeesDbContext : DbContext
 
        
         base.OnModelCreating(modelBuilder);
+
+        modelBuilder.ApplyConfiguration(new Auditoria_FluentConfiguration());
         modelBuilder.ApplyConfiguration(new FluentConfiguracion.UsuarioManager_FluentConfiguration());
         modelBuilder.ApplyConfiguration(new FluentConfiguracion.Empresa_FluentConfiguration());
         modelBuilder.ApplyConfiguration(new FluentConfiguracion.Vacacion_FluentConfiguration());
