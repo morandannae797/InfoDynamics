@@ -14,72 +14,77 @@ namespace InfoDynamics.Aplicacion.servicios.Servicios
         private readonly Iusuarioservicio _usuarioService;
         private readonly IUserRepository _userRepository;
 
-        // Guarda intentos user
-        private static readonly ConcurrentDictionary<string, int> _failedAttempts = new();
 
-        // Guarda el tiempo de bloqueo por usuario
-        private static readonly ConcurrentDictionary<string, DateTime> _blockedUsers = new();
-  
+
+        // CAMBIOS:
+        // Se eliminó el uso de diccionarios (_failedAttempts y _blockedUsers)
+        // porque los intentos fallidos y el bloqueo ahora se guardan directamente
+        // en la entidad Usuario mediante intentos y hora_bloqueo.
         public AccountService(
-            IAuthTokenProcessor tokenProcessor,
-            Iusuarioservicio usuarioService,
-            IUserRepository userRepository)
+         IAuthTokenProcessor tokenProcessor,
+         Iusuarioservicio usuarioService,
+         IUserRepository userRepository)
         {
             _tokenProcessor = tokenProcessor;
             _usuarioService = usuarioService;
             _userRepository = userRepository;
         }
 
-        public async Task<Usuario> LoginAsync(loginDto loginDto)
+        public async Task<LoginResponseDto> LoginAsync(loginDto loginDto)
         {
-     
 
-            LoginValidacion.Validar(loginDto);
+        LoginValidacion.Validar(loginDto);
 
-            LoginIntentosValidacion.ValidarBloqueo(
-                loginDto,
-                _blockedUsers,
-                _failedAttempts);
+            //Cambios:
+            // Si la cuenta está bloqueada se revisa:
+            // Si ya expiraron las 2 horas y se reactiva.
+            // Si continúa bloqueada se impide el acceso.
+            if (user != null)
+            {
+                await LoginIntentosValidacion.ValidarBloqueo(
+                    user,
+                    _usuarioService);
+            }
 
-            var user = await _usuarioService.VerifyUser(
+            var usuarioValido = await _usuarioService.VerifyUser(
                 loginDto.identificador,
                 loginDto.contrasena);
 
             
 
-            if (user == null)
+            // Si la contraseña es incorrecta se incrementa el contador de intentos.
+            // Al llegar a 3 intentos se bloquea la cuenta.
+            if (usuarioValido == null)
             {
-                LoginIntentosValidacion.ProcesarIntentoFallido(
-                    loginDto,
-                    _blockedUsers,
-                    _failedAttempts);
+                if (user != null)
+                {
+                    await LoginIntentosValidacion
+                        .ProcesarIntentoFallido(
+                            user,
+                            _usuarioService);
+                }
 
                 throw new UnauthorizedException(
-                    "Contraseña/Usuario incorrecta."
-                );
+                    "Contraseña/Usuario incorrecta.");
             }
 
-            if (user.estado_cuenta != true)
-            {
-                throw new UnauthorizedException(
-                    "La cuenta no está activa."
-                );
-            }
+            // Login correcto
+            // Cambio:
+            // En login exitoso se reinician los intentos y se elimina el bloqueo temporal.
+            // Antes esto se hacía eliminando datos del diccionario en memoria.
+            usuarioValido.intentos = 0;
+            usuarioValido.hora_bloqueo = null;
+            usuarioValido.estado_cuenta = true;
 
-            // Reiniciar intentos despues de login exitoso
-
-            _failedAttempts.TryRemove(
-                loginDto.identificador,
-                out _);
-
-            _blockedUsers.TryRemove(
-                loginDto.identificador,
-                out _);
+            await _usuarioService.UpdateWithConcurrencyAsync(
+                usuarioValido,
+                usuarioValido.RowVersion);
 
             var rowVersionOriginal = user.RowVersion;
 
             var (jwtToken, expirationDateInUtc)
-                = _tokenProcessor.GenerateJwtToken(user);
+                = _tokenProcessor.GenerateJwtToken(
+                    usuarioValido);
 
             var refreshToken
                 = _tokenProcessor.GenerateRefreshToken();
@@ -87,13 +92,13 @@ namespace InfoDynamics.Aplicacion.servicios.Servicios
             var refreshTokenExpirationDateInUtc
                 = DateTime.UtcNow.AddDays(7);
 
-            user.RefreshToken = refreshToken;
+            usuarioValido.RefreshToken = refreshToken;
 
-            user.RefreshTokenExpiryTime
+            usuarioValido.RefreshTokenExpiryTime
                 = refreshTokenExpirationDateInUtc;
 
             await _usuarioService.UpdateWithConcurrencyAsync(
-                user,
+                usuarioValido,
                 rowVersionOriginal);
 
             _tokenProcessor.WriteAuthTokenAsHttpOnlyCookie(
@@ -108,8 +113,21 @@ namespace InfoDynamics.Aplicacion.servicios.Servicios
                 refreshToken,
                 refreshTokenExpirationDateInUtc);
 
-            return user;
+            return new LoginResponseDto
+            {
+                NoUsuario = user.no_usuario,
+                Token = jwtToken,
+                EsManager = user.es_manager
+            };
         }
+
+
+
+
+
+
+
+
 
         public async Task RefreshtokenAsync(string? refreshToken)
         {
@@ -176,10 +194,37 @@ namespace InfoDynamics.Aplicacion.servicios.Servicios
 
         }
 
-      
+
+
+
+        // CAMBIO:
+        // Metodo de desbloqueo manual para administrador.
+        // Permite reactivar una cuenta sin esperar las 2 horas.
+        public async Task DesbloquearCuentaAsync(
+            int noUsuario)
+        {
+            var user = await _usuarioService.FindByIdAsync(
+                noUsuario);
+
+            if (user == null)
+            {
+                throw new KeyNotFoundException(
+                    "Usuario no encontrado.");
+            }
+
+            // Desbloqueo manual independiente del tiempoo
+            //jjjjjjjjjjjjjjjjjjj
+            user.estado_cuenta = true;
+            user.hora_bloqueo = null;
+            user.intentos = 0;
+
+            await _usuarioService.UpdateWithConcurrencyAsync(
+                user,
+                user.RowVersion);
+        }
+
+
     }
-
-
 
     public  class LoginValidacion
     {
@@ -211,66 +256,94 @@ namespace InfoDynamics.Aplicacion.servicios.Servicios
     }
 
 
+    // CAMBIO:
+    // Antes se utilizaba ConcurrentDictionary en memoria.
+    // Ahora se utiliza directamente los campos de seguridad del usuario:
+    // intentos, hora_bloqueo y estado_cuenta.
     public class LoginIntentosValidacion
     {
-        public static void ValidarBloqueo(
-            loginDto loginDto,
-            ConcurrentDictionary<string, DateTime> blockedUsers,
-            ConcurrentDictionary<string, int> failedAttempts)
+        // Bloqueo temporal de 2 horas
+        // Valida si la cuenta se encuentra bloqueada.
+        // Si estado_cuenta = false y existe hora_bloqueo,
+        // se calcula si ya pasaron las 2 horas del bloqueo.
+        public static async Task ValidarBloqueo(
+            Usuario user,
+            Iusuarioservicio usuarioService)
         {
-
-
-            if (blockedUsers.ContainsKey(loginDto.identificador))
+            // Bloqueo temporal de 2 horas
+            if (
+                user.estado_cuenta == false
+                &&
+                user.hora_bloqueo != null
+            )
             {
-                var tiempoBloqueo
-                    = blockedUsers[loginDto.identificador];
+                var finBloqueo
+                    = user.hora_bloqueo.Value.AddHours(2);
 
-                if (DateTime.UtcNow < tiempoBloqueo)
+                // Ya expiró el bloqueo
+                // Cambio:
+                // Si el tiempo expiró, la cuenta se reactiva automáticamente
+                // y se reinician intentos y hora_bloqueo.
+                if (DateTime.UtcNow >= finBloqueo)
+                {
+                    user.estado_cuenta = true;
+                    user.intentos = 0;
+                    user.hora_bloqueo = null;
+
+                    await usuarioService
+                        .UpdateWithConcurrencyAsync(
+                            user,
+                            user.RowVersion);
+                }
+                else
                 {
                     throw new UnauthorizedException(
-                        "La cuenta está bloqueada por 2 horas."
-                    );
+                        "La cuenta está bloqueada por 2 horas.");
                 }
-
-         
-
-                blockedUsers.TryRemove(
-                    loginDto.identificador,
-                    out _);
-
-                failedAttempts.TryRemove(
-                    loginDto.identificador,
-                    out _);
+            }
+            // Si la cuenta sigue inactiva, se bloquea el acceso.
+            // Esto también permite que un administrador controle manualmente
+            // el desbloqueo o desactivación de cuentas.
+            if (user.estado_cuenta != true)
+            {
+                throw new UnauthorizedException(
+                    "La cuenta no está activa.");
             }
         }
 
-        public static void ProcesarIntentoFallido(
-            loginDto loginDto,
-            ConcurrentDictionary<string, DateTime> blockedUsers,
-            ConcurrentDictionary<string, int> failedAttempts)
+        public static async Task ProcesarIntentoFallido(
+            Usuario user,
+            Iusuarioservicio usuarioService)
         {
-            if (failedAttempts.ContainsKey(loginDto.identificador))
-            {
-                failedAttempts[loginDto.identificador]++;
-            }
-            else
-            {
-                failedAttempts[loginDto.identificador] = 1;
-            }
+            // Se incrementa el número de intentos fallidos almacenado en BD.
+            user.intentos++;
 
-            if (failedAttempts[loginDto.identificador] >= 3)
-            {
-                blockedUsers[loginDto.identificador]
-                    = DateTime.UtcNow.AddHours(2);
 
-                failedAttempts.TryRemove(
-                    loginDto.identificador,
-                    out _);
+            // Cambio:
+            // Al llegar a 3 intentos incorrectos:
+            // Se desactiva la cuenta.
+            // Se registra la hora de bloqueo.
+            // Y se inicia el periodo de bloqueo temporal de 2 horas.
+            if (user.intentos >= 3)
+            {
+                user.estado_cuenta = false;
+                user.hora_bloqueo = DateTime.UtcNow;
+
+                await usuarioService
+                    .UpdateWithConcurrencyAsync(
+                        user,
+                        user.RowVersion);
 
                 throw new UnauthorizedException(
-                    "Cuenta bloqueada por 2 horas por exceder el máximo de intentos."
-                );
+                    "Cuenta bloqueada por 2 horas por exceder el máximo de intentos.");
             }
+
+            await usuarioService
+                .UpdateWithConcurrencyAsync(
+                    user,
+                    user.RowVersion);
         }
     }
+
+
 }
