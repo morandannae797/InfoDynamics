@@ -12,14 +12,14 @@ namespace InfoDynamics.API.Controllers
     public class PeriodoController : ControllerBase
     {
         private readonly IReadServiceAsync<PeriodoResponseDto> _readService;
-        private readonly IWriteServiceAsync<PeriodoCreateDto, PeriodoUpdateDto> _writeService;
+        //private readonly IWriteServiceAsync<PeriodoDto, PeriodoDto> _writeService;
 
         public PeriodoController(
-            IReadServiceAsync<PeriodoResponseDto> readService,
-            IWriteServiceAsync<PeriodoCreateDto, PeriodoUpdateDto> writeService)
+            IReadServiceAsync<PeriodoResponseDto> readService)
+            //IWriteServiceAsync<PeriodoCreateDto, PeriodoUpdateDto> writeService)
         {
             _readService = readService;
-            _writeService = writeService;
+            //_writeService = writeService;
         }
 
         [Authorize]
@@ -84,6 +84,8 @@ namespace InfoDynamics.API.Controllers
                 return Conflict(new { message = "El periodo fue modificado por otro proceso. Recarga los datos y reintenta." });
             }
         }
+
+        */
 
     
     }

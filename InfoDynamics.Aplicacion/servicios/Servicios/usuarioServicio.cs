@@ -207,10 +207,39 @@ namespace InfoDynamics.Aplicacion.servicios.Servicios
 
         public class UsuarioValidacionService
         {
-            // Validar campos obligatorios.
-            // Validar número de empleado de 7 digitos.
-            // Validar correo único.
-            // Validar número de empleado único.
+            private readonly IGenericRepository<Usuario> _usuarioRepo;
+
+            public UsuarioValidacionService(IUnitOfWork unitOfWork)
+            {
+                _usuarioRepo = unitOfWork.Repository<Usuario>();
+            }
+
+            
+
+            public void ValidarNumeroEmpleado(int noUsuario)
+            {
+                if (noUsuario.ToString().Length > 7)
+                    throw new BadRequestException("El nummero de empleado no puede tener mas de 7 digitos.");
+            }
+
+            public async Task ValidarNoUsuarioUnicoAsync(int noUsuario)
+            {
+                var existente = await _usuarioRepo.GetByIdAsync(noUsuario);
+
+                if (existente != null)
+                    throw new ConflictException($"Ya existe un usuario con el numero {noUsuario}.");
+            }
+
+            public async Task ValidarEmailUnicoAsync(string email, int? excluirNoUsuario = null)
+            {
+                var existente = await _usuarioRepo.GetAsync(
+                    u => u.email == email
+                    && (excluirNoUsuario == null || u.no_usuario != excluirNoUsuario)
+                );
+
+                if (existente != null)
+                    throw new ConflictException($"El correo {email} ya esta registrado.");
+            }
         }
     }
 }

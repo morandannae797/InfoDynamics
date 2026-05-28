@@ -1,4 +1,6 @@
 ﻿using System;
+using System.Collections.Generic;
+using System.Text;
 
 namespace InfoDynamics.Dominio.Entidades
 {
@@ -25,7 +27,7 @@ namespace InfoDynamics.Dominio.Entidades
         public DateTime fecha_accion { get; set; }
 
         public virtual Usuario no_usuarioNavigation { get; set; } = null!;
-
+   
         public virtual Usuario usuario_accionNavigation { get; set; } = null!;
 
         public virtual Periodo id_periodoNavigation { get; set; } = null!;

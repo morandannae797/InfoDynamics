@@ -6,9 +6,9 @@ namespace InfoDynamics.Dominio.Entidades
     {
         public int id_periodo { get; set; }
 
-        public DateOnly fecha_inicio { get; set; } 
+        public DateTime fecha_inicio { get; set; } 
 
-        public DateOnly fecha_fin { get; set; }
+        public DateTime fecha_fin { get; set; }
 
         public string estado { get; set; } = null!;
 
