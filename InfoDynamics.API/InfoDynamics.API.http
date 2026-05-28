@@ -77,7 +77,7 @@ POST https://localhost:7293/api/empresa
 Content-Type: application/json
 
 {
-  "nombre": "Sony"
+  "nombre": ""
 }
 
 ### ERROR DE DUPLICADO
@@ -93,16 +93,17 @@ POST https://localhost:7293/api/empresa
 Content-Type: application/json
 
 {
-  "nombre": "Dynamics",
+
+ "nombre": "kuromip2",
   "tipoProyecto": "Ambos"
 }
 
 ### ACTUALIZAR EMPRESA
-POST https://localhost:7293/api/empresa/update/1
+POST https://localhost:7293/api/empresa/update/5
 Content-Type: application/json
 
 {
-  "idEmpresa": 1,
+  "idEmpresa": 5,
   "nombre": "Sony Updated",
   "tipoProyecto": "Ambos"
 }

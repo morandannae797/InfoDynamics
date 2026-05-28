@@ -95,6 +95,8 @@ builder.Services.AddScoped<
     IWriteServiceAsync<RegistroCreateDto, RegistroDto>,
     WriteServiceAsync<Registro, RegistroCreateDto, RegistroDto>>();
 
+builder.Services.AddHttpContextAccessor();
+
 
 builder.Services.AddScoped<Iusuarioservicio, UsuarioServicio>();
 builder.Services.AddScoped<IUserRepository, UserRepository>();

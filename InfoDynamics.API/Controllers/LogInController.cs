@@ -29,13 +29,12 @@ namespace Employees.API.Controllers
 
         [HttpPost("login")]
         public async Task<IActionResult> Login(
-            [FromBody] loginDto request,
-            [FromHeader(Name = "firma")] string? signature=null)
+            [FromBody] loginDto request)
         {
+
+
             if (request == null)
                 return BadRequest(new { message = "El cuerpo de la peticion no puede estar vacío." });
-
-
 
             try
             {
