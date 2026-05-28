@@ -18,7 +18,7 @@ namespace InfoDynamics.Aplicacion.servicios.Servicios
 
         // Guarda el tiempo de bloqueo por usuario
         private static readonly ConcurrentDictionary<string, DateTime> _blockedUsers = new();
-  
+
         public AccountService(
             IAuthTokenProcessor tokenProcessor,
             Iusuarioservicio usuarioService,
@@ -31,11 +31,11 @@ namespace InfoDynamics.Aplicacion.servicios.Servicios
 
         public async Task LoginAsync(loginDto loginDto)
         {
-     
+
 
             LoginValidacion.Validar(loginDto);
 
-      
+
 
             LoginIntentosValidacion.ValidarBloqueo(
                 loginDto,
@@ -46,7 +46,7 @@ namespace InfoDynamics.Aplicacion.servicios.Servicios
                 loginDto.identificador,
                 loginDto.contrasena);
 
-    
+
 
             if (user == null)
             {
@@ -177,11 +177,11 @@ namespace InfoDynamics.Aplicacion.servicios.Servicios
 
 
 
-    public  class LoginValidacion
+    public class LoginValidacion
     {
         public static void Validar(loginDto loginDto)
         {
- 
+
 
             if (string.IsNullOrWhiteSpace(loginDto.identificador) || string.IsNullOrWhiteSpace(loginDto.contrasena))
             {
@@ -190,13 +190,13 @@ namespace InfoDynamics.Aplicacion.servicios.Servicios
             }
 
 
-            if (!loginDto.identificador.Contains("@") && ( !loginDto.identificador.All(char.IsDigit) ||  loginDto.identificador.Length != 7) )
+            if (!loginDto.identificador.Contains("@") && (!loginDto.identificador.All(char.IsDigit) || loginDto.identificador.Length != 7))
             {
                 throw new BadRequestException(
                     "El número de empleado debe ser numérico.");
             }
 
-     
+
 
             if (!loginDto.identificador.Contains("@") && (!loginDto.identificador.All(char.IsDigit) || loginDto.identificador.Length != 7))
             {
@@ -228,7 +228,7 @@ namespace InfoDynamics.Aplicacion.servicios.Servicios
                     );
                 }
 
-         
+
 
                 blockedUsers.TryRemove(
                     loginDto.identificador,
