@@ -12,6 +12,7 @@ namespace InfoDynamics.Aplicacion.servicios.Servicios
     {
         private readonly IGenericRepository<Usuario> _usuarioRepo;
         private readonly IGenericRepository<HistorialContrasena> _contrasenaRepo;
+        private readonly IGenericRepository<Usuario_manager> _usuarioManagerRepo;
         private readonly IUnitOfWork _unitOfWork;
         private readonly IUserRepository _userRepository;
 
@@ -20,6 +21,7 @@ namespace InfoDynamics.Aplicacion.servicios.Servicios
             _unitOfWork = unitOfWork;
             _usuarioRepo = _unitOfWork.Repository<Usuario>();
             _contrasenaRepo = _unitOfWork.Repository<HistorialContrasena>();
+            _usuarioManagerRepo = _unitOfWork.Repository<Usuario_manager>();
             _userRepository = userRepository;
         }
 
@@ -106,7 +108,7 @@ namespace InfoDynamics.Aplicacion.servicios.Servicios
             {
                 contrasena_hash = usuario.contrasena_hash,
                 fecha_registro = DateTime.UtcNow,
-         
+
                 no_usuario = dto.NoUsuario
             };
 
@@ -140,6 +142,18 @@ namespace InfoDynamics.Aplicacion.servicios.Servicios
                     ? user.es_manager
                     : !user.es_manager
             );
+        }
+
+        // METODO PARA VALIDAR LA RELACION DE MANAGE (ADMIN) A EMPLEADO
+        public async Task<bool> ManagerTieneEmpleado(int managerId, int empleadoId)
+        {
+            var repo = _unitOfWork.Repository<Usuario_manager>();
+
+            var relacion = await repo.GetAsync(
+                x => x.no_usuario_manager == managerId
+                  && x.no_usuario == empleadoId);
+
+            return relacion != null;
         }
 
         public async Task<Usuario> UpdateWithConcurrencyAsync(Usuario usuarioActualizado, byte[] rowVersion)

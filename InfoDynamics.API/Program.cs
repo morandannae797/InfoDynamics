@@ -64,8 +64,8 @@ builder.Services.AddScoped<
     ReadServiceAsync<Registro, RegistroResponseDto>>();
 //Agregacion de proyecto
 builder.Services.AddScoped<
-    IReadServiceAsync<ProyectoResponseDto>,
-    ReadServiceAsync<Proyecto, ProyectoResponseDto>>();
+    IReadServiceAsync<ProyectoDto>,
+    ReadServiceAsync<Proyecto, ProyectoDto>>();
 
 
 
@@ -75,8 +75,8 @@ builder.Services.AddScoped<
     WriteServiceAsync<Empresa, EmpresaCreateDto, EmpresaDto>>();
 //Agregacion de proyecto
 builder.Services.AddScoped<
-    IWriteServiceAsync<ProyectoCreateDto, ProyectoUpdateDto>,
-    WriteServiceAsync<Proyecto, ProyectoCreateDto, ProyectoUpdateDto>>();
+    IWriteServiceSingleAsync<ProyectoDto>,
+    WriteServiceSingleAsync<Proyecto, ProyectoDto>>();
 
 
 builder.Services.AddScoped<
@@ -125,7 +125,8 @@ builder.Services.AddScoped<JornadaValidacionService>();
 builder.Services.AddScoped<JornadaRegistroService>();
 builder.Services.AddScoped<JornadaCalculoService>();
 
-
+//Proyeto
+builder.Services.AddScoped<RegistroProyectoService>();
 
 // Vacaciones
 builder.Services.AddScoped<VacacionValidacionService>();
@@ -236,7 +237,6 @@ builder.Services.AddAuthentication(opt =>
 
 builder.Services.AddAuthorization();
 builder.Services.AddExceptionHandler<GlobalExceptionHandler>();
-
 builder.Services.AddProblemDetails();
 var app = builder.Build();
 

@@ -31,10 +31,12 @@ namespace InfoDynamics.Infraestructura.Processors
 
             var claims = new[]
             {
+
+                new Claim(ClaimTypes.Role, user.es_manager ? "Manager" : "Empleado"),
                 new Claim(JwtRegisteredClaimNames.Sub, user.no_usuario.ToString()),
                 new Claim(JwtRegisteredClaimNames.Jti, Guid.NewGuid().ToString()),
                 new Claim(JwtRegisteredClaimNames.Email, user.email),
-                new Claim(ClaimTypes.Role, user.es_manager.ToString())
+                //new Claim(ClaimTypes.Role, user.es_manager.ToString())
             };
 
             var expires = DateTime.UtcNow.AddMinutes(_jwtOptions.ExpirationTimeInMinutes);
