@@ -10,43 +10,27 @@ namespace InfoDynamics.Aplicacion.mapeo
         {
 
 
-            CreateMap<Usuario_manager, UsuarioManagerResponseDto>()
+            CreateMap<Usuario_manager, UsuarioManagerDto>()
                 .ForMember(dest => dest.NoUsuario,
                     opt => opt.MapFrom(src => src.no_usuario))
                 .ForMember(dest => dest.NoUsuarioManager,
                     opt => opt.MapFrom(src => src.no_usuario_manager));
 
 
-            CreateMap<UsuarioManagerCreateDto, Usuario_manager>()
-                .ForMember(dest => dest.no_usuario,
-                    opt => opt.MapFrom(src => src.NoUsuario))
-                .ForMember(dest => dest.no_usuario_manager,
-                    opt => opt.MapFrom(src => src.NoUsuarioManager));
-
-
-            CreateMap<UsuarioManagerUpdateDto, Usuario_manager>()
-                .ForMember(dest => dest.no_usuario,
-                    opt => opt.MapFrom(src => src.NoUsuario))
-                .ForMember(dest => dest.no_usuario_manager,
-                    opt => opt.MapFrom(src => src.NoUsuarioManager));
-
-
 
             CreateMap<Empresa, EmpresaDto>()
                 .ForMember(dest => dest.IdEmpresa, opt => opt.MapFrom(src => src.id_empresa))
                 .ForMember(dest => dest.Nombre, opt => opt.MapFrom(src => src.nombre));
-                //.ForMember(dest => dest.RowVersion, opt => opt.MapFrom(src => src.RowVersion));
+
 
             CreateMap<EmpresaCreateDto, Empresa>()
                 .ForMember(dest => dest.id_empresa, opt => opt.Ignore())
                 .ForMember(dest => dest.nombre, opt => opt.MapFrom(src => src.Nombre))
-                //.ForMember(dest => dest.RowVersion, opt => opt.Ignore())
                 .ForMember(dest => dest.Proyectos, opt => opt.Ignore());
 
             CreateMap<EmpresaDto, Empresa>()
        .ForMember(dest => dest.id_empresa, opt => opt.MapFrom(src => src.IdEmpresa))
        .ForMember(dest => dest.nombre, opt => opt.MapFrom(src => src.Nombre))
-       //.ForMember(dest => dest.RowVersion, opt => opt.MapFrom(src => src.RowVersion))
        .ForMember(dest => dest.Proyectos, opt => opt.Ignore());
 
             CreateMap<AuditoriaDto, Auditoria>()
@@ -88,7 +72,7 @@ CreateMap<PeriodoUpdateDto, Periodo>()
     .ForMember(dest => dest.Registros, opt => opt.Ignore());
 
 
-            // REGISTRO RESPONSE
+
             CreateMap<Registro, RegistroResponseDto>()
                 .ForMember(dest => dest.RegistroId, opt => opt.MapFrom(src => src.id_registro))
                 .ForMember(dest => dest.Fecha, opt => opt.MapFrom(src => src.fecha))
@@ -98,7 +82,6 @@ CreateMap<PeriodoUpdateDto, Periodo>()
                 .ForMember(dest => dest.Codigo, opt => opt.MapFrom(src => src.codigo));
 
 
-            // REGISTRO CREATE
             CreateMap<RegistroCreateDto, Registro>()
                 .ForMember(dest => dest.id_registro, opt => opt.Ignore())
                 .ForMember(dest => dest.fecha, opt => opt.MapFrom(src => src.Fecha))
@@ -112,7 +95,6 @@ CreateMap<PeriodoUpdateDto, Periodo>()
                 .ForMember(dest => dest.id_proyectoNavigation, opt => opt.Ignore());
 
 
-            // REGISTRO UPDATE
             CreateMap<RegistroUpdateDto, Registro>()
                 .ForMember(dest => dest.id_registro, opt => opt.MapFrom(src => src.RegistroId))
                 .ForMember(dest => dest.fecha, opt => opt.MapFrom(src => src.Fecha))
@@ -124,7 +106,7 @@ CreateMap<PeriodoUpdateDto, Periodo>()
                 .ForMember(dest => dest.id_periodoNavigation, opt => opt.Ignore())
                 .ForMember(dest => dest.id_proyectoNavigation, opt => opt.Ignore());
 
-            // USUARIO CREATE
+
             CreateMap<UsuarioCreateDTO, Usuario>()
                 .ForMember(dest => dest.no_usuario, opt => opt.MapFrom(src => src.NoUsuario))
                 .ForMember(dest => dest.nombre, opt => opt.MapFrom(src => src.Nombre))
@@ -142,12 +124,10 @@ CreateMap<PeriodoUpdateDto, Periodo>()
                 .ForMember(dest => dest.RefreshToken, opt => opt.Ignore())
                 .ForMember(dest => dest.RefreshTokenExpiryTime, opt => opt.Ignore())
                 .ForMember(dest => dest.contrasena_hash, opt => opt.Ignore())
-                .ForMember(dest => dest.Registros, opt => opt.Ignore())
-                .ForMember(dest => dest.Vacacionid_administradorNavigations, opt => opt.Ignore())
-                .ForMember(dest => dest.Vacacionno_usuarioNavigations, opt => opt.Ignore());
+                .ForMember(dest => dest.Registros, opt => opt.Ignore());
 
 
-            // USUARIO UPDATE
+
             CreateMap<UsuarioUpdateDto, Usuario>()
                 .ForMember(dest => dest.no_usuario, opt => opt.MapFrom(src => src.NoUsuario))
                 .ForMember(dest => dest.nombre, opt => opt.MapFrom(src => src.Nombre))
@@ -164,12 +144,10 @@ CreateMap<PeriodoUpdateDto, Periodo>()
                 .ForMember(dest => dest.RefreshToken, opt => opt.Ignore())
                 .ForMember(dest => dest.RefreshTokenExpiryTime, opt => opt.Ignore())
                 .ForMember(dest => dest.contrasena_hash, opt => opt.Ignore())
-                .ForMember(dest => dest.Registros, opt => opt.Ignore())
-                .ForMember(dest => dest.Vacacionid_administradorNavigations, opt => opt.Ignore())
-                .ForMember(dest => dest.Vacacionno_usuarioNavigations, opt => opt.Ignore());
+                .ForMember(dest => dest.Registros, opt => opt.Ignore());
 
 
-            // USUARIO RESPONSE
+
             CreateMap<Usuario, UsuarioResponseDTO>()
                 .ForMember(dest => dest.NoUsuario, opt => opt.MapFrom(src => src.no_usuario))
                 .ForMember(dest => dest.Nombre, opt => opt.MapFrom(src => src.nombre))
@@ -187,8 +165,6 @@ CreateMap<PeriodoUpdateDto, Periodo>()
 
 
 
-
-            // HISTORIAL CONTRASEÑA CREATE
             CreateMap<HistorialContrasenaCreateDto, HistorialContrasena>()
                 .ForMember(dest => dest.id_historial, opt => opt.Ignore())
                 .ForMember(dest => dest.no_usuario, opt => opt.MapFrom(src => src.NoUsuario))
@@ -200,8 +176,6 @@ CreateMap<PeriodoUpdateDto, Periodo>()
                 .ForMember(dest => dest.RowVersion, opt => opt.Ignore())
                 .ForMember(dest => dest.no_usuarioNavigation, opt => opt.Ignore());
 
-
-            // HISTORIAL CONTRASEÑA PARA RESPONSE Y UPDATE
             CreateMap<HistorialContrasenaAmbosDto, HistorialContrasena>()
                 .ForMember(dest => dest.id_historial, opt => opt.MapFrom(src => src.IdHistorial))
                 .ForMember(dest => dest.fecha_registro, opt => opt.MapFrom(src => src.Fecharegistro))
@@ -211,7 +185,6 @@ CreateMap<PeriodoUpdateDto, Periodo>()
                 .ForMember(dest => dest.no_usuarioNavigation, opt => opt.Ignore());
 
 
-            // HISTORIAL CONTRASEÑA RESPONSE
             CreateMap<HistorialContrasena, HistorialContrasenaAmbosDto>()
                 .ForMember(dest => dest.IdHistorial, opt => opt.MapFrom(src => src.id_historial))
                 .ForMember(dest => dest.Fecharegistro, opt => opt.MapFrom(src => src.fecha_registro))
