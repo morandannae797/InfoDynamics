@@ -77,7 +77,7 @@ POST https://localhost:7293/api/empresa
 Content-Type: application/json
 
 {
-  "nombre": "Sony"
+  "nombre": ""
 }
 
 ### ERROR DE DUPLICADO
@@ -93,16 +93,17 @@ POST https://localhost:7293/api/empresa
 Content-Type: application/json
 
 {
-  "nombre": "Dynamics",
+
+ "nombre": "kuromip2",
   "tipoProyecto": "Ambos"
 }
 
 ### ACTUALIZAR EMPRESA
-POST https://localhost:7293/api/empresa/update/1
+POST https://localhost:7293/api/empresa/update/5
 Content-Type: application/json
 
 {
-  "idEmpresa": 1,
+  "idEmpresa": 5,
   "nombre": "Sony Updated",
   "tipoProyecto": "Ambos"
 }
@@ -202,4 +203,183 @@ Content-Type: application/json
 
 {
   "estadoDecision": "Pendiente"
+}
+
+
+##################################################
+### GENERAR PERIODO
+##################################################
+
+POST https://localhost:7293/api/Periodo/generar
+
+
+
+##################################################
+### ERROR: INTENTAR GENERAR OTRO PERIODO ANTES DE 21 DIAS
+##################################################
+
+POST https://localhost:7293/api/Periodo/generar
+
+
+
+
+##################################################
+### VER PERIODOS
+##################################################
+
+GET https://localhost:7293/api/Periodo
+
+
+
+
+##################################################
+### VER PERIODO POR ID
+##################################################
+
+GET https://localhost:7293/api/Periodo/1
+
+
+##################################################
+### EMPLEADO SOLICITA VACACIONES EN PERIODO ABIERTO
+##################################################
+
+POST https://localhost:7293/api/Vacacion
+Content-Type: application/json
+
+{
+  "fechaInicio": "2026-06-10",
+  "fechaFin": "2026-06-15"
+}
+
+
+
+##################################################
+### MANAGER INTENTA SOLICITAR VACACIONES
+##################################################
+
+POST https://localhost:7293/api/Vacacion
+Authorization: Bearer TOKEN_MANAGER
+Content-Type: application/json
+
+{
+  "fechaInicio": "2026-08-10",
+  "fechaFin": "2026-06-15"
+}
+
+
+
+##################################################
+### MANAGER APRUEBA SOLICITUD
+##################################################
+
+POST https://localhost:7293/api/Vacacion/1/evaluar
+Authorization: Bearer TOKEN_MANAGER
+Content-Type: application/json
+
+{
+  "estadoDecision": "Aprobada"
+}
+
+##################################################
+### EMPLEADO REGISTRA JORNADA
+##################################################
+
+POST https://localhost:7293/api/RegistroJornada
+Content-Type: application/json
+
+{
+  "fecha": "2026-06-10",
+  "horas": 8,
+  "noUsuario": 1000002,
+  "periodoId": 1,
+  "codigo": "L001"
+}
+
+
+
+##################################################
+### EMPLEADO EDITA JORNADA
+##################################################
+
+POST https://localhost:7293/api/RegistroJornada/1
+Content-Type: application/json
+
+{
+  "registroId": 1,
+  "fecha": "2026-06-10",
+  "horas": 6,
+  "noUsuario": 1000002,
+  "periodoId": 1,
+  "codigo": "L001"
+}
+
+
+
+##################################################
+### ERROR HORAS NEGATIVAS
+##################################################
+
+POST https://localhost:7293/api/RegistroJornada
+Content-Type: application/json
+
+{
+  "fecha": "2026-08-10",
+  "horas": -5,
+  "noUsuario": 1000002,
+  "periodoId": 1,
+  "codigo": "L001"
+}
+
+
+
+##################################################
+### ERROR CODIGO INVALIDO
+##################################################
+
+POST https://localhost:7293/api/RegistroJornada
+Content-Type: application/json
+
+{
+  "fecha": "2026-06-10",
+  "horas": 8,
+  "noUsuario": 1000002,
+  "periodoId": 1,
+  "codigo": "L001"
+}
+
+
+
+##################################################
+### ERROR REGISTRO DUPLICADO
+##################################################
+
+POST https://localhost:7293/api/RegistroJornada
+Content-Type: application/json
+
+{
+
+  "Registroid": 1,
+  "fecha": "2026-06-10",
+  "horas": 8,
+  "noUsuario": 1000002,
+  "periodoId": 1,
+  "codigo": "L001"
+}
+
+
+
+##################################################
+### MANAGER INTENTA REGISTRAR EN PERIODO ABIERTO
+##################################################
+
+POST https://localhost:7293/api/Registro
+Authorization: Bearer TOKEN_MANAGER
+Content-Type: application/json
+
+{
+  "fecha": "2026-06-10",
+  "horas": 8,
+  "noUsuario": 1000001,
+  "periodoId": 1,
+  "codigo": "L001"
 }

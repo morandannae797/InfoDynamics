@@ -11,12 +11,12 @@ namespace InfoDynamics.API.Controllers
     [Route("api/[controller]")]
     public class RegistroJornadaController : ControllerBase
     {
-        private readonly IReadServiceAsync<RegistroResponseDto> _readService;
-        private readonly IWriteServiceAsync<RegistroCreateDto, RegistroUpdateDto> _writeService;
+        private readonly IReadServiceAsync<RegistroDto> _readService;
+        private readonly IWriteServiceAsync<RegistroCreateDto, RegistroDto> _writeService;
 
         public RegistroJornadaController(
-            IReadServiceAsync<RegistroResponseDto> readService,
-            IWriteServiceAsync<RegistroCreateDto, RegistroUpdateDto> writeService)
+            IReadServiceAsync<RegistroDto> readService,
+            IWriteServiceAsync<RegistroCreateDto, RegistroDto> writeService)
         {
             _readService = readService;
             _writeService = writeService;
@@ -24,7 +24,7 @@ namespace InfoDynamics.API.Controllers
 
         [Authorize]
         [HttpGet]
-        public async Task<ActionResult<IEnumerable<RegistroResponseDto>>> GetAll()
+        public async Task<ActionResult<IEnumerable<RegistroDto>>> GetAll()
         {
             try
             {
@@ -39,7 +39,7 @@ namespace InfoDynamics.API.Controllers
 
         [Authorize]
         [HttpGet("{id:int}")]
-        public async Task<ActionResult<RegistroResponseDto>> GetById(int id)
+        public async Task<ActionResult<RegistroDto>> GetById(int id)
         {
             try
             {
@@ -67,7 +67,7 @@ namespace InfoDynamics.API.Controllers
         [Authorize]
 
         [HttpPost("{id:int}")]
-        public async Task<ActionResult> Update(int id, [FromBody] RegistroUpdateDto dto)
+        public async Task<ActionResult> Update(int id, [FromBody] RegistroDto dto)
         {
             if (!ModelState.IsValid)
                 return BadRequest(ModelState);

@@ -210,6 +210,34 @@ namespace InfoDynamics.API.Controllers
                 return Conflict(new { message = ex.Message });
             }
         }
+        [Authorize(Roles = "Manager")]
+        [HttpPost("{id:int}/activar")]
+        public async Task<ActionResult> Activar(int id, [FromBody] UsuarioDesactivarDto dto)
+        {
+            if (!ModelState.IsValid)
+                return BadRequest(ModelState);
+
+            try
+            {
+                var usuario = await _usuarioServicio.FindByIdAsync(id);
+
+                if (usuario == null)
+                    return NotFound(new { message = "Usuario no encontrado." });
+
+                usuario.estado_cuenta = true;
+
+                await _usuarioServicio.UpdateWithConcurrencyAsync(
+                    usuario,
+                    dto.RowVersion);
+
+                return NoContent();
+            }
+            catch (InvalidOperationException ex)
+            {
+                return Conflict(new { message = ex.Message });
+            }
+        }
+
         [Authorize]
         [HttpPost("{id:int}/cambiar-contrasena")]
         public async Task<ActionResult> CambiarContrasena(int id, [FromBody] CambiarContrasenaDto dto)

@@ -14,9 +14,6 @@ namespace InfoDynamics.Infraestructura.FluentConfiguracion
 
             builder.ToTable("Registro");
 
-            builder.Property(e => e.RowVersion)
-                .IsRowVersion()
-                .IsConcurrencyToken();
             builder.Property(e => e.horas).HasColumnType("decimal(5, 2)");
 
             builder.HasOne(d => d.id_periodoNavigation).WithMany(p => p.Registros)

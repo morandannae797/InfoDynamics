@@ -20,9 +20,6 @@ namespace InfoDynamics.Dominio.Entidades
         public int id_periodo    { get; set; }
 
 
-
-        [Timestamp]
-        public byte[] RowVersion { get; set; } = null!;
         public virtual Periodo id_periodoNavigation { get; set; } = null!;
 
         public virtual Proyecto id_proyectoNavigation { get; set; } = null!;
