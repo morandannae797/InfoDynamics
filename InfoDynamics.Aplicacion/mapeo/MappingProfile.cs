@@ -206,13 +206,21 @@ CreateMap<PeriodoUpdateDto, Periodo>()
 
 
 
+            CreateMap<Vacacion, VacacionDto.VacacionResponseDto>()
+                .ForMember(dest => dest.VacacionId, opt => opt.MapFrom(src => src.id_vacacion))
+                .ForMember(dest => dest.FechaInicio, opt => opt.MapFrom(src => src.fecha_inicio.ToDateTime(TimeOnly.MinValue)))
+                .ForMember(dest => dest.FechaFin, opt => opt.MapFrom(src => src.fecha_fin.ToDateTime(TimeOnly.MinValue)))
+                .ForMember(dest => dest.Estado, opt => opt.MapFrom(src => src.estado))
+                .ForMember(dest => dest.SolicitanteId, opt => opt.MapFrom(src => src.no_usuario))
+                .ForMember(dest => dest.NombreSolicitante, opt => opt.MapFrom(src => src.no_usuarioNavigation != null ? $"{src.no_usuarioNavigation.nombre} {src.no_usuarioNavigation.ap_paterno}".Trim() : null));
+
             CreateMap<VacacionDto.VacacionCreateDto, Vacacion>()
                 .ForMember(dest => dest.id_vacacion, opt => opt.Ignore())
-                .ForMember(dest => dest.fecha_inicio, opt => opt.MapFrom(src => ToDateOnly(src.FechaInicio)))
-                .ForMember(dest => dest.fecha_fin, opt => opt.MapFrom(src => ToDateOnly(src.FechaFin)))
+                .ForMember(dest => dest.fecha_inicio, opt => opt.MapFrom(src => DateOnly.FromDateTime(src.FechaInicio)))
+                .ForMember(dest => dest.fecha_fin, opt => opt.MapFrom(src => DateOnly.FromDateTime(src.FechaFin)))
                 .ForMember(dest => dest.estado, opt => opt.MapFrom(src => "Pendiente"))
                 .ForMember(dest => dest.no_usuario, opt => opt.MapFrom(src => src.SolicitanteId))
-                .ForMember(dest => dest.RowVersion, opt => opt.Ignore())
+
                 .ForMember(dest => dest.no_usuarioNavigation, opt => opt.Ignore())
                 .ForMember(dest => dest.id_administradorNavigation, opt => opt.Ignore());
 
@@ -227,19 +235,11 @@ CreateMap<PeriodoUpdateDto, Periodo>()
 
             CreateMap<Vacacion, VacacionDto.VacacionResponseDto>()
                 .ForMember(dest => dest.VacacionId, opt => opt.MapFrom(src => src.id_vacacion))
-                .ForMember(dest => dest.FechaInicio, opt => opt.MapFrom(src => ToDateTime(src.fecha_inicio)))
-                .ForMember(dest => dest.FechaFin, opt => opt.MapFrom(src => ToDateTime(src.fecha_fin)))
-                .ForMember(dest => dest.EstadoAprobacion, opt => opt.MapFrom(src => src.estado))
+                .ForMember(dest => dest.FechaInicio, opt => opt.MapFrom(src => src.fecha_inicio.ToDateTime(TimeOnly.MinValue)))
+                .ForMember(dest => dest.FechaFin, opt => opt.MapFrom(src => src.fecha_fin.ToDateTime(TimeOnly.MinValue)))
+                .ForMember(dest => dest.Estado, opt => opt.MapFrom(src => src.estado))
                 .ForMember(dest => dest.SolicitanteId, opt => opt.MapFrom(src => src.no_usuario))
-                .ForMember(dest => dest.NombreSolicitante, opt => opt.MapFrom(src =>
-                    src.no_usuarioNavigation != null
-                        ? $"{src.no_usuarioNavigation.nombre} {src.no_usuarioNavigation.ap_paterno}".Trim()
-                        : null))
-                .ForMember(dest => dest.NombreAprobador, opt => opt.MapFrom(src =>
-                    src.id_administradorNavigation != null
-                        ? $"{src.id_administradorNavigation.nombre} {src.id_administradorNavigation.ap_paterno}".Trim()
-                        : null));
-
+                .ForMember(dest => dest.NombreSolicitante, opt => opt.MapFrom(src => src.no_usuarioNavigation != null ? $"{src.no_usuarioNavigation.nombre} {src.no_usuarioNavigation.ap_paterno}".Trim() : null));
 
             CreateMap<ProyectoDto, Proyecto>()
                 .ForMember(dest => dest.codigo, opt => opt.MapFrom(src => src.Codigo))

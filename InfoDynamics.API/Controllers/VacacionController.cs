@@ -78,7 +78,7 @@ namespace InfoDynamics.API.Controllers
             {
                 var vacacion = await _readService.GetByIdAsync(id);
 
-                if (vacacion.EstadoAprobacion != "Pendiente")
+                if (vacacion.Estado != "Pendiente")
                     return BadRequest(new { mensaje = "Esta solicitud ya fue evaluada anteriormente." });
 
                 await _writeService.UpdateAsync(dto);

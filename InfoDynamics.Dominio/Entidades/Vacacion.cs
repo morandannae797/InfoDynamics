@@ -1,6 +1,5 @@
 ﻿using System.ComponentModel.DataAnnotations;
-using System.ComponentModel.DataAnnotations.Schema;
-using InfoDynamics.Dominio.Entidades;
+
 namespace InfoDynamics.Dominio.Entidades
 {
     public class Vacacion
@@ -15,11 +14,9 @@ namespace InfoDynamics.Dominio.Entidades
 
         public int no_usuario { get; set; }
 
-        public byte[] RowVersion { get; set; } = null!;
-
 
         public virtual Usuario? id_administradorNavigation { get; set; }
-        public virtual Usuario no_usuarioNavigation { get; set; } = null!;
 
+        public virtual Usuario no_usuarioNavigation { get; set; } = null!;
     }
 }
