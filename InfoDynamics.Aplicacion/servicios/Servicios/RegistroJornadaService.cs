@@ -309,15 +309,27 @@ namespace InfoDynamics.Aplicacion.servicios.Servicios
             _unitOfWork = unitOfWork;
         }
 
-        public async Task<decimal> GetHorasSemanaAsync(int noUsuario, DateTime fecha)
+        public async Task<decimal> GetHorasSemanaAsync(int noUsuario, int periodoId)
         {
-            var inicioSemana = fecha.Date.AddDays(-(int)fecha.DayOfWeek + 1);
+            var periodo = await _unitOfWork.Repository<Periodo>().GetByIdAsync(periodoId);
 
+            if (periodo == null)
+                throw new EntityNotFoundException($"El periodo {periodoId} no existe.");
+
+            var hoy = DateTime.Now.Date;
+            var diasDesdeInicio = (hoy - periodo.fecha_inicio.Date).Days;
+            var semana = diasDesdeInicio / 7;
+
+            var inicioSemana = periodo.fecha_inicio.Date.AddDays(semana * 7);
             var finSemana = inicioSemana.AddDays(6);
 
             var registros = await _unitOfWork.Repository<Registro>().GetAllAsync();
 
-            return registros.Where(r => r.no_usuario == noUsuario && r.fecha.Date >= inicioSemana && r.fecha.Date <= finSemana).Sum(r => r.horas);
+            return registros
+                .Where(r => r.no_usuario == noUsuario
+                         && r.fecha.Date >= inicioSemana
+                         && r.fecha.Date <= finSemana)
+                .Sum(r => r.horas);
         }
 
         // METODO QUE CONECTA A LA TABLA BD DE USUARIOS
@@ -337,6 +349,8 @@ namespace InfoDynamics.Aplicacion.servicios.Servicios
 
             return m_empleado;
         }
+
+
 
         // METODO PARA OBTENER LOS 3 EMPLEADOS CON MAS HORAS (CONECTADO A LA TABLA DE REGISTRO)
         //public async Task<List<MEmpleadoDto>> ObtenerTop3EmpleadosHoras(DateTime fechaInicio)

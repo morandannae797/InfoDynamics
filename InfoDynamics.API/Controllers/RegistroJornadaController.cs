@@ -126,5 +126,13 @@ namespace InfoDynamics.API.Controllers
 
             return Ok(resultado);
         }
+
+        [Authorize]
+        [HttpGet("horas-semana/{noUsuario}/{periodoId}")]
+        public async Task<IActionResult> GetHorasSemana(int noUsuario, int periodoId)
+        {
+            var total = await _jornadaCalculoService.GetHorasSemanaAsync(noUsuario, periodoId);
+            return Ok(total);
+        }
     }
 }
