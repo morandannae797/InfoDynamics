@@ -383,3 +383,10 @@ Content-Type: application/json
   "periodoId": 1,
   "codigo": "L001"
 }
+
+##################################################
+### TOP 3 EMPLEADOS CON MAS HORAS EN 3 SEMANAS
+##################################################
+
+GET https://localhost:7293/api/RegistroJornada/top-empleados?fechaInicio=2026-06-01
+Accept: application/json
