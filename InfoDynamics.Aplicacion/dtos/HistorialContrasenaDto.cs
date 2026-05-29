@@ -20,7 +20,7 @@ namespace InfoDynamics.Aplicacion.dtos
 
     }
 
-    public class HistorialContrasenaAmbosDto : IConcurrencyDto
+    public class HistorialContrasenaAmbosDto 
     {
         [Required]
         public int IdHistorial { get; set; }

@@ -22,7 +22,7 @@ namespace InfoDynamics.Aplicacion.dtos
         public string Codigo { get; set; }
     }
 
-    public class RegistroDto : IConcurrencyDto
+    public class RegistroDto 
     {
         [Required]
         public int RegistroId { get; set; }
