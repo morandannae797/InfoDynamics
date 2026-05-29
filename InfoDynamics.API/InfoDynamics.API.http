@@ -383,3 +383,59 @@ Content-Type: application/json
   "periodoId": 1,
   "codigo": "L001"
 }
+
+### ================================================
+### REGISTRO DE JORNADA
+### ================================================
+
+### Registrar horas - caso normal
+POST https://localhost:7293/api/RegistroJornada
+Content-Type: application/json
+
+{
+  "fecha": "2026-06-10",
+  "horas": 8,
+  "noUsuario": 1000002,
+  "periodoId": 1,
+  "codigo": "L001"
+}
+
+### Generar periodo
+POST https://localhost:7293/api/Periodo/generar
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJodHRwOi8vc2NoZW1hcy5taWNyb3NvZnQuY29tL3dzLzIwMDgvMDYvaWRlbnRpdHkvY2xhaW1zL3JvbGUiOiJFbXBsZWFkbyIsInN1YiI6IjEwMDAwMDIiLCJqdGkiOiIwYWQ3ZDY5MS1hZWQ2LTQ0NWUtODVhYS02ZjVlZGQzYzNjOWYiLCJlbWFpbCI6Im1hcmlhLmdvbWV6QGVtcHJlc2EuY29tIiwiZXhwIjoxNzgwMDQ1ODY4LCJpc3MiOiJodHRwczovL2xvY2FsaG9zdDo3MjkzIiwiYXVkIjoiaHR0cHM6Ly9sb2NhbGhvc3Q6NzI5MyJ9.DIr-fLTSD1kcPHbsSD8-m3z0L83NWSG9FPJueQLmn1E
+
+
+### Crear registro
+POST https://localhost:7293/api/RegistroJornada
+Content-Type: application/json
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJodHRwOi8vc2NoZW1hcy5taWNyb3NvZnQuY29tL3dzLzIwMDgvMDYvaWRlbnRpdHkvY2xhaW1zL3JvbGUiOiJFbXBsZWFkbyIsInN1YiI6IjEwMDAwMDIiLCJqdGkiOiIwYWQ3ZDY5MS1hZWQ2LTQ0NWUtODVhYS02ZjVlZGQzYzNjOWYiLCJlbWFpbCI6Im1hcmlhLmdvbWV6QGVtcHJlc2EuY29tIiwiZXhwIjoxNzgwMDQ1ODY4LCJpc3MiOiJodHRwczovL2xvY2FsaG9zdDo3MjkzIiwiYXVkIjoiaHR0cHM6Ly9sb2NhbGhvc3Q6NzI5MyJ9.DIr-fLTSD1kcPHbsSD8-m3z0L83NWSG9FPJueQLmn1E
+
+{
+  "fecha": "2026-05-29",
+  "horas": 8,
+  "noUsuario": 1000002,
+  "periodoId": 1,
+  "codigo": "L001"
+}
+
+###
+POST https://localhost:7293/api/Periodo/generar
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJodHRwOi8vc2NoZW1hcy5taWNyb3NvZnQuY29tL3dzLzIwMDgvMDYvaWRlbnRpdHkvY2xhaW1zL3JvbGUiOiJNYW5hZ2VyIiwic3ViIjoiMTAwMDAwMSIsImp0aSI6IjI0OWMwYzg0LTE1YWEtNDMwZi1iZDYzLTk3MmMwOGQyODAzZCIsImVtYWlsIjoiYXJhaGVsLnNhcGlAZW1wcmVzYS5jb20iLCJleHAiOjE3ODAwNDY0MjYsImlzcyI6Imh0dHBzOi8vbG9jYWxob3N0OjcyOTMiLCJhdWQiOiJodHRwczovL2xvY2FsaG9zdDo3MjkzIn0.3WCcEGyKZPzETLB7zv-6pop6SI9ep6MTpjslHH8sGGo
+
+###
+POST https://localhost:7293/api/RegistroJornada
+Content-Type: application/json
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJodHRwOi8vc2NoZW1hcy5taWNyb3NvZnQuY29tL3dzLzIwMDgvMDYvaWRlbnRpdHkvY2xhaW1zL3JvbGUiOiJFbXBsZWFkbyIsInN1YiI6IjEwMDAwMDIiLCJqdGkiOiIwYWQ3ZDY5MS1hZWQ2LTQ0NWUtODVhYS02ZjVlZGQzYzNjOWYiLCJlbWFpbCI6Im1hcmlhLmdvbWV6QGVtcHJlc2EuY29tIiwiZXhwIjoxNzgwMDQ1ODY4LCJpc3MiOiJodHRwczovL2xvY2FsaG9zdDo3MjkzIiwiYXVkIjoiaHR0cHM6Ly9sb2NhbGhvc3Q6NzI5MyJ9.DIr-fLTSD1kcPHbsSD8-m3z0L83NWSG9FPJueQLmn1E
+
+{
+  "fecha": "2026-05-29",
+  "horas": 8,
+  "noUsuario": 1000002,
+  "periodoId": 2,
+  "codigo": "L001"
+}
+
+###
+GET https://localhost:7293/api/RegistroJornada/usuario/1000002
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJodHRwOi8vc2NoZW1hcy5taWNyb3NvZnQuY29tL3dzLzIwMDgvMDYvaWRlbnRpdHkvY2xhaW1zL3JvbGUiOiJFbXBsZWFkbyIsInN1YiI6IjEwMDAwMDIiLCJqdGkiOiJkODAzOTI2My05ZDUxLTRlZWUtOGI2MC05NDk4YjIyMjlkOWYiLCJlbWFpbCI6Im1hcmlhLmdvbWV6QGVtcHJlc2EuY29tIiwiZXhwIjoxNzgwMDQ2NjEyLCJpc3MiOiJodHRwczovL2xvY2FsaG9zdDo3MjkzIiwiYXVkIjoiaHR0cHM6Ly9sb2NhbGhvc3Q6NzI5MyJ9.7iFIWyJyQLb3C4vk6n0_0ymqpm8fyEf1o8B6zAYeJ_o
+
