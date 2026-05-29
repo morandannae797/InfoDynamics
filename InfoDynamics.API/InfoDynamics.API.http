@@ -62,8 +62,9 @@ Content-Type: application/json
 GET https://localhost:7293/api/Usuario/1000002
 
 ### EMPLEADO QUE NO PERTENECE
-GET https://localhost:7293/api/Usuario/1000031
-
+GET https://localhost:7293/api/Usuario/1000003
+###
+POST https://localhost:7293/api/LogIn/logout
 ### TODAS LAS EMPRESAS
 GET https://localhost:7293/api/empresa
 Accept: application/json
@@ -94,17 +95,17 @@ Content-Type: application/json
 
 {
 
- "nombre": "Pompas",
+ "nombre": "Pompas2004",
   "tipoProyecto": "NoCobrable"
 }
 
 ### ACTUALIZAR EMPRESA
-POST https://localhost:7293/api/empresa/update/11
+POST https://localhost:7293/api/empresa/update/12
 Content-Type: application/json
 
 {
-  "nombre": "Pompas2.0",
-  "tipoProyecto": "NoCobrable"
+  "nombre": "Pompas2004",
+  "tipoProyecto": "Cobrable"
 }
 
 ### EL ID NO COINCIDE
@@ -122,9 +123,8 @@ GET https://localhost:7293/api/proyecto
 
 
 
-##################################################
+
 ### EMPLEADO SOLICITA VACACIONES
-##################################################
 
 POST https://localhost:7293/api/Vacacion
 Content-Type: application/json
@@ -136,9 +136,8 @@ Content-Type: application/json
 
 
 
-##################################################
 ### ERROR FECHA INVALIDA
-##################################################
+
 
 POST https://localhost:7293/api/Vacacion
 Content-Type: application/json
@@ -212,9 +211,8 @@ POST https://localhost:7293/api/Periodo/generar
 
 
 
-##################################################
 ### ERROR: INTENTAR GENERAR OTRO PERIODO ANTES DE 21 DIAS
-##################################################
+
 
 POST https://localhost:7293/api/Periodo/generar
 
@@ -229,17 +227,14 @@ GET https://localhost:7293/api/Periodo
 
 
 
-
-##################################################
 ### VER PERIODO POR ID
-##################################################
+
 
 GET https://localhost:7293/api/Periodo/1
 
 
-##################################################
 ### EMPLEADO SOLICITA VACACIONES EN PERIODO ABIERTO
-##################################################
+
 
 POST https://localhost:7293/api/Vacacion
 Content-Type: application/json
@@ -253,10 +248,8 @@ Content-Type: application/json
 
 ##################################################
 ### MANAGER INTENTA SOLICITAR VACACIONES
-##################################################
 
 POST https://localhost:7293/api/Vacacion
-Authorization: Bearer TOKEN_MANAGER
 Content-Type: application/json
 
 {

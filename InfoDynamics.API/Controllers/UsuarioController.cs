@@ -279,7 +279,7 @@ namespace InfoDynamics.API.Controllers
             }
             catch (Exception ex)
             {
-                return StatusCode(500, new { message = "Ocurrió un error inesperado.", detail = ex.Message });
+                return StatusCode(500, new { message = "Ocurrió un error inesperado." });
             }
         }
 
@@ -314,7 +314,7 @@ namespace InfoDynamics.API.Controllers
             }
             catch (Exception ex)
             {
-                return StatusCode(500, new { message = "Ocurrió un error inesperado.", detail = ex.Message });
+                return StatusCode(500, new { message = "Ocurrió un error inesperado."});
             }
         }
 
