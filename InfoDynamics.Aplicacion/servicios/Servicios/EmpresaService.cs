@@ -80,7 +80,7 @@ namespace InfoDynamics.Aplicacion.Servicios.Servicios
             _registroProyectoService = registroProyectoService;
         }
 
-        public async Task CreateAsync(EmpresaCreateDto dto)
+        public async Task CreateAsync(EmpresaDto dto)
         {
             _validacion.ValidarNombre(dto.Nombre);
             await _validacion.ValidarDuplicadoAsync(dto.Nombre);
@@ -103,31 +103,30 @@ namespace InfoDynamics.Aplicacion.Servicios.Servicios
         }
 
 
-        public async Task UpdateAsync(EmpresaDto dto)
+        public async Task UpdateNombreYAgregarCodigoAsync(
+            int id,
+            EmpresaDto dto)
         {
             _validacion.ValidarNombre(dto.Nombre);
 
             await _validacion.ValidarDuplicadoUpdateAsync(
-                dto.IdEmpresa,
+                id,
                 dto.Nombre);
 
-            var empresa = await _empresaRepo.GetByIdAsync(dto.IdEmpresa);
+            var empresa = await _empresaRepo.GetByIdAsync(id);
 
             if (empresa == null)
                 throw new EntityNotFoundException("Empresa no encontrada.");
 
             empresa.nombre = dto.Nombre;
 
-            try
-            {
-                await _empresaRepo.UpdateAsync(empresa);
-                await _unitOfWork.SaveChangesAsync();
-            }
-            catch (DbUpdateConcurrencyException)
-            {
-                throw new ConflictException(
-                    "El registro fue modificado por otro usuario.");
-            }
+            await _empresaRepo.UpdateAsync(empresa);
+
+            await _registroProyectoService.CrearProyectosEmpresaAsync(
+                id,
+                dto.TipoProyecto);
+
+            await _unitOfWork.SaveChangesAsync();
         }
 
         public async Task<List<EmpresaProyectoResponseDto>> GetEmpresasConCodigosAsync()
@@ -154,13 +153,12 @@ namespace InfoDynamics.Aplicacion.Servicios.Servicios
                         p.id_empresa == e.id_empresa &&
                         p.es_cobrable == false)
                     ?.codigo
-
             }).ToList();
 
             return resultado;
         }
 
-    }
 
+    }
 
 }
