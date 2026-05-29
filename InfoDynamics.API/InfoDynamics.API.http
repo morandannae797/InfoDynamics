@@ -273,7 +273,6 @@ Content-Type: application/json
 ##################################################
 
 POST https://localhost:7293/api/Vacacion/1/evaluar
-Authorization: Bearer TOKEN_MANAGER
 Content-Type: application/json
 
 {
@@ -292,7 +291,7 @@ Content-Type: application/json
   "horas": 8,
   "noUsuario": 1000002,
   "periodoId": 1,
-  "codigo": "L001"
+  "codigo": "L00001"
 }
 
 
@@ -310,7 +309,7 @@ Content-Type: application/json
   "horas": 6,
   "noUsuario": 1000002,
   "periodoId": 1,
-  "codigo": "L001"
+  "codigo": "L00001"
 }
 
 
@@ -363,7 +362,7 @@ Content-Type: application/json
   "horas": 8,
   "noUsuario": 1000002,
   "periodoId": 1,
-  "codigo": "L001"
+
 }
 
 
@@ -383,3 +382,8 @@ Content-Type: application/json
   "periodoId": 1,
   "codigo": "L001"
 }
+
+
+### 
+GET https://localhost:7293/api/Empresa
+Content-Type: application/json

@@ -51,7 +51,6 @@ builder.Services.AddScoped<IUnitOfWork, UnitOfWork>();
 builder.Services.AddScoped<
     IReadServiceAsync<EmpresaDto>,
     ReadServiceAsync<Empresa, EmpresaDto>>();
-
 builder.Services.AddScoped<
     IReadServiceAsync<PeriodoDto>,
     ReadServiceAsync<Periodo, PeriodoDto>>();
@@ -80,11 +79,6 @@ builder.Services.AddScoped<
     IWriteServiceSingleAsync<ProyectoDto>,
     WriteServiceSingleAsync<Proyecto, ProyectoDto>>();
 
-/*
-builder.Services.AddScoped<
-    IWriteServiceAsync<PeriodoCreateDto, PeriodoUpdateDto>,
-    WriteServiceAsync<Periodo, PeriodoCreateDto, PeriodoUpdateDto>>();
-*/
 builder.Services.AddScoped<Iusuarioservicio, UsuarioServicio>();
 
 builder.Services.AddScoped<
@@ -119,10 +113,9 @@ builder.Services.AddScoped<IContrasenaService, ContrasenaService>();
 // Empresa
 builder.Services.AddScoped<EmpresaValidacionService>();
 builder.Services.AddScoped<EmpresaRegistroService>();
-builder.Services.AddScoped<EmpresaAuditoriaService>();
 
-// Seguridad
-builder.Services.AddScoped<HmacServicio>();
+
+
 
 // Jornada
 builder.Services.AddScoped<RegistroJornadaService>();
@@ -145,11 +138,7 @@ builder.Services.AddScoped<VacacionNotificacionService>();
 
 builder.Services.AddScoped<IVacacionAprobacionService, VacacionAprobacionService>();
 
-builder.Services.AddScoped<IHmacServicio, HmacServicio>();
-//En caso de auditoria, se puede agregar un servicio que se encargue de registrar las acciones 
-//builder.Services.AddScoped<IAuditoriaService, AuditoriaService>();
 
-// JWT Options
 builder.Services.Configure<JwtOptions>(builder.Configuration.GetSection(JwtOptions.JwtOptionKey));
 
 // CORS

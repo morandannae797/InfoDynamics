@@ -12,7 +12,7 @@ namespace InfoDynamics.Aplicacion.servicio
      : IWriteServiceAsync<TCreateDto, TUpdateDto>
      where TEntity : class
      where TCreateDto : class
-     where TUpdateDto : class//, IConcurrencyDto
+     where TUpdateDto : class
     {
         protected readonly IMapper _mapper;
         protected readonly IUnitOfWork _unitOfWork;

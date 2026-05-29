@@ -4,6 +4,8 @@ namespace InfoDynamics.Aplicacion.dtos
 {
     public class AuditoriaDto
     {
+
+        [Required]
         public int IdAuditoria { get; set; }
 
         [Required]
@@ -29,6 +31,8 @@ namespace InfoDynamics.Aplicacion.dtos
 
         [Required]
         public int UsuarioAccion { get; set; }
+
+        [Required]
 
         public DateTime FechaAccion { get; set; }
     }
