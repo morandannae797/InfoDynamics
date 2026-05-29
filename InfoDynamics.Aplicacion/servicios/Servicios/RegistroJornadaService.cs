@@ -319,5 +319,66 @@ namespace InfoDynamics.Aplicacion.servicios.Servicios
 
             return registros.Where(r => r.no_usuario == noUsuario && r.fecha.Date >= inicioSemana && r.fecha.Date <= finSemana).Sum(r => r.horas);
         }
+
+        // METODO QUE CONECTA A LA TABLA BD DE USUARIOS
+        public async Task<List<MEmpleadoDto>> ObtenerTop3EmpleadosHoras(DateTime fechaInicio)
+        {
+            var usuarios = await _unitOfWork.Repository<Usuario>().GetAllAsync();
+
+            var m_empleado = usuarios
+                .Take(3)
+                .Select(u => new MEmpleadoDto
+                {
+                    IdUsuario = u.no_usuario,
+                    NombreEmpleado = $"{u.nombre} {u.ap_paterno}",
+                    TotalHoras = 999
+                })
+                .ToList();
+
+            return m_empleado;
+        }
+
+        // METODO PARA OBTENER LOS 3 EMPLEADOS CON MAS HORAS (CONECTADO A LA TABLA DE REGISTRO)
+        //public async Task<List<MEmpleadoDto>> ObtenerTop3EmpleadosHoras(DateTime fechaInicio)
+        //{
+        //DateTime fechaFin = fechaInicio.AddDays(14);
+
+        // OBTENER REGISTROS
+        //var registros = await _unitOfWork.Repository<Registro>().GetAllAsync();
+
+        // FILTRAR SOLO LOS REGISTROS DEL PERIODO
+        //var registrosPeriodo = registros.Where(r => r.fecha >= fechaInicio && r.fecha < fechaFin).ToList();
+
+        // SI NO HAY REGISTROS
+        //if (!registrosPeriodo.Any())
+        // return new List<MEmpleadoDto>();
+
+        // OBTENER USUARIOS
+        //var usuarios = await _unitOfWork.Repository<Usuario>().GetAllAsync();
+
+        // GENERAR TOP 3
+        //var topEmpleados = registrosPeriodo
+        //.GroupBy(r => r.no_usuario)
+        //.Select(g =>
+        //{
+        //var usuario = usuarios.FirstOrDefault(u => u.no_usuario == g.Key);
+
+        //return new MEmpleadoDto
+        //{
+        //IdUsuario = g.Key,
+
+        //NombreEmpleado = usuario != null
+        // ? $"{usuario.nombre} {usuario.ap_paterno}"
+        // : $"Empleado {g.Key}",
+
+        //TotalHoras = g.Sum(x => x.horas)
+        //};
+        // })
+        // .OrderByDescending(x => x.TotalHoras)
+        // .Take(3)
+        // .ToList();
+
+        // return topEmpleados;
+        //}
     }
 }

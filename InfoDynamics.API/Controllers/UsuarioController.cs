@@ -49,7 +49,7 @@ namespace InfoDynamics.API.Controllers
 
         [Authorize]
         [HttpGet("{id:int}")]
-        public async Task<ActionResult<UsuarioResponseDTO>> GetById(int id)
+        public async Task<ActionResult> GetById(int id)
         {
             try
             {
@@ -84,19 +84,26 @@ namespace InfoDynamics.API.Controllers
 
                 bool esManager = User.IsInRole("Manager");
 
+                if (!esManager)
+                {
+                    return Forbid();
+                }
+
                 var servicioConcreto = (UsuarioServicio)_usuarioServicio;
 
-                bool pertenece = await servicioConcreto.ManagerTieneEmpleado(
+                var empleado = await servicioConcreto.ObtenerEmpleadoDeManager(
                     usuarioAutenticado,
                     id);
 
-                return Ok(new
+                if (empleado == null)
                 {
-                    managerAutenticado = usuarioAutenticado,
-                    empleadoSolicitado = id,
-                    esManager = esManager,
-                    pertenece = pertenece
-                });
+                    return NotFound(new
+                    {
+                        message = "El empleado no pertenece al manager o no existe."
+                    });
+                }
+
+                return Ok(empleado);
             }
             catch (Exception ex)
             {

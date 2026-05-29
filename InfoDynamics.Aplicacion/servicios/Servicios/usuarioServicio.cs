@@ -145,15 +145,32 @@ namespace InfoDynamics.Aplicacion.servicios.Servicios
         }
 
         // METODO PARA VALIDAR LA RELACION DE MANAGE (ADMIN) A EMPLEADO
-        public async Task<bool> ManagerTieneEmpleado(int managerId, int empleadoId)
+        public async Task<object?> ObtenerEmpleadoDeManager(int managerId, int empleadoId)
         {
-            var repo = _unitOfWork.Repository<Usuario_manager>();
+            var repoRelacion = _unitOfWork.Repository<Usuario_manager>();
 
-            var relacion = await repo.GetAsync(
+            var relacion = await repoRelacion.GetAsync(
                 x => x.no_usuario_manager == managerId
                   && x.no_usuario == empleadoId);
 
-            return relacion != null;
+            if (relacion == null)
+                return null;
+
+            var repoUsuario = _unitOfWork.Repository<Usuario>();
+
+            var usuario = await repoUsuario.GetAsync(
+                x => x.no_usuario == empleadoId);
+
+            if (usuario == null)
+                return null;
+
+            return new
+            {
+                usuario.nombre,
+                usuario.ap_paterno,
+                usuario.ap_materno,
+                usuario.email
+            };
         }
 
         public async Task<Usuario> UpdateWithConcurrencyAsync(Usuario usuarioActualizado, byte[] rowVersion)
