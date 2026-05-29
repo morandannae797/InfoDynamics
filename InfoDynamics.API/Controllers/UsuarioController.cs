@@ -47,7 +47,6 @@ namespace InfoDynamics.API.Controllers
             }
         }
 
-        // METODO CAMBIADO PARA QUE SE PUEDAN CONSULTAR EMPLEADOS ASIGNADOR Y NO AJENOS
         [Authorize]
         [HttpGet("{id:int}")]
         public async Task<ActionResult> GetById(int id)

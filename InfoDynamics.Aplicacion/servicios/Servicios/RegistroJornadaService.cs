@@ -4,17 +4,27 @@ using InfoDynamics.Aplicacion.dtos;
 using InfoDynamics.Aplicacion.servicio;
 using InfoDynamics.Dominio.Entidades;
 using InfoDynamics.Dominio.interfaces;
-using Microsoft.EntityFrameworkCore;
+using Microsoft.AspNetCore.Http;
 
 namespace InfoDynamics.Aplicacion.servicios.Servicios
 {
-    public class RegistroJornadaService : WriteServiceAsync<Registro, RegistroCreateDto, RegistroDto>
+    public class RegistroJornadaService
+       : WriteServiceAsync<Registro, RegistroCreateDto, RegistroDto>
     {
         private readonly JornadaValidacionService _validacion;
+        private readonly IHttpContextAccessor _httpContextAccessor;
+        private readonly IUnitOfWork _unitOfWork;
 
-        public RegistroJornadaService(IUnitOfWork unitOfWork, IMapper mapper, JornadaValidacionService validacion) : base(unitOfWork, mapper)
+        public RegistroJornadaService(
+            IUnitOfWork unitOfWork,
+            IMapper mapper,
+            JornadaValidacionService validacion,
+            IHttpContextAccessor httpContextAccessor)
+            : base(unitOfWork, mapper)
         {
             _validacion = validacion;
+            _httpContextAccessor = httpContextAccessor;
+            _unitOfWork = unitOfWork;
         }
 
         public override async Task AddAsync(RegistroCreateDto dto)
@@ -26,15 +36,113 @@ namespace InfoDynamics.Aplicacion.servicios.Servicios
             await base.AddAsync(dto);
         }
 
+
+
+
         public override async Task UpdateAsync(RegistroDto dto)
         {
             _validacion.ValidarHoras(dto.Horas);
-
             await _validacion.ValidarProyectoAsync(dto.Codigo);
 
-            await base.UpdateAsync(dto);
+            var repo = _unitOfWork.Repository<Registro>();
+
+            var entity = await repo.GetByIdAsync(dto.RegistroId);
+
+            if (entity == null)
+                throw new EntityNotFoundException("Registro no encontrado.");
+
+            await GenerarAuditoriaAsync(dto, entity);
+
+            entity.fecha = dto.Fecha;
+            entity.horas = dto.Horas;
+            entity.id_periodo = dto.PeriodoId;
+            entity.codigo = dto.Codigo;
+
+            await repo.UpdateAsync(entity);
+            await _unitOfWork.SaveChangesAsync();
+        }
+
+
+
+
+
+    private async Task GenerarAuditoriaAsync(RegistroDto dto, Registro registroOriginal)
+        {
+
+
+            if (registroOriginal == null)
+                throw new EntityNotFoundException(
+                    "Registro no encontrado."
+                );
+
+            var managerClaim = _httpContextAccessor
+                .HttpContext?
+                .User
+                .FindFirst("sub");
+
+            if (
+                managerClaim == null
+                || !int.TryParse(managerClaim.Value, out int managerId)
+            )
+                throw new UnauthorizedException(
+                    "Usuario no autenticado."
+                );
+
+     
+
+            string cambios = "UPDATE";
+
+            if (registroOriginal.horas != dto.Horas)
+                cambios +=
+                    $" | Horas: {registroOriginal.horas} -> {dto.Horas}";
+
+            if (registroOriginal.codigo != dto.Codigo)
+                cambios +=
+                    $" | Codigo: {registroOriginal.codigo} -> {dto.Codigo}";
+
+            if (registroOriginal.id_periodo != dto.PeriodoId)
+                cambios +=
+                    $" | Periodo: {registroOriginal.id_periodo} -> {dto.PeriodoId}";
+
+            if (registroOriginal.fecha != dto.Fecha)
+                cambios +=
+                    $" | Fecha: {registroOriginal.fecha:d} -> {dto.Fecha:d}";
+
+            var auditoria = new Auditoria
+            {
+                id_registro = registroOriginal.id_registro,
+                fecha = DateOnly.FromDateTime(dto.Fecha),
+                horas = dto.Horas,
+                no_usuario = registroOriginal.no_usuario,
+                id_periodo = dto.PeriodoId,
+                codigo = dto.Codigo,
+                accion = cambios,
+                usuario_accion = managerId,
+                fecha_accion = DateTime.UtcNow
+            };
+
+            await _unitOfWork
+                .Repository<Auditoria>()
+                .AddAsync(auditoria);
+
+            await _unitOfWork
+                .SaveChangesAsync();
         }
     }
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
     public class JornadaValidacionService
     {
@@ -102,6 +210,23 @@ namespace InfoDynamics.Aplicacion.servicios.Servicios
                 throw new BadRequestException("El código del proyecto no tiene clasificación válida.");
         }
     }
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
     public class JornadaRegistroService
     {

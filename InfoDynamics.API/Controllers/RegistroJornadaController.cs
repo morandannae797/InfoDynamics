@@ -55,6 +55,26 @@ namespace InfoDynamics.API.Controllers
                 return NotFound(new { message = ex.Message });
             }
         }
+        
+        [Authorize]
+        [HttpGet("usuario/{noUsuario:int}")]
+        public async Task<ActionResult<IEnumerable<RegistroDto>>> GetByUsuario(int noUsuario)
+        {
+            try
+            {
+                var registros = await _readService.GetAllAsync();
+                var resultado = registros.Where(r => r.NoUsuario == noUsuario).ToList();
+
+                if (!resultado.Any())
+                    return NotFound(new { message = "No se encontraron registros para ese usuario." });
+
+                return Ok(resultado);
+            }
+            catch (EntityNotFoundException ex)
+            {
+                return NotFound(new { message = ex.Message });
+            }
+        }
 
         [Authorize]
         [HttpPost]

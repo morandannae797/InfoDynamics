@@ -15,6 +15,7 @@ namespace InfoDynamics.API.Controllers
         private readonly IReadServiceAsync<EmpresaDto> _readService;
         private readonly EmpresaRegistroService _empresaService;
 
+
         public EmpresaController(
             IReadServiceAsync<EmpresaDto> readService,
             EmpresaRegistroService empresaService)
@@ -25,11 +26,11 @@ namespace InfoDynamics.API.Controllers
 
         [Authorize(Roles = "Manager")]
         [HttpGet]
-        public async Task<ActionResult<IEnumerable<EmpresaDto>>> GetAll()
+        public async Task<ActionResult<IEnumerable<EmpresaProyectoResponseDto>>> GetAll()
         {
             try
             {
-                var empresas = await _readService.GetAllAsync();
+                var empresas = await _empresaService.GetEmpresasConCodigosAsync();
                 return Ok(empresas);
             }
             catch (EntityNotFoundException ex)
