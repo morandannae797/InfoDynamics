@@ -394,59 +394,9 @@ Content-Type: application/json
   "codigo": "L001"
 }
 
+##################################################
+### TOP 3 EMPLEADOS CON MAS HORAS EN 3 SEMANAS
+##################################################
 
-  ### VER REGISTROS ANTES
-GET https://localhost:7293/api/RegistroJornada
+GET https://localhost:7293/api/RegistroJornada/top-empleados?fechaInicio=2026-06-01
 Accept: application/json
-
-### LOGIN COMO  MANAGER CON NUMERO
-POST https://localhost:7293/api/LogIn/login
-Content-Type: application/json
-
-{
-  "identificador": "1000001",
-  "contrasena": "hash123"
-}    
-
-### Aprobaci�n
-POST https://localhost:7293/api/Vacacion/1/evaluar
-Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJodHRwOi8vc2NoZW1hcy5taWNyb3NvZnQuY29tL3dzLzIwMDgvMDYvaWRlbnRpdHkvY2xhaW1zL3JvbGUiOiJNYW5hZ2VyIiwic3ViIjoiMTAwMDAwMSIsImp0aSI6IjkxOWMzNGIzLWMzN2YtNGFiZC04ZjI1LTgyMDM0YzI5OThiYSIsImVtYWlsIjoiYXJhaGVsLnNhcGlAZW1wcmVzYS5jb20iLCJleHAiOjE3ODAwMjkxNjksImlzcyI6Imh0dHBzOi8vbG9jYWxob3N0OjcyOTMiLCJhdWQiOiJodHRwczovL2xvY2FsaG9zdDo3MjkzIn0.yOFNjFeb6NvxsPPHQXJy123FpWhN2zgDv6Ku_uZjOxw
-Content-Type: application/json
-
-{
-  "estadoDecision": "Aprobada"
-}
-
-@host = https://localhost:7293
-
-
-
-### 2. PRUEBA DE RECHAZO (Debe ser 200 OK y NO crear registros)
-POST {{host}}/api/Vacacion/1/evaluar
-Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJodHRwOi8vc2NoZW1hcy5taWNyb3NvZnQuY29tL3dzLzIwMDgvMDYvaWRlbnRpdHkvY2xhaW1zL3JvbGUiOiJNYW5hZ2VyIiwic3ViIjoiMTAwMDAwMSIsImp0aSI6IjkxOWMzNGIzLWMzN2YtNGFiZC04ZjI1LTgyMDM0YzI5OThiYSIsImVtYWlsIjoiYXJhaGVsLnNhcGlAZW1wcmVzYS5jb20iLCJleHAiOjE3ODAwMjkxNjksImlzcyI6Imh0dHBzOi8vbG9jYWxob3N0OjcyOTMiLCJhdWQiOiJodHRwczovL2xvY2FsaG9zdDo3MjkzIn0.yOFNjFeb6NvxsPPHQXJy123FpWhN2zgDv6Ku_uZjOxw
-Content-Type: application/json
-
-{
-    "estadoDecision": "Rechazada"
-}
-
-
-### 3. PRUEBA DE APROBACI�N (Si no hay periodo abierto, debe retornar 409 Conflict o 400 Bad Request)
-# Esta prueba valida tu "S6.2.1: Mensaje de error descriptivo"
-POST {{host}}/api/Vacacion/2/evaluar
-Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJodHRwOi8vc2NoZW1hcy5taWNyb3NvZnQuY29tL3dzLzIwMDgvMDYvaWRlbnRpdHkvY2xhaW1zL3JvbGUiOiJNYW5hZ2VyIiwic3ViIjoiMTAwMDAwMSIsImp0aSI6IjkxOWMzNGIzLWMzN2YtNGFiZC04ZjI1LTgyMDM0YzI5OThiYSIsImVtYWlsIjoiYXJhaGVsLnNhcGlAZW1wcmVzYS5jb20iLCJleHAiOjE3ODAwMjkxNjksImlzcyI6Imh0dHBzOi8vbG9jYWxob3N0OjcyOTMiLCJhdWQiOiJodHRwczovL2xvY2FsaG9zdDo3MjkzIn0.yOFNjFeb6NvxsPPHQXJy123FpWhN2zgDv6Ku_uZjOxw
-Content-Type: application/json
-
-{
-    "estadoDecision": "Aprobada"
-}
-
-
-### 4. PRUEBA DE ESTADO INV�LIDO (Debe lanzar la excepci�n que programamos en el 'else')
-POST {{host}}/api/Vacacion/3/evaluar
-Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJodHRwOi8vc2NoZW1hcy5taWNyb3NvZnQuY29tL3dzLzIwMDgvMDYvaWRlbnRpdHkvY2xhaW1zL3JvbGUiOiJNYW5hZ2VyIiwic3ViIjoiMTAwMDAwMSIsImp0aSI6IjkxOWMzNGIzLWMzN2YtNGFiZC04ZjI1LTgyMDM0YzI5OThiYSIsImVtYWlsIjoiYXJhaGVsLnNhcGlAZW1wcmVzYS5jb20iLCJleHAiOjE3ODAwMjkxNjksImlzcyI6Imh0dHBzOi8vbG9jYWxob3N0OjcyOTMiLCJhdWQiOiJodHRwczovL2xvY2FsaG9zdDo3MjkzIn0.yOFNjFeb6NvxsPPHQXJy123FpWhN2zgDv6Ku_uZjOxw
-Content-Type: application/json
-
-{
-    "estadoDecision": "EstadoInventado"
-}
