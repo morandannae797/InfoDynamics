@@ -11,6 +11,12 @@ Content-Type: application/json
   "identificador": "1000001",
   "contrasena": "hash123"
 }     
+###
+GET https://localhost:7293/api/Auditoria/registro/1
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJodHRwOi8vc2NoZW1hcy5taWNyb3NvZnQuY29tL3dzLzIwMDgvMDYvaWRlbnRpdHkvY2xhaW1zL3JvbGUiOiJNYW5hZ2VyIiwic3ViIjoiMTAwMDAwMSIsImp0aSI6IjJkN2ZkZTI4LWE4ZTAtNDBiZS1hNmQ2LWFhMDhkZWU1ZWIxMSIsImVtYWlsIjoiYXJhaGVsLnNhcGlAZW1wcmVzYS5jb20iLCJleHAiOjE3ODAwMzg1MjksImlzcyI6Imh0dHBzOi8vbG9jYWxob3N0OjcyOTMiLCJhdWQiOiJodHRwczovL2xvY2FsaG9zdDo3MjkzIn0.vwQsYnQFFRvfqgZFRzszIngOixUD2WiFF1BbP6j5Fl8
+Accept: application/json
+
+
 
 ### LOGIN COMO MANAGER CON CORREO
 POST https://localhost:7293/api/LogIn/login
@@ -273,7 +279,6 @@ Content-Type: application/json
 ##################################################
 
 POST https://localhost:7293/api/Vacacion/1/evaluar
-Authorization: Bearer TOKEN_MANAGER
 Content-Type: application/json
 
 {
@@ -292,8 +297,13 @@ Content-Type: application/json
   "horas": 8,
   "noUsuario": 1000002,
   "periodoId": 1,
-  "codigo": "L001"
+  "codigo": "L00001"
 }
+
+###
+GET https://localhost:7293/api/RegistroJornada/1
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJodHRwOi8vc2NoZW1hcy5taWNyb3NvZnQuY29tL3dzLzIwMDgvMDYvaWRlbnRpdHkvY2xhaW1zL3JvbGUiOiJNYW5hZ2VyIiwic3ViIjoiMTAwMDAwMSIsImp0aSI6IjJkN2ZkZTI4LWE4ZTAtNDBiZS1hNmQ2LWFhMDhkZWU1ZWIxMSIsImVtYWlsIjoiYXJhaGVsLnNhcGlAZW1wcmVzYS5jb20iLCJleHAiOjE3ODAwMzg1MjksImlzcyI6Imh0dHBzOi8vbG9jYWxob3N0OjcyOTMiLCJhdWQiOiJodHRwczovL2xvY2FsaG9zdDo3MjkzIn0.vwQsYnQFFRvfqgZFRzszIngOixUD2WiFF1BbP6j5Fl8
+
 
 
 
@@ -310,7 +320,7 @@ Content-Type: application/json
   "horas": 6,
   "noUsuario": 1000002,
   "periodoId": 1,
-  "codigo": "L001"
+  "codigo": "L00001"
 }
 
 
@@ -363,7 +373,7 @@ Content-Type: application/json
   "horas": 8,
   "noUsuario": 1000002,
   "periodoId": 1,
-  "codigo": "L001"
+
 }
 
 

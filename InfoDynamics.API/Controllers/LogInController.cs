@@ -20,10 +20,9 @@ namespace Employees.API.Controllers
 
 
         public LogInController(
-            IHmacServicio hmacServicio,
             IAccountService accountService)
         {
-            _hmacServicio = hmacServicio;
+       
             _accountService = accountService;
         }
 

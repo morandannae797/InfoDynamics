@@ -12,6 +12,7 @@ namespace InfoDynamics.Aplicacion.dtos
         [Required, StringLength(7)]
         public string Codigo { get; set; } = null!;
 
+        [Required]
         public bool EsCobrable { get; set; } 
 
         [Required]
