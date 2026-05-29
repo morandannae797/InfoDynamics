@@ -72,8 +72,8 @@ builder.Services.AddScoped<
 
 // lado lectura
 builder.Services.AddScoped<
-    IWriteServiceAsync<EmpresaCreateDto, EmpresaDto>,
-    WriteServiceAsync<Empresa, EmpresaCreateDto, EmpresaDto>>();
+    IWriteServiceAsync<EmpresaDto, EmpresaDto>,
+    WriteServiceAsync<Empresa, EmpresaDto, EmpresaDto>>();
 //Agregacion de proyecto
 builder.Services.AddScoped<
     IWriteServiceSingleAsync<ProyectoDto>,

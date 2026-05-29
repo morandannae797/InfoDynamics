@@ -11,12 +11,6 @@ Content-Type: application/json
   "identificador": "1000001",
   "contrasena": "hash123"
 }     
-###
-GET https://localhost:7293/api/Auditoria/registro/1
-Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJodHRwOi8vc2NoZW1hcy5taWNyb3NvZnQuY29tL3dzLzIwMDgvMDYvaWRlbnRpdHkvY2xhaW1zL3JvbGUiOiJNYW5hZ2VyIiwic3ViIjoiMTAwMDAwMSIsImp0aSI6IjJkN2ZkZTI4LWE4ZTAtNDBiZS1hNmQ2LWFhMDhkZWU1ZWIxMSIsImVtYWlsIjoiYXJhaGVsLnNhcGlAZW1wcmVzYS5jb20iLCJleHAiOjE3ODAwMzg1MjksImlzcyI6Imh0dHBzOi8vbG9jYWxob3N0OjcyOTMiLCJhdWQiOiJodHRwczovL2xvY2FsaG9zdDo3MjkzIn0.vwQsYnQFFRvfqgZFRzszIngOixUD2WiFF1BbP6j5Fl8
-Accept: application/json
-
-
 
 ### LOGIN COMO MANAGER CON CORREO
 POST https://localhost:7293/api/LogIn/login
@@ -75,7 +69,7 @@ GET https://localhost:7293/api/empresa
 Accept: application/json
 
 ### POR ID
-GET https://localhost:7293/api/empresa/1
+GET https://localhost:7293/api/empresa
 Accept: application/json
 
 ### CREAR UNA EMPRESA
@@ -100,18 +94,17 @@ Content-Type: application/json
 
 {
 
- "nombre": "kuromip2",
-  "tipoProyecto": "Ambos"
+ "nombre": "Pompas",
+  "tipoProyecto": "NoCobrable"
 }
 
 ### ACTUALIZAR EMPRESA
-POST https://localhost:7293/api/empresa/update/5
+POST https://localhost:7293/api/empresa/update/11
 Content-Type: application/json
 
 {
-  "idEmpresa": 5,
-  "nombre": "Sony Updated",
-  "tipoProyecto": "Ambos"
+  "nombre": "Pompas2.0",
+  "tipoProyecto": "NoCobrable"
 }
 
 ### EL ID NO COINCIDE
@@ -148,7 +141,6 @@ Content-Type: application/json
 ##################################################
 
 POST https://localhost:7293/api/Vacacion
-Authorization: Bearer TOKEN_EMPLEADO
 Content-Type: application/json
 
 {
@@ -299,11 +291,6 @@ Content-Type: application/json
   "periodoId": 1,
   "codigo": "L00001"
 }
-
-###
-GET https://localhost:7293/api/RegistroJornada/1
-Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJodHRwOi8vc2NoZW1hcy5taWNyb3NvZnQuY29tL3dzLzIwMDgvMDYvaWRlbnRpdHkvY2xhaW1zL3JvbGUiOiJNYW5hZ2VyIiwic3ViIjoiMTAwMDAwMSIsImp0aSI6IjJkN2ZkZTI4LWE4ZTAtNDBiZS1hNmQ2LWFhMDhkZWU1ZWIxMSIsImVtYWlsIjoiYXJhaGVsLnNhcGlAZW1wcmVzYS5jb20iLCJleHAiOjE3ODAwMzg1MjksImlzcyI6Imh0dHBzOi8vbG9jYWxob3N0OjcyOTMiLCJhdWQiOiJodHRwczovL2xvY2FsaG9zdDo3MjkzIn0.vwQsYnQFFRvfqgZFRzszIngOixUD2WiFF1BbP6j5Fl8
-
 
 
 

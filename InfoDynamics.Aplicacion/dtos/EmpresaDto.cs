@@ -1,8 +1,10 @@
 using InfoDynamics.Dominio.interfaces;
 using System.ComponentModel.DataAnnotations;
 
-public class EmpresaCreateDto
+public class EmpresaDto
+
 {
+
     [Required, StringLength(100)]
     public string Nombre { get; set; } = null!;
 
@@ -11,16 +13,4 @@ public class EmpresaCreateDto
     public string TipoProyecto { get; set; } = null!;
 
 }
-public class EmpresaDto 
-{
-
-    [Required]
-    public int IdEmpresa { get; set; }
-
-    [Required, StringLength(100)]
-    public string Nombre { get; set; } = null!;
-
-  
-}
-
 
