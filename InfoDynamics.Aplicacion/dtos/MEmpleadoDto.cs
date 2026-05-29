@@ -10,7 +10,7 @@ namespace InfoDynamics.Aplicacion.dtos
     {
         public int IdUsuario { get; set; }
 
-        public string NombreEmpleado { get; set; }
+        public string NombreEmpleado { get; set; } = string.Empty;
 
         public decimal TotalHoras { get; set; }
     }
