@@ -11,6 +11,12 @@ Content-Type: application/json
   "identificador": "1000001",
   "contrasena": "hash123"
 }     
+###
+GET https://localhost:7293/api/Auditoria/registro/1
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJodHRwOi8vc2NoZW1hcy5taWNyb3NvZnQuY29tL3dzLzIwMDgvMDYvaWRlbnRpdHkvY2xhaW1zL3JvbGUiOiJNYW5hZ2VyIiwic3ViIjoiMTAwMDAwMSIsImp0aSI6IjJkN2ZkZTI4LWE4ZTAtNDBiZS1hNmQ2LWFhMDhkZWU1ZWIxMSIsImVtYWlsIjoiYXJhaGVsLnNhcGlAZW1wcmVzYS5jb20iLCJleHAiOjE3ODAwMzg1MjksImlzcyI6Imh0dHBzOi8vbG9jYWxob3N0OjcyOTMiLCJhdWQiOiJodHRwczovL2xvY2FsaG9zdDo3MjkzIn0.vwQsYnQFFRvfqgZFRzszIngOixUD2WiFF1BbP6j5Fl8
+Accept: application/json
+
+
 
 ### LOGIN COMO MANAGER CON CORREO
 POST https://localhost:7293/api/LogIn/login
@@ -273,7 +279,6 @@ Content-Type: application/json
 ##################################################
 
 POST https://localhost:7293/api/Vacacion/1/evaluar
-Authorization: Bearer TOKEN_MANAGER
 Content-Type: application/json
 
 {
@@ -292,8 +297,13 @@ Content-Type: application/json
   "horas": 8,
   "noUsuario": 1000002,
   "periodoId": 1,
-  "codigo": "L001"
+  "codigo": "L00001"
 }
+
+###
+GET https://localhost:7293/api/RegistroJornada/1
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJodHRwOi8vc2NoZW1hcy5taWNyb3NvZnQuY29tL3dzLzIwMDgvMDYvaWRlbnRpdHkvY2xhaW1zL3JvbGUiOiJNYW5hZ2VyIiwic3ViIjoiMTAwMDAwMSIsImp0aSI6IjJkN2ZkZTI4LWE4ZTAtNDBiZS1hNmQ2LWFhMDhkZWU1ZWIxMSIsImVtYWlsIjoiYXJhaGVsLnNhcGlAZW1wcmVzYS5jb20iLCJleHAiOjE3ODAwMzg1MjksImlzcyI6Imh0dHBzOi8vbG9jYWxob3N0OjcyOTMiLCJhdWQiOiJodHRwczovL2xvY2FsaG9zdDo3MjkzIn0.vwQsYnQFFRvfqgZFRzszIngOixUD2WiFF1BbP6j5Fl8
+
 
 
 
@@ -310,7 +320,7 @@ Content-Type: application/json
   "horas": 6,
   "noUsuario": 1000002,
   "periodoId": 1,
-  "codigo": "L001"
+  "codigo": "L00001"
 }
 
 
@@ -363,7 +373,7 @@ Content-Type: application/json
   "horas": 8,
   "noUsuario": 1000002,
   "periodoId": 1,
-  "codigo": "L001"
+
 }
 
 
@@ -398,7 +408,7 @@ Content-Type: application/json
   "contrasena": "hash123"
 }    
 
-### Aprobación
+### Aprobaciï¿½n
 POST https://localhost:7293/api/Vacacion/1/evaluar
 Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJodHRwOi8vc2NoZW1hcy5taWNyb3NvZnQuY29tL3dzLzIwMDgvMDYvaWRlbnRpdHkvY2xhaW1zL3JvbGUiOiJNYW5hZ2VyIiwic3ViIjoiMTAwMDAwMSIsImp0aSI6IjkxOWMzNGIzLWMzN2YtNGFiZC04ZjI1LTgyMDM0YzI5OThiYSIsImVtYWlsIjoiYXJhaGVsLnNhcGlAZW1wcmVzYS5jb20iLCJleHAiOjE3ODAwMjkxNjksImlzcyI6Imh0dHBzOi8vbG9jYWxob3N0OjcyOTMiLCJhdWQiOiJodHRwczovL2xvY2FsaG9zdDo3MjkzIn0.yOFNjFeb6NvxsPPHQXJy123FpWhN2zgDv6Ku_uZjOxw
 Content-Type: application/json
@@ -421,7 +431,7 @@ Content-Type: application/json
 }
 
 
-### 3. PRUEBA DE APROBACIÓN (Si no hay periodo abierto, debe retornar 409 Conflict o 400 Bad Request)
+### 3. PRUEBA DE APROBACIï¿½N (Si no hay periodo abierto, debe retornar 409 Conflict o 400 Bad Request)
 # Esta prueba valida tu "S6.2.1: Mensaje de error descriptivo"
 POST {{host}}/api/Vacacion/2/evaluar
 Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJodHRwOi8vc2NoZW1hcy5taWNyb3NvZnQuY29tL3dzLzIwMDgvMDYvaWRlbnRpdHkvY2xhaW1zL3JvbGUiOiJNYW5hZ2VyIiwic3ViIjoiMTAwMDAwMSIsImp0aSI6IjkxOWMzNGIzLWMzN2YtNGFiZC04ZjI1LTgyMDM0YzI5OThiYSIsImVtYWlsIjoiYXJhaGVsLnNhcGlAZW1wcmVzYS5jb20iLCJleHAiOjE3ODAwMjkxNjksImlzcyI6Imh0dHBzOi8vbG9jYWxob3N0OjcyOTMiLCJhdWQiOiJodHRwczovL2xvY2FsaG9zdDo3MjkzIn0.yOFNjFeb6NvxsPPHQXJy123FpWhN2zgDv6Ku_uZjOxw
@@ -432,7 +442,7 @@ Content-Type: application/json
 }
 
 
-### 4. PRUEBA DE ESTADO INVÁLIDO (Debe lanzar la excepción que programamos en el 'else')
+### 4. PRUEBA DE ESTADO INVï¿½LIDO (Debe lanzar la excepciï¿½n que programamos en el 'else')
 POST {{host}}/api/Vacacion/3/evaluar
 Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJodHRwOi8vc2NoZW1hcy5taWNyb3NvZnQuY29tL3dzLzIwMDgvMDYvaWRlbnRpdHkvY2xhaW1zL3JvbGUiOiJNYW5hZ2VyIiwic3ViIjoiMTAwMDAwMSIsImp0aSI6IjkxOWMzNGIzLWMzN2YtNGFiZC04ZjI1LTgyMDM0YzI5OThiYSIsImVtYWlsIjoiYXJhaGVsLnNhcGlAZW1wcmVzYS5jb20iLCJleHAiOjE3ODAwMjkxNjksImlzcyI6Imh0dHBzOi8vbG9jYWxob3N0OjcyOTMiLCJhdWQiOiJodHRwczovL2xvY2FsaG9zdDo3MjkzIn0.yOFNjFeb6NvxsPPHQXJy123FpWhN2zgDv6Ku_uZjOxw
 Content-Type: application/json
