@@ -11,7 +11,7 @@ namespace InfoDynamics.Aplicacion.dtos
 {
 
 
-        public class UsuarioManagerDto : IConcurrencyDto
+        public class UsuarioManagerDto 
         {
             [Required]
             public int NoUsuario { get; set; }

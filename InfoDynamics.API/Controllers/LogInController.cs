@@ -15,7 +15,7 @@ namespace Employees.API.Controllers
     [ApiController]
     public class LogInController : ControllerBase
     {
-        private readonly IHmacServicio _hmacServicio;
+   
         private readonly IAccountService _accountService;
 
 
@@ -37,7 +37,6 @@ namespace Employees.API.Controllers
 
             try
             {
-
 
                 var user = await _accountService.LoginAsync(request);
 

@@ -24,7 +24,7 @@ namespace InfoDynamics.Aplicacion.servicios
 
         public async Task EvaluarVacacionAsync(int idVacacion, VacacionDto.VacacionAprobacionDto dto, int noUsuarioManager)
         {
-            // 1. Obtener la solicitud
+     
             var vacacion = await _vacacionRepository.GetByIdAsync(idVacacion);
 
             if (vacacion == null)
@@ -35,6 +35,7 @@ namespace InfoDynamics.Aplicacion.servicios
                 throw new ConflictException("La solicitud ya fue evaluada anteriormente.");
 
             // 2. Validar que el manager tiene autoridad sobre el empleado
+
             var relaciones = await _usuarioManagerRepository.GetAllAsync();
             bool pertenece = relaciones.Any(x => x.no_usuario_manager == noUsuarioManager && x.no_usuario == vacacion.no_usuario);
 
@@ -74,12 +75,23 @@ namespace InfoDynamics.Aplicacion.servicios
                     horas = 8,
                     codigo = dto.CodigoProyecto, // El que capturó el usuario
                     id_periodo = periodoActivo.id_periodo
+                    codigo = "VAC",
+                    id_periodo = periodoActivo.id_periodo,
+                
                 };
 
                 await _unitOfWork.Repository<Registro>().AddAsync(nuevoRegistro);
             }
+            else if (vacacion.estado == "Rechazada")
+            {
+            
+            }
+            else
+            {
+                throw new ConflictException("Estado de decisión no válido. Debe ser 'Aprobada' o 'Rechazada'.");
+            }
 
-            // 5. Guardar todo en una transacción atómica
+  
             await _unitOfWork.SaveChangesAsync();
         }
     }

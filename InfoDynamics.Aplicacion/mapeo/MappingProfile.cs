@@ -19,19 +19,15 @@ namespace InfoDynamics.Aplicacion.mapeo
 
 
             CreateMap<Empresa, EmpresaDto>()
-                .ForMember(dest => dest.IdEmpresa, opt => opt.MapFrom(src => src.id_empresa))
                 .ForMember(dest => dest.Nombre, opt => opt.MapFrom(src => src.nombre));
 
 
-            CreateMap<EmpresaCreateDto, Empresa>()
+            CreateMap<EmpresaDto, Empresa>()
                 .ForMember(dest => dest.id_empresa, opt => opt.Ignore())
                 .ForMember(dest => dest.nombre, opt => opt.MapFrom(src => src.Nombre))
                 .ForMember(dest => dest.Proyectos, opt => opt.Ignore());
 
-            CreateMap<EmpresaDto, Empresa>()
-       .ForMember(dest => dest.id_empresa, opt => opt.MapFrom(src => src.IdEmpresa))
-       .ForMember(dest => dest.nombre, opt => opt.MapFrom(src => src.Nombre))
-       .ForMember(dest => dest.Proyectos, opt => opt.Ignore());
+
 
             CreateMap<AuditoriaDto, Auditoria>()
     .ForMember(dest => dest.id_auditoria, opt => opt.Ignore())

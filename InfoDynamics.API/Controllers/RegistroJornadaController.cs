@@ -1,6 +1,7 @@
 using InfoDynamics.Aplicacion.CustomException;
 using InfoDynamics.Aplicacion.dtos;
 using InfoDynamics.Aplicacion.servicio.IServicios;
+using InfoDynamics.Aplicacion.servicios.Servicios;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
@@ -13,13 +14,16 @@ namespace InfoDynamics.API.Controllers
     {
         private readonly IReadServiceAsync<RegistroDto> _readService;
         private readonly IWriteServiceAsync<RegistroCreateDto, RegistroDto> _writeService;
+        private readonly JornadaCalculoService _jornadaCalculoService;
 
         public RegistroJornadaController(
             IReadServiceAsync<RegistroDto> readService,
-            IWriteServiceAsync<RegistroCreateDto, RegistroDto> writeService)
+            IWriteServiceAsync<RegistroCreateDto, RegistroDto> writeService,
+            JornadaCalculoService jornadaCalculoService)
         {
             _readService = readService;
             _writeService = writeService;
+            _jornadaCalculoService = jornadaCalculoService;
         }
 
         [Authorize]
@@ -106,6 +110,29 @@ namespace InfoDynamics.API.Controllers
             }
         }
 
-       
+        //OBTENER EMPLEADOS
+        [Authorize]
+        [HttpGet("top-empleados")]
+        public async Task<ActionResult<IEnumerable<MEmpleadoDto>>> ObtenerTop3Empleados([FromQuery] DateTime fechaInicio)
+        {
+            // VALIDAR FECHA
+            if (fechaInicio == DateTime.MinValue)
+            {
+                return BadRequest("Debe enviar una fecha válida.");
+            }
+
+            var resultado = await _jornadaCalculoService
+                .ObtenerTop3EmpleadosHoras(fechaInicio);
+
+            return Ok(resultado);
+        }
+
+        [Authorize]
+        [HttpGet("horas-semana/{noUsuario}/{periodoId}")]
+        public async Task<IActionResult> GetHorasSemana(int noUsuario, int periodoId)
+        {
+            var total = await _jornadaCalculoService.GetHorasSemanaAsync(noUsuario, periodoId);
+            return Ok(total);
+        }
     }
 }
