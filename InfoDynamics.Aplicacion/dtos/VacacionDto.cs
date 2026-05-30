@@ -33,6 +33,10 @@ namespace InfoDynamics.Aplicacion.dtos
             [Required]
             [RegularExpression("Aprobada|Rechazada", ErrorMessage = "El estado debe ser 'Aprobada' o 'Rechazada'.")]
             public string EstadoDecision { get; set; } = null!;
+
+            // AGREGA ESTA LÍNEA:
+            
+            public string? CodigoProyecto { get; set; } = null!;
         }
     }
 }

@@ -8,7 +8,8 @@
 
         public DateOnly fecha_fin { get; set; }
 
-        public string estado { get; set; } = null!;
+        // Inicializamos directamente como "Pendiente"
+        public string estado { get; set; } = "Pendiente";
 
         public int no_usuario { get; set; }
     }

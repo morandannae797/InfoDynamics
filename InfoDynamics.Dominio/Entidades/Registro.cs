@@ -10,6 +10,8 @@ public class Registro
 
     public int id_periodo { get; set; }
 
+    // AGREGA ESTA LÍNEA:
+    //public string id_proyecto { get; set; }
 
     public virtual Periodo id_periodoNavigation { get; set; } = null!;
     public virtual Proyecto id_proyectoNavigation { get; set; } = null!;

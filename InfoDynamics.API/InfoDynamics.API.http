@@ -130,8 +130,8 @@ POST https://localhost:7293/api/Vacacion
 Content-Type: application/json
 
 {
-  "fechaInicio": "2026-06-10",
-  "fechaFin": "2026-06-15"
+  "fechaInicio": "2026-06-21",
+  "fechaFin": "2026-06-30"
 }
 
 
@@ -161,7 +161,7 @@ GET https://localhost:7293/api/Vacacion
 ### VER UNA SOLICITUD
 ##################################################
 
-GET https://localhost:7293/api/Vacacion/1
+GET https://localhost:7293/api/Vacacion/3
 
 
 
@@ -169,11 +169,12 @@ GET https://localhost:7293/api/Vacacion/1
 ### APROBAR SOLICITUD
 ##################################################
 
-POST https://localhost:7293/api/Vacacion/1/evaluar
+POST https://localhost:7293/api/Vacacion/7/evaluar
 Content-Type: application/json
 
 {
-  "estadoDecision": "Aprobada"
+  "EstadoDecision": "Aprobada",
+  "CodigoProyecto": "L001" 
 }
 
 
@@ -182,11 +183,13 @@ Content-Type: application/json
 ### RECHAZAR SOLICITUD
 ##################################################
 
-POST https://localhost:7293/api/Vacacion/2/evaluar
+POST https://localhost:7293/api/Vacacion/6/evaluar
 Content-Type: application/json
 
 {
-  "estadoDecision": "Rechazada"
+  
+    "EstadoDecision": "Rechazada"
+  
 }
 
 
