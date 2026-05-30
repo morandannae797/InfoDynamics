@@ -35,7 +35,7 @@ namespace InfoDynamics.Aplicacion.dtos
             public string EstadoDecision { get; set; } = null!;
 
             // AGREGA ESTA LÍNEA:
-            
+
             public string? CodigoProyecto { get; set; } = null!;
         }
     }
