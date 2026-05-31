@@ -38,8 +38,7 @@ namespace InfoDynamics.Aplicacion.Servicios.Servicios
             var empresas = await _empresaRepo.GetAllAsync();
 
             var existe = empresas.Any(e =>
-                e.nombre.ToLower() == nombre.ToLower()
-                && e.id_empresa != id);
+                e.nombre.ToLower() == nombre.ToLower());
 
             if (existe)
                 throw new ConflictException("Ya existe otra empresa con ese nombre.");
@@ -103,30 +102,35 @@ namespace InfoDynamics.Aplicacion.Servicios.Servicios
         }
 
 
-        public async Task UpdateNombreYAgregarCodigoAsync(
-            int id,
-            EmpresaDto dto)
+        public async Task<EmpresaProyectoResponseDto> UpdateNombreYAgregarCodigoAsync(EmpresaDto dto)
         {
             _validacion.ValidarNombre(dto.Nombre);
 
-            await _validacion.ValidarDuplicadoUpdateAsync(
-                id,
-                dto.Nombre);
-
-            var empresa = await _empresaRepo.GetByIdAsync(id);
+            var empresa = await _empresaRepo.FirstOrDefaultAsync(
+                e => e.nombre == dto.Nombre);
 
             if (empresa == null)
                 throw new EntityNotFoundException("Empresa no encontrada.");
 
-            empresa.nombre = dto.Nombre;
-
-            await _empresaRepo.UpdateAsync(empresa);
-
             await _registroProyectoService.CrearProyectosEmpresaAsync(
-                id,
+                empresa.id_empresa,
                 dto.TipoProyecto);
 
-            await _unitOfWork.SaveChangesAsync();
+            var proyectos = await _unitOfWork.Repository<Proyecto>().GetAllAsync();
+
+            return new EmpresaProyectoResponseDto
+            {
+                IdEmpresa = empresa.id_empresa,
+                Nombre = empresa.nombre,
+
+                CodigoCobrable = proyectos
+                    .FirstOrDefault(p => p.id_empresa == empresa.id_empresa && p.es_cobrable == true)
+                    ?.codigo,
+
+                CodigoNoCobrable = proyectos
+                    .FirstOrDefault(p => p.id_empresa == empresa.id_empresa && p.es_cobrable == false)
+                    ?.codigo
+            };
         }
 
         public async Task<List<EmpresaProyectoResponseDto>> GetEmpresasConCodigosAsync()
