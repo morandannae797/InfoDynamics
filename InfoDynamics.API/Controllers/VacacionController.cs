@@ -5,9 +5,8 @@ using InfoDynamics.Dominio.Entidades;
 using InfoDynamics.Dominio.interfaces;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.EntityFrameworkCore;
 using System.Security.Claims;
-using System.Linq; // NECESARIO PARA LOS FILTROS
+using System.Linq;
 
 namespace InfoDynamics.API.Controllers
 {
@@ -32,7 +31,6 @@ namespace InfoDynamics.API.Controllers
             _unitOfWork = unitOfWork;
         }
 
-        // 1. MANAGER: Ve solo a sus empleados a cargo
         [Authorize(Roles = "Manager")]
         [HttpGet]
         public async Task<ActionResult<IEnumerable<VacacionDto.VacacionResponseDto>>> GetAll()
@@ -41,42 +39,41 @@ namespace InfoDynamics.API.Controllers
             if (claim == null) return Unauthorized("Usuario no autenticado.");
             int managerId = int.Parse(claim.Value);
 
-            // Obtener IDs de usuarios a cargo
             var todasLasRelaciones = await _unitOfWork.Repository<Usuario_manager>().GetAllAsync();
             var usuariosACargo = todasLasRelaciones
                 .Where(x => x.no_usuario_manager == managerId)
                 .Select(x => x.no_usuario)
                 .ToList();
 
-            // Obtener vacaciones y filtrar
             var todasLasVacaciones = await _readService.GetAllAsync();
-            var filtradas = todasLasVacaciones
-                .Where(v => usuariosACargo.Contains(v.SolicitanteId))
-                .ToList();
-
-            return Ok(filtradas);
+            return Ok(todasLasVacaciones.Where(v => usuariosACargo.Contains(v.SolicitanteId)).ToList());
         }
 
         [Authorize]
         [HttpGet("{id:int}")]
         public async Task<ActionResult<VacacionDto.VacacionResponseDto>> GetById(int id)
         {
-            try
-            {
-                return Ok(await _readService.GetByIdAsync(id));
-            }
+            try { return Ok(await _readService.GetByIdAsync(id)); }
             catch (EntityNotFoundException ex) { return NotFound(new { message = ex.Message }); }
         }
 
-        // 2. EMPLEADO: Crea solicitud con validación de "Una pendiente a la vez"
         [Authorize(Roles = "Empleado")]
         [HttpPost]
         public async Task<ActionResult> Create([FromBody] VacacionDto.VacacionCreateDto dto)
         {
+            // 1. Validación de Fechas Lógicas
+            if (dto.FechaInicio > dto.FechaFin)
+                return BadRequest(new { message = "La fecha de inicio no puede ser posterior a la fecha de fin." });
+
+            // 2. Validación de Fechas Retroactivas
+            if (dto.FechaInicio < DateTime.Today)
+                return BadRequest(new { message = "No puedes solicitar vacaciones en fechas pasadas." });
+
             var claim = User.FindFirst(ClaimTypes.NameIdentifier);
             if (claim == null) return Unauthorized("Usuario no autenticado.");
             int usuarioId = int.Parse(claim.Value);
 
+            // 3. Validación de solicitud pendiente única
             var solicitudExistente = await _unitOfWork.Repository<Vacacion>()
                 .GetAsync(v => v.no_usuario == usuarioId && v.estado == "Pendiente");
 
@@ -91,7 +88,6 @@ namespace InfoDynamics.API.Controllers
             return Ok(new { mensaje = "Vacación solicitada correctamente." });
         }
 
-        // 3. MANAGER: Evalúa solicitudes
         [Authorize(Roles = "Manager")]
         [HttpPost("{id:int}/evaluar")]
         public async Task<IActionResult> EvaluarVacacion(int id, [FromBody] VacacionDto.VacacionAprobacionDto dto)

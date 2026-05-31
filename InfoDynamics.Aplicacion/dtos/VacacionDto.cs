@@ -36,7 +36,7 @@ namespace InfoDynamics.Aplicacion.dtos
 
             // AGREGA ESTA LÍNEA:
 
-            public string? CodigoProyecto { get; set; } = null!;
+            //public string? CodigoProyecto { get; set; } = null!;
         }
     }
 }

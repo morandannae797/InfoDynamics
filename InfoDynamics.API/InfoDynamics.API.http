@@ -502,11 +502,11 @@ POST https://localhost:7293/api/Vacacion/15/evaluar
 Authorization: Bearer <TOKEN_MANAGER>
 Content-Type: application/json
 
-{ "EstadoDecision": "Aprobada", "CodigoProyecto": "L001" }
+{ "EstadoDecision": "Aprobada" }
 
 ### 4. FALLO: Intentar aprobar algo que ya fue evaluado
 POST https://localhost:7293/api/Vacacion/15/evaluar
 Authorization: Bearer <TOKEN_MANAGER>
 Content-Type: application/json
 
-{ "EstadoDecision": "Aprobada", "CodigoProyecto": "L001" }
+{ "EstadoDecision": "Aprobada"}
