@@ -15,6 +15,7 @@ namespace InfoDynamics.API.Controllers
         private readonly IReadServiceAsync<EmpresaDto> _readService;
         private readonly EmpresaRegistroService _empresaService;
 
+
         public EmpresaController(
             IReadServiceAsync<EmpresaDto> readService,
             EmpresaRegistroService empresaService)
@@ -25,11 +26,11 @@ namespace InfoDynamics.API.Controllers
 
         [Authorize(Roles = "Manager")]
         [HttpGet]
-        public async Task<ActionResult<IEnumerable<EmpresaDto>>> GetAll()
+        public async Task<ActionResult<IEnumerable<EmpresaProyectoResponseDto>>> GetAll()
         {
             try
             {
-                var empresas = await _readService.GetAllAsync();
+                var empresas = await _empresaService.GetEmpresasConCodigosAsync();
                 return Ok(empresas);
             }
             catch (EntityNotFoundException ex)
@@ -55,7 +56,7 @@ namespace InfoDynamics.API.Controllers
 
         [Authorize(Roles = "Manager")]
         [HttpPost]
-        public async Task<ActionResult> Create([FromBody] EmpresaCreateDto dto)
+        public async Task<ActionResult> Create([FromBody] EmpresaDto dto)
         {
             if (!ModelState.IsValid)
                 return BadRequest(ModelState);
@@ -81,21 +82,20 @@ namespace InfoDynamics.API.Controllers
 
         [Authorize(Roles = "Manager")]
         [HttpPost("update/{id:int}")]
-        public async Task<ActionResult> Update(int id, [FromBody] EmpresaDto dto)
+        public async Task<ActionResult> Update(
+            int id,
+            [FromBody] EmpresaDto dto)
         {
             if (!ModelState.IsValid)
                 return BadRequest(ModelState);
 
-            if (id != dto.IdEmpresa)
-                return BadRequest("El id de la URL no coincide con el id del body.");
-
             try
             {
-                await _empresaService.UpdateAsync(dto);
+                await _empresaService.UpdateNombreYAgregarCodigoAsync(id, dto);
 
                 return Ok(new
                 {
-                    message = "Actualizado correctamente."
+                    message = "Empresa actualizada y código agregado correctamente."
                 });
             }
             catch (BadRequestException ex)
@@ -106,9 +106,9 @@ namespace InfoDynamics.API.Controllers
             {
                 return Conflict(new { message = ex.Message });
             }
-            catch (DbUpdateConcurrencyException)
+            catch (EntityNotFoundException ex)
             {
-                return Conflict("El registro fue modificado por otro usuario.");
+                return NotFound(new { message = ex.Message });
             }
         }
     }

@@ -1,33 +1,19 @@
 ﻿using InfoDynamics.Dominio.Entidades;
-using System.ComponentModel.DataAnnotations;
 
-
-namespace InfoDynamics.Dominio.Entidades
+public class Registro
 {
-    public class Registro
-    {
+    public int id_registro { get; set; }
+    public DateTime fecha { get; set; }
+    public decimal horas { get; set; }
+    public int no_usuario { get; set; }
+    public string codigo { get; set; }
 
+    public int id_periodo { get; set; }
 
-        public int id_registro { get; set; }
+    // AGREGA ESTA LÍNEA:
+    //public string id_proyecto { get; set; }
 
-        public DateTime fecha { get; set; }
-
-        public decimal horas { get; set; } // Decimal(4,2)
-
-        public int no_usuario { get; set; }
-        public string codigo { get; set; }
-
-        public int id_periodo    { get; set; }
-
-
-
-        [Timestamp]
-        public byte[] RowVersion { get; set; } = null!;
-        public virtual Periodo id_periodoNavigation { get; set; } = null!;
-
-        public virtual Proyecto id_proyectoNavigation { get; set; } = null!;
-
-        public virtual Usuario no_usuarioNavigation { get; set; } = null!;
-
-    }
+    public virtual Periodo id_periodoNavigation { get; set; } = null!;
+    public virtual Proyecto id_proyectoNavigation { get; set; } = null!;
+    public virtual Usuario no_usuarioNavigation { get; set; } = null!;
 }

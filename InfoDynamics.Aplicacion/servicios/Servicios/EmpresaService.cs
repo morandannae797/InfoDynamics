@@ -80,10 +80,7 @@ namespace InfoDynamics.Aplicacion.Servicios.Servicios
             _registroProyectoService = registroProyectoService;
         }
 
-        // =====================
-        // CREATE
-        // =====================
-        public async Task CreateAsync(EmpresaCreateDto dto)
+        public async Task CreateAsync(EmpresaDto dto)
         {
             _validacion.ValidarNombre(dto.Nombre);
             await _validacion.ValidarDuplicadoAsync(dto.Nombre);
@@ -94,7 +91,7 @@ namespace InfoDynamics.Aplicacion.Servicios.Servicios
             };
 
             await _empresaRepo.AddAsync(empresa);
-            //se guarda aqui primero para q tenga id
+       
             await _unitOfWork.SaveChangesAsync();
 
             await _registroProyectoService
@@ -105,42 +102,63 @@ namespace InfoDynamics.Aplicacion.Servicios.Servicios
             await _unitOfWork.SaveChangesAsync();
         }
 
-        // =====================
-        // UPDATE
-        // =====================
-        public async Task UpdateAsync(EmpresaDto dto)
+
+        public async Task UpdateNombreYAgregarCodigoAsync(
+            int id,
+            EmpresaDto dto)
         {
             _validacion.ValidarNombre(dto.Nombre);
 
             await _validacion.ValidarDuplicadoUpdateAsync(
-                dto.IdEmpresa,
+                id,
                 dto.Nombre);
 
-            var empresa = await _empresaRepo.GetByIdAsync(dto.IdEmpresa);
+            var empresa = await _empresaRepo.GetByIdAsync(id);
 
             if (empresa == null)
                 throw new EntityNotFoundException("Empresa no encontrada.");
 
             empresa.nombre = dto.Nombre;
 
-            try
+            await _empresaRepo.UpdateAsync(empresa);
+
+            await _registroProyectoService.CrearProyectosEmpresaAsync(
+                id,
+                dto.TipoProyecto);
+
+            await _unitOfWork.SaveChangesAsync();
+        }
+
+        public async Task<List<EmpresaProyectoResponseDto>> GetEmpresasConCodigosAsync()
+        {
+            var empresas = await _empresaRepo.GetAllAsync();
+
+            var proyectos = await _unitOfWork
+                .Repository<Proyecto>()
+                .GetAllAsync();
+
+            var resultado = empresas.Select(e => new EmpresaProyectoResponseDto
             {
-                await _empresaRepo.UpdateAsync(empresa);
-                await _unitOfWork.SaveChangesAsync();
-            }
-            catch (DbUpdateConcurrencyException)
-            {
-                throw new ConflictException(
-                    "El registro fue modificado por otro usuario.");
-            }
+                IdEmpresa = e.id_empresa,
+                Nombre = e.nombre,
+
+                CodigoCobrable = proyectos
+                    .FirstOrDefault(p =>
+                        p.id_empresa == e.id_empresa &&
+                        p.es_cobrable == true)
+                    ?.codigo,
+
+                CodigoNoCobrable = proyectos
+                    .FirstOrDefault(p =>
+                        p.id_empresa == e.id_empresa &&
+                        p.es_cobrable == false)
+                    ?.codigo
+            }).ToList();
+
+            return resultado;
         }
 
 
     }
 
-
-    public class EmpresaAuditoriaService
-    {
-        // pendiente
-    }
 }

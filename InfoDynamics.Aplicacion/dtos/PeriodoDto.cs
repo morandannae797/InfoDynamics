@@ -3,34 +3,9 @@ using System.ComponentModel.DataAnnotations;
 
 namespace InfoDynamics.Aplicacion.dtos
 {
-    public class PeriodoCreateDto
-    {
-        [Required]
-        public DateTime FechaInicio { get; set; }
 
-        [Required]
-        public DateTime FechaFin { get; set; }
 
-        [Required, RegularExpression("Abierto|Cerrado")]
-        public string Estado { get; set; } = null!;
-    }
-
-    public class PeriodoUpdateDto : IConcurrencyDto
-    {
-        [Required]
-        public int PeriodoId { get; set; }
-
-        [Required]
-        public DateTime FechaInicio { get; set; }
-
-        [Required]
-        public DateTime FechaFin { get; set; }
-
-        [Required, RegularExpression("Abierto|Cerrado")]
-        public string Estado { get; set; } = null!;
-
-    }
-    public class PeriodoResponseDto
+    public class PeriodoDto
     {
         public int PeriodoId { get; set; }
 
@@ -38,6 +13,8 @@ namespace InfoDynamics.Aplicacion.dtos
 
         public DateTime FechaFin { get; set; }
 
+
+        [Required, RegularExpression("Abierto|Cerrado")]
         public string Estado { get; set; } = null!;
 
 

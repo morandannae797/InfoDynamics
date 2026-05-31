@@ -62,14 +62,15 @@ Content-Type: application/json
 GET https://localhost:7293/api/Usuario/1000002
 
 ### EMPLEADO QUE NO PERTENECE
-GET https://localhost:7293/api/Usuario/1000031
-
+GET https://localhost:7293/api/Usuario/1000003
+###
+POST https://localhost:7293/api/LogIn/logout
 ### TODAS LAS EMPRESAS
 GET https://localhost:7293/api/empresa
 Accept: application/json
 
 ### POR ID
-GET https://localhost:7293/api/empresa/1
+GET https://localhost:7293/api/empresa
 Accept: application/json
 
 ### CREAR UNA EMPRESA
@@ -77,7 +78,7 @@ POST https://localhost:7293/api/empresa
 Content-Type: application/json
 
 {
-  "nombre": "Sony"
+  "nombre": ""
 }
 
 ### ERROR DE DUPLICADO
@@ -93,18 +94,18 @@ POST https://localhost:7293/api/empresa
 Content-Type: application/json
 
 {
-  "nombre": "Dynamics",
-  "tipoProyecto": "Ambos"
+
+ "nombre": "Pompas2004",
+  "tipoProyecto": "NoCobrable"
 }
 
 ### ACTUALIZAR EMPRESA
-POST https://localhost:7293/api/empresa/update/1
+POST https://localhost:7293/api/empresa/update/12
 Content-Type: application/json
 
 {
-  "idEmpresa": 1,
-  "nombre": "Sony Updated",
-  "tipoProyecto": "Ambos"
+  "nombre": "Pompas2004",
+  "tipoProyecto": "Cobrable"
 }
 
 ### EL ID NO COINCIDE
@@ -122,26 +123,23 @@ GET https://localhost:7293/api/proyecto
 
 
 
-##################################################
+
 ### EMPLEADO SOLICITA VACACIONES
-##################################################
 
 POST https://localhost:7293/api/Vacacion
 Content-Type: application/json
 
 {
-  "fechaInicio": "2026-06-10",
-  "fechaFin": "2026-06-15"
+  "fechaInicio": "2026-06-21",
+  "fechaFin": "2026-06-30"
 }
 
 
 
-##################################################
 ### ERROR FECHA INVALIDA
-##################################################
+
 
 POST https://localhost:7293/api/Vacacion
-Authorization: Bearer TOKEN_EMPLEADO
 Content-Type: application/json
 
 {
@@ -163,7 +161,7 @@ GET https://localhost:7293/api/Vacacion
 ### VER UNA SOLICITUD
 ##################################################
 
-GET https://localhost:7293/api/Vacacion/1
+GET https://localhost:7293/api/Vacacion/3
 
 
 
@@ -171,11 +169,12 @@ GET https://localhost:7293/api/Vacacion/1
 ### APROBAR SOLICITUD
 ##################################################
 
-POST https://localhost:7293/api/Vacacion/1/evaluar
+POST https://localhost:7293/api/Vacacion/7/evaluar
 Content-Type: application/json
 
 {
-  "estadoDecision": "Aprobada"
+  "EstadoDecision": "Aprobada",
+  "CodigoProyecto": "L001" 
 }
 
 
@@ -184,11 +183,13 @@ Content-Type: application/json
 ### RECHAZAR SOLICITUD
 ##################################################
 
-POST https://localhost:7293/api/Vacacion/2/evaluar
+POST https://localhost:7293/api/Vacacion/6/evaluar
 Content-Type: application/json
 
 {
-  "estadoDecision": "Rechazada"
+  
+    "EstadoDecision": "Rechazada"
+  
 }
 
 
@@ -203,3 +204,182 @@ Content-Type: application/json
 {
   "estadoDecision": "Pendiente"
 }
+
+
+##################################################
+### GENERAR PERIODO
+##################################################
+
+POST https://localhost:7293/api/Periodo/generar
+
+
+
+### ERROR: INTENTAR GENERAR OTRO PERIODO ANTES DE 21 DIAS
+
+
+POST https://localhost:7293/api/Periodo/generar
+
+
+
+
+##################################################
+### VER PERIODOS
+##################################################
+
+GET https://localhost:7293/api/Periodo
+
+
+
+### VER PERIODO POR ID
+
+
+GET https://localhost:7293/api/Periodo/1
+
+
+### EMPLEADO SOLICITA VACACIONES EN PERIODO ABIERTO
+
+
+POST https://localhost:7293/api/Vacacion
+Content-Type: application/json
+
+{
+  "fechaInicio": "2026-06-10",
+  "fechaFin": "2026-06-15"
+}
+
+
+
+##################################################
+### MANAGER INTENTA SOLICITAR VACACIONES
+
+POST https://localhost:7293/api/Vacacion
+Content-Type: application/json
+
+{
+  "fechaInicio": "2026-08-10",
+  "fechaFin": "2026-06-15"
+}
+
+
+
+##################################################
+### MANAGER APRUEBA SOLICITUD
+##################################################
+
+POST https://localhost:7293/api/Vacacion/1/evaluar
+Content-Type: application/json
+
+{
+  "estadoDecision": "Aprobada"
+}
+
+##################################################
+### EMPLEADO REGISTRA JORNADA
+##################################################
+
+POST https://localhost:7293/api/RegistroJornada
+Content-Type: application/json
+
+{
+  "fecha": "2026-06-10",
+  "horas": 8,
+  "noUsuario": 1000002,
+  "periodoId": 1,
+  "codigo": "L00001"
+}
+
+
+
+##################################################
+### EMPLEADO EDITA JORNADA
+##################################################
+
+POST https://localhost:7293/api/RegistroJornada/1
+Content-Type: application/json
+
+{
+  "registroId": 1,
+  "fecha": "2026-06-10",
+  "horas": 6,
+  "noUsuario": 1000002,
+  "periodoId": 1,
+  "codigo": "L00001"
+}
+
+
+
+##################################################
+### ERROR HORAS NEGATIVAS
+##################################################
+
+POST https://localhost:7293/api/RegistroJornada
+Content-Type: application/json
+
+{
+  "fecha": "2026-08-10",
+  "horas": -5,
+  "noUsuario": 1000002,
+  "periodoId": 1,
+  "codigo": "L001"
+}
+
+
+
+##################################################
+### ERROR CODIGO INVALIDO
+##################################################
+
+POST https://localhost:7293/api/RegistroJornada
+Content-Type: application/json
+
+{
+  "fecha": "2026-06-10",
+  "horas": 8,
+  "noUsuario": 1000002,
+  "periodoId": 1,
+  "codigo": "L001"
+}
+
+
+
+##################################################
+### ERROR REGISTRO DUPLICADO
+##################################################
+
+POST https://localhost:7293/api/RegistroJornada
+Content-Type: application/json
+
+{
+
+  "Registroid": 1,
+  "fecha": "2026-06-10",
+  "horas": 8,
+  "noUsuario": 1000002,
+  "periodoId": 1,
+
+}
+
+
+
+##################################################
+### MANAGER INTENTA REGISTRAR EN PERIODO ABIERTO
+##################################################
+
+POST https://localhost:7293/api/Registro
+Authorization: Bearer TOKEN_MANAGER
+Content-Type: application/json
+
+{
+  "fecha": "2026-06-10",
+  "horas": 8,
+  "noUsuario": 1000001,
+  "periodoId": 1,
+  "codigo": "L001"
+}
+
+##################################################
+### TOP 3 EMPLEADOS CON MAS HORAS EN 3 SEMANAS
+##################################################
+
+GET https://localhost:7293/api/RegistroJornada/top-empleados?fechaInicio=2026-06-01
+Accept: application/json

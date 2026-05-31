@@ -145,15 +145,32 @@ namespace InfoDynamics.Aplicacion.servicios.Servicios
         }
 
         // METODO PARA VALIDAR LA RELACION DE MANAGE (ADMIN) A EMPLEADO
-        public async Task<bool> ManagerTieneEmpleado(int managerId, int empleadoId)
+        public async Task<object?> ObtenerEmpleadoDeManager(int managerId, int empleadoId)
         {
-            var repo = _unitOfWork.Repository<Usuario_manager>();
+            var repoRelacion = _unitOfWork.Repository<Usuario_manager>();
 
-            var relacion = await repo.GetAsync(
+            var relacion = await repoRelacion.GetAsync(
                 x => x.no_usuario_manager == managerId
                   && x.no_usuario == empleadoId);
 
-            return relacion != null;
+            if (relacion == null)
+                return null;
+
+            var repoUsuario = _unitOfWork.Repository<Usuario>();
+
+            var usuario = await repoUsuario.GetAsync(
+                x => x.no_usuario == empleadoId);
+
+            if (usuario == null)
+                return null;
+
+            return new
+            {
+                usuario.nombre,
+                usuario.ap_paterno,
+                usuario.ap_materno,
+                usuario.email
+            };
         }
 
         public async Task<Usuario> UpdateWithConcurrencyAsync(Usuario usuarioActualizado, byte[] rowVersion)
@@ -171,15 +188,7 @@ namespace InfoDynamics.Aplicacion.servicios.Servicios
             usuarioExistente.estado_cuenta = usuarioActualizado.estado_cuenta;
             usuarioExistente.debe_cambiar_pass = usuarioActualizado.debe_cambiar_pass;
 
-            // No actualizo contrasena_hash aquí porque el cambio de contraseña
-            // debe hacerse en CambiarContrasenaDto o en otro metodo especifico.
-            // Asi evitas modificar contraseñas por accidente desde Update.
 
-            // No actualizo intentos ni hora_bloqueo aquí porque son campos de seguridad/login.
-            // Se deberian modificar desde la logica de autenticacion.
-
-            // No actualizo RefreshToken aquí porque se maneja desde login/refresh token.
-            // Se mantiene la logica original de seguridad separada.
 
             _usuarioRepo.SetOriginalConcurrencyToken(usuarioExistente, rowVersion);
 
@@ -198,19 +207,42 @@ namespace InfoDynamics.Aplicacion.servicios.Servicios
             }
         }
 
-        // AQUI ACOMODAs plis la verdad prefiero que lo hagas tu para que te familiarices con tu codigo de
-        // servicio, pero basicamente es un servicio de validacion que se encarga de validar los datos de entrada
-        // Ahi le agregas lo que falte de validaciones (SI ES QUE FALTAN),
-        // Las que deben de estar son como por ejemplo validar que el numero de empleado sea de 7 digitos,
-        // validar que el correo sea unico, validar que el numero de empleado sea unico, etc.
-
 
         public class UsuarioValidacionService
         {
-            // Validar campos obligatorios.
-            // Validar número de empleado de 7 digitos.
-            // Validar correo único.
-            // Validar número de empleado único.
+            private readonly IGenericRepository<Usuario> _usuarioRepo;
+
+            public UsuarioValidacionService(IUnitOfWork unitOfWork)
+            {
+                _usuarioRepo = unitOfWork.Repository<Usuario>();
+            }
+
+
+
+            public void ValidarNumeroEmpleado(int noUsuario)
+            {
+                if (noUsuario.ToString().Length > 7)
+                    throw new BadRequestException("El nummero de empleado no puede tener mas de 7 digitos.");
+            }
+
+            public async Task ValidarNoUsuarioUnicoAsync(int noUsuario)
+            {
+                var existente = await _usuarioRepo.GetByIdAsync(noUsuario);
+
+                if (existente != null)
+                    throw new ConflictException($"Ya existe un usuario con el numero {noUsuario}.");
+            }
+
+            public async Task ValidarEmailUnicoAsync(string email, int? excluirNoUsuario = null)
+            {
+                var existente = await _usuarioRepo.GetAsync(
+                    u => u.email == email
+                    && (excluirNoUsuario == null || u.no_usuario != excluirNoUsuario)
+                );
+
+                if (existente != null)
+                    throw new ConflictException($"El correo {email} ya esta registrado.");
+            }
         }
     }
 }

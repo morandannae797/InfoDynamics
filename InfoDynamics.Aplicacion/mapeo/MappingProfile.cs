@@ -19,19 +19,15 @@ namespace InfoDynamics.Aplicacion.mapeo
 
 
             CreateMap<Empresa, EmpresaDto>()
-                .ForMember(dest => dest.IdEmpresa, opt => opt.MapFrom(src => src.id_empresa))
                 .ForMember(dest => dest.Nombre, opt => opt.MapFrom(src => src.nombre));
 
 
-            CreateMap<EmpresaCreateDto, Empresa>()
+            CreateMap<EmpresaDto, Empresa>()
                 .ForMember(dest => dest.id_empresa, opt => opt.Ignore())
                 .ForMember(dest => dest.nombre, opt => opt.MapFrom(src => src.Nombre))
                 .ForMember(dest => dest.Proyectos, opt => opt.Ignore());
 
-            CreateMap<EmpresaDto, Empresa>()
-       .ForMember(dest => dest.id_empresa, opt => opt.MapFrom(src => src.IdEmpresa))
-       .ForMember(dest => dest.nombre, opt => opt.MapFrom(src => src.Nombre))
-       .ForMember(dest => dest.Proyectos, opt => opt.Ignore());
+
 
             CreateMap<AuditoriaDto, Auditoria>()
     .ForMember(dest => dest.id_auditoria, opt => opt.Ignore())
@@ -52,28 +48,15 @@ namespace InfoDynamics.Aplicacion.mapeo
 
 
 
-            CreateMap<Periodo, PeriodoResponseDto>()
+            CreateMap<Periodo, PeriodoDto>()
                 .ForMember(dest => dest.PeriodoId, opt => opt.MapFrom(src => src.id_periodo))
-                .ForMember(dest => dest.FechaInicio, opt => opt.MapFrom(src => ToDateTime(src.fecha_inicio)))
-                .ForMember(dest => dest.FechaFin, opt => opt.MapFrom(src => ToDateTime(src.fecha_fin)))
+                .ForMember(dest => dest.FechaInicio, opt => opt.MapFrom(src => src.fecha_inicio))
+                .ForMember(dest => dest.FechaFin, opt => opt.MapFrom(src => src.fecha_fin))
                 .ForMember(dest => dest.Estado, opt => opt.MapFrom(src => src.estado));
 
-            CreateMap<PeriodoCreateDto, Periodo>()
-                .ForMember(dest => dest.id_periodo, opt => opt.Ignore())
-                .ForMember(dest => dest.fecha_inicio, opt => opt.MapFrom(src => ToDateOnly(src.FechaInicio)))
-                .ForMember(dest => dest.fecha_fin, opt => opt.MapFrom(src => ToDateOnly(src.FechaFin)))
-                .ForMember(dest => dest.estado, opt => opt.MapFrom(src => src.Estado))
-                .ForMember(dest => dest.Registros, opt => opt.Ignore());
-CreateMap<PeriodoUpdateDto, Periodo>()
-    .ForMember(dest => dest.id_periodo, opt => opt.MapFrom(src => src.PeriodoId))
-    .ForMember(dest => dest.fecha_inicio, opt => opt.MapFrom(src => ToDateOnly(src.FechaInicio)))
-    .ForMember(dest => dest.fecha_fin, opt => opt.MapFrom(src => ToDateOnly(src.FechaFin)))
-    .ForMember(dest => dest.estado, opt => opt.MapFrom(src => src.Estado))
-    .ForMember(dest => dest.Registros, opt => opt.Ignore());
 
 
-
-            CreateMap<Registro, RegistroResponseDto>()
+            CreateMap<Registro, RegistroDto>()
                 .ForMember(dest => dest.RegistroId, opt => opt.MapFrom(src => src.id_registro))
                 .ForMember(dest => dest.Fecha, opt => opt.MapFrom(src => src.fecha))
                 .ForMember(dest => dest.Horas, opt => opt.MapFrom(src => src.horas))
@@ -89,13 +72,12 @@ CreateMap<PeriodoUpdateDto, Periodo>()
                 .ForMember(dest => dest.no_usuario, opt => opt.MapFrom(src => src.NoUsuario))
                 .ForMember(dest => dest.id_periodo, opt => opt.MapFrom(src => src.PeriodoId))
                 .ForMember(dest => dest.codigo, opt => opt.MapFrom(src => src.Codigo))
-                .ForMember(dest => dest.RowVersion, opt => opt.Ignore())
                 .ForMember(dest => dest.no_usuarioNavigation, opt => opt.Ignore())
                 .ForMember(dest => dest.id_periodoNavigation, opt => opt.Ignore())
                 .ForMember(dest => dest.id_proyectoNavigation, opt => opt.Ignore());
 
 
-            CreateMap<RegistroUpdateDto, Registro>()
+            CreateMap<RegistroDto, Registro>()
                 .ForMember(dest => dest.id_registro, opt => opt.MapFrom(src => src.RegistroId))
                 .ForMember(dest => dest.fecha, opt => opt.MapFrom(src => src.Fecha))
                 .ForMember(dest => dest.horas, opt => opt.MapFrom(src => src.Horas))

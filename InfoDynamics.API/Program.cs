@@ -51,10 +51,9 @@ builder.Services.AddScoped<IUnitOfWork, UnitOfWork>();
 builder.Services.AddScoped<
     IReadServiceAsync<EmpresaDto>,
     ReadServiceAsync<Empresa, EmpresaDto>>();
-
 builder.Services.AddScoped<
-    IReadServiceAsync<PeriodoResponseDto>,
-    ReadServiceAsync<Periodo, PeriodoResponseDto>>();
+    IReadServiceAsync<PeriodoDto>,
+    ReadServiceAsync<Periodo, PeriodoDto>>();
 builder.Services.AddScoped<
     IReadServiceAsync<UsuarioResponseDTO>,
     ReadServiceAsync<Usuario, UsuarioResponseDTO>>();
@@ -62,8 +61,8 @@ builder.Services.AddScoped<
     IReadServiceAsync<VacacionResponseDto>,
     ReadServiceAsync<Vacacion, VacacionResponseDto>>();
 builder.Services.AddScoped<
-    IReadServiceAsync<RegistroResponseDto>,
-    ReadServiceAsync<Registro, RegistroResponseDto>>();
+    IReadServiceAsync<RegistroDto>,
+    ReadServiceAsync<Registro, RegistroDto>>();
 //Agregacion de proyecto
 builder.Services.AddScoped<
     IReadServiceAsync<ProyectoDto>,
@@ -73,17 +72,12 @@ builder.Services.AddScoped<
 
 // lado lectura
 builder.Services.AddScoped<
-    IWriteServiceAsync<EmpresaCreateDto, EmpresaDto>,
-    WriteServiceAsync<Empresa, EmpresaCreateDto, EmpresaDto>>();
+    IWriteServiceAsync<EmpresaDto, EmpresaDto>,
+    WriteServiceAsync<Empresa, EmpresaDto, EmpresaDto>>();
 //Agregacion de proyecto
 builder.Services.AddScoped<
     IWriteServiceSingleAsync<ProyectoDto>,
     WriteServiceSingleAsync<Proyecto, ProyectoDto>>();
-
-
-builder.Services.AddScoped<
-    IWriteServiceAsync<PeriodoCreateDto, PeriodoUpdateDto>,
-    WriteServiceAsync<Periodo, PeriodoCreateDto, PeriodoUpdateDto>>();
 
 builder.Services.AddScoped<Iusuarioservicio, UsuarioServicio>();
 
@@ -92,14 +86,17 @@ builder.Services.AddScoped<
     WriteServiceAsync<Vacacion, VacacionCreateDto, VacacionAprobacionDto>>();
 
 builder.Services.AddScoped<
-    IWriteServiceAsync<RegistroCreateDto, RegistroUpdateDto>,
-    WriteServiceAsync<Registro, RegistroCreateDto, RegistroUpdateDto>>();
+    IWriteServiceAsync<RegistroCreateDto, RegistroDto>,
+    WriteServiceAsync<Registro, RegistroCreateDto, RegistroDto>>();
+
+builder.Services.AddHttpContextAccessor();
 
 
 builder.Services.AddScoped<Iusuarioservicio, UsuarioServicio>();
 builder.Services.AddScoped<IUserRepository, UserRepository>();
 builder.Services.AddScoped<IAccountService, AccountService>();
 builder.Services.AddScoped<IAuthTokenProcessor, AuthTokenProcessor>();
+builder.Services.AddScoped<PeriodoService>();
 builder.Services.AddHttpContextAccessor();
 
 // Account
@@ -116,10 +113,9 @@ builder.Services.AddScoped<IContrasenaService, ContrasenaService>();
 // Empresa
 builder.Services.AddScoped<EmpresaValidacionService>();
 builder.Services.AddScoped<EmpresaRegistroService>();
-builder.Services.AddScoped<EmpresaAuditoriaService>();
 
-// Seguridad
-builder.Services.AddScoped<HmacServicio>();
+
+
 
 // Jornada
 builder.Services.AddScoped<RegistroJornadaService>();
@@ -130,6 +126,9 @@ builder.Services.AddScoped<JornadaCalculoService>();
 //Proyeto
 builder.Services.AddScoped<RegistroProyectoService>();
 
+
+builder.Services.AddScoped<PeriodoService>();
+builder.Services.AddScoped<IWriteServiceAsync<PeriodoDto, PeriodoDto>, WriteServiceAsync<Periodo, PeriodoDto, PeriodoDto>>();
 /* Vacaciones
 builder.Services.AddScoped<VacacionValidacionService>();
 builder.Services.AddScoped<VacacionSolicitudService>();
@@ -139,11 +138,7 @@ builder.Services.AddScoped<VacacionNotificacionService>();
 
 builder.Services.AddScoped<IVacacionAprobacionService, VacacionAprobacionService>();
 
-builder.Services.AddScoped<IHmacServicio, HmacServicio>();
-//En caso de auditoria, se puede agregar un servicio que se encargue de registrar las acciones 
-//builder.Services.AddScoped<IAuditoriaService, AuditoriaService>();
 
-// JWT Options
 builder.Services.Configure<JwtOptions>(builder.Configuration.GetSection(JwtOptions.JwtOptionKey));
 
 // CORS

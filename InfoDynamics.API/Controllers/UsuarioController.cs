@@ -47,10 +47,9 @@ namespace InfoDynamics.API.Controllers
             }
         }
 
-        // METODO CAMBIADO PARA QUE SE PUEDAN CONSULTAR EMPLEADOS ASIGNADOR Y NO AJENOS
         [Authorize]
         [HttpGet("{id:int}")]
-        public async Task<ActionResult<UsuarioResponseDTO>> GetById(int id)
+        public async Task<ActionResult> GetById(int id)
         {
             try
             {
@@ -85,19 +84,26 @@ namespace InfoDynamics.API.Controllers
 
                 bool esManager = User.IsInRole("Manager");
 
+                if (!esManager)
+                {
+                    return Forbid();
+                }
+
                 var servicioConcreto = (UsuarioServicio)_usuarioServicio;
 
-                bool pertenece = await servicioConcreto.ManagerTieneEmpleado(
+                var empleado = await servicioConcreto.ObtenerEmpleadoDeManager(
                     usuarioAutenticado,
                     id);
 
-                return Ok(new
+                if (empleado == null)
                 {
-                    managerAutenticado = usuarioAutenticado,
-                    empleadoSolicitado = id,
-                    esManager = esManager,
-                    pertenece = pertenece
-                });
+                    return NotFound(new
+                    {
+                        message = "El empleado no pertenece al manager o no existe."
+                    });
+                }
+
+                return Ok(empleado);
             }
             catch (Exception ex)
             {
@@ -210,6 +216,34 @@ namespace InfoDynamics.API.Controllers
                 return Conflict(new { message = ex.Message });
             }
         }
+        [Authorize(Roles = "Manager")]
+        [HttpPost("{id:int}/activar")]
+        public async Task<ActionResult> Activar(int id, [FromBody] UsuarioDesactivarDto dto)
+        {
+            if (!ModelState.IsValid)
+                return BadRequest(ModelState);
+
+            try
+            {
+                var usuario = await _usuarioServicio.FindByIdAsync(id);
+
+                if (usuario == null)
+                    return NotFound(new { message = "Usuario no encontrado." });
+
+                usuario.estado_cuenta = true;
+
+                await _usuarioServicio.UpdateWithConcurrencyAsync(
+                    usuario,
+                    dto.RowVersion);
+
+                return NoContent();
+            }
+            catch (InvalidOperationException ex)
+            {
+                return Conflict(new { message = ex.Message });
+            }
+        }
+
         [Authorize]
         [HttpPost("{id:int}/cambiar-contrasena")]
         public async Task<ActionResult> CambiarContrasena(int id, [FromBody] CambiarContrasenaDto dto)
@@ -245,7 +279,7 @@ namespace InfoDynamics.API.Controllers
             }
             catch (Exception ex)
             {
-                return StatusCode(500, new { message = "Ocurrió un error inesperado.", detail = ex.Message });
+                return StatusCode(500, new { message = "Ocurrió un error inesperado." });
             }
         }
 
@@ -280,7 +314,7 @@ namespace InfoDynamics.API.Controllers
             }
             catch (Exception ex)
             {
-                return StatusCode(500, new { message = "Ocurrió un error inesperado.", detail = ex.Message });
+                return StatusCode(500, new { message = "Ocurrió un error inesperado."});
             }
         }
 

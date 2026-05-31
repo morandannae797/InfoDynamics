@@ -15,31 +15,28 @@ namespace Employees.API.Controllers
     [ApiController]
     public class LogInController : ControllerBase
     {
-        private readonly IHmacServicio _hmacServicio;
+   
         private readonly IAccountService _accountService;
 
 
         public LogInController(
-            IHmacServicio hmacServicio,
             IAccountService accountService)
         {
-            _hmacServicio = hmacServicio;
+       
             _accountService = accountService;
         }
 
         [HttpPost("login")]
         public async Task<IActionResult> Login(
-            [FromBody] loginDto request,
-            [FromHeader(Name = "firma")] string? signature=null)
+            [FromBody] loginDto request)
         {
+
+
             if (request == null)
                 return BadRequest(new { message = "El cuerpo de la peticion no puede estar vacío." });
 
-
-
             try
             {
-
 
                 var user = await _accountService.LoginAsync(request);
 

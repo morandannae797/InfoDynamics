@@ -17,25 +17,26 @@ namespace InfoDynamics.Aplicacion.servicios.Servicios
         {
             string prefijo = esCobrable ? "L" : "M";
 
-            var proyectos = await _unitOfWork
-                .Repository<Proyecto>()
-                .GetAllAsync();
+            var proyectos = await _unitOfWork.Repository<Proyecto>().GetAllAsync(false);
 
-            var ultimoProyecto = proyectos
-                .Where(p => p.codigo.StartsWith(prefijo))
-                .OrderByDescending(p => p.codigo)
-                .FirstOrDefault();
+            var ultimoProyecto = proyectos.Where(p => p.codigo.StartsWith(prefijo)).OrderByDescending(p => p.codigo).FirstOrDefault();
 
             int siguienteNumero = 1;
 
             if (ultimoProyecto != null)
             {
                 string numeroTexto = ultimoProyecto.codigo.Substring(1);
-
                 siguienteNumero = int.Parse(numeroTexto) + 1;
             }
 
-            string codigoGenerado = $"{prefijo}{siguienteNumero.ToString("D6")}";
+            string codigoGenerado;
+
+            do
+            {
+                codigoGenerado = $"{prefijo}{siguienteNumero.ToString("D6")}";
+                siguienteNumero++;
+            }
+            while (proyectos.Any(p => p.codigo == codigoGenerado));
 
             var nuevoProyecto = new Proyecto
             {
@@ -44,9 +45,8 @@ namespace InfoDynamics.Aplicacion.servicios.Servicios
                 id_empresa = idEmpresa
             };
 
-            await _unitOfWork
-                .Repository<Proyecto>()
-                .AddAsync(nuevoProyecto);
+            await _unitOfWork.Repository<Proyecto>().AddAsync(nuevoProyecto);
+            await _unitOfWork.SaveChangesAsync();
         }
 
         public async Task CrearProyectosEmpresaAsync(int idEmpresa, string tipoProyecto)

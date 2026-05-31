@@ -8,18 +8,19 @@ namespace InfoDynamics.Aplicacion.dtos
 {
 
 
-    public class   HistorialContrasenaCreateDto
+    public class  HistorialContrasenaCreateDto
     {
         [Required]
         public int NoUsuario { get; set; }
 
         [Required]
+
         [MinLength(12)]
         public string Contrasena { get; set; } = null!;
 
     }
 
-    public class HistorialContrasenaAmbosDto : IConcurrencyDto
+    public class HistorialContrasenaAmbosDto 
     {
         [Required]
         public int IdHistorial { get; set; }

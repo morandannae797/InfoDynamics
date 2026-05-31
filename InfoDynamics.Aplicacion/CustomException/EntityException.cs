@@ -6,7 +6,7 @@ namespace InfoDynamics.Aplicacion.CustomException
 
     // 404 NOT FOUND CONVERCION EN CONTROLLER
     // Se usa cuando el recurso solicitado no existe en la base de datos.
-    // Ejemplo: empresa no encontrada, usuario inexistente.
+    // Ejemplo: de que empresa no encontrada o un usuario inexistente.
     [Serializable]
     public class EntityNotFoundException : Exception
     {
@@ -17,8 +17,8 @@ namespace InfoDynamics.Aplicacion.CustomException
     }
 
     // 401 UNAUTHORIZED
-    // Se usa cuando el usuario no está autenticado o no tiene permisos.
-    // Ejemplo: token inválido, contraseña incorrecta, acceso denegado.
+    // Se usa cuando el usuario no esta autenticado o no tiene permisos.
+    // Ejemplo: token invalido, contraseña incorrecta, acceso denegado.
     [Serializable]
     public class UnauthorizedException : Exception
     {
@@ -30,7 +30,7 @@ namespace InfoDynamics.Aplicacion.CustomException
 
     // 409 CONFLICT
     // Se usa cuando existe un conflicto de datos.
-    // Ejemplo: correo repetido, empresa duplicada, codigo ya registrado.
+    // Ejemplo: e correo repetido, empresa duplicada, codigo ya registrado
     [Serializable]
     public class ConflictException : Exception
     {
@@ -42,8 +42,8 @@ namespace InfoDynamics.Aplicacion.CustomException
 
 
     // 400 BAD REQUEST
-    // Se usa cuando los datos enviados por el cliente son inválidos.
-    // Ejemplo: nombre vacío, longitud incorrecta, formato inválido.
+    // Se usa cuando los datos enviados por el cliente son invlidos.
+    // Ejemplo: nombre vacío, longitud incorrecta, formato invalido.
 
     [Serializable]
     public class BadRequestException : Exception

@@ -12,7 +12,10 @@ namespace InfoDynamics.Aplicacion.servicios
         private readonly IGenericRepository<Usuario_manager> _usuarioManagerRepository;
         private readonly IUnitOfWork _unitOfWork;
 
-        public VacacionAprobacionService(IGenericRepository<Vacacion> vacacionRepository, IGenericRepository<Usuario_manager> usuarioManagerRepository, IUnitOfWork unitOfWork)
+        public VacacionAprobacionService(
+            IGenericRepository<Vacacion> vacacionRepository,
+            IGenericRepository<Usuario_manager> usuarioManagerRepository,
+            IUnitOfWork unitOfWork)
         {
             _vacacionRepository = vacacionRepository;
             _usuarioManagerRepository = usuarioManagerRepository;
@@ -30,13 +33,36 @@ namespace InfoDynamics.Aplicacion.servicios
                 throw new ConflictException("La solicitud ya fue evaluada anteriormente.");
 
             var relaciones = await _usuarioManagerRepository.GetAllAsync();
-
             bool pertenece = relaciones.Any(x => x.no_usuario_manager == noUsuarioManager && x.no_usuario == vacacion.no_usuario);
 
             if (!pertenece)
-                throw new UnauthorizedException("No puedes modificar solicitudes de otro equipo.");
+                throw new UnauthorizedException("No tienes permiso para aprobar solicitudes de este usuario.");
 
             vacacion.estado = dto.EstadoDecision;
+
+            if (vacacion.estado == "Aprobada")
+            {
+                var periodoActivo = await _unitOfWork.Repository<Periodo>().GetAsync(p => p.estado == "Abierto");
+
+                if (periodoActivo == null)
+                    throw new ConflictException("No hay periodos abiertos para registrar las vacaciones.");
+
+                var proyectoExiste = await _unitOfWork.Repository<Proyecto>().GetAsync(p => p.codigo == dto.CodigoProyecto);
+
+                if (proyectoExiste == null)
+                    throw new ConflictException($"El código de proyecto '{dto.CodigoProyecto}' no es válido.");
+
+                var nuevoRegistro = new Registro
+                {
+                    no_usuario = vacacion.no_usuario,
+                    fecha = vacacion.fecha_inicio.ToDateTime(TimeOnly.MinValue),
+                    horas = 8,
+                    codigo = dto.CodigoProyecto,
+                    id_periodo = periodoActivo.id_periodo
+                };
+
+                await _unitOfWork.Repository<Registro>().AddAsync(nuevoRegistro);
+            }
 
             await _unitOfWork.SaveChangesAsync();
         }

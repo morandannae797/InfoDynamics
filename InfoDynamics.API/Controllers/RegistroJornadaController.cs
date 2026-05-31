@@ -1,6 +1,7 @@
 using InfoDynamics.Aplicacion.CustomException;
 using InfoDynamics.Aplicacion.dtos;
 using InfoDynamics.Aplicacion.servicio.IServicios;
+using InfoDynamics.Aplicacion.servicios.Servicios;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
@@ -11,20 +12,23 @@ namespace InfoDynamics.API.Controllers
     [Route("api/[controller]")]
     public class RegistroJornadaController : ControllerBase
     {
-        private readonly IReadServiceAsync<RegistroResponseDto> _readService;
-        private readonly IWriteServiceAsync<RegistroCreateDto, RegistroUpdateDto> _writeService;
+        private readonly IReadServiceAsync<RegistroDto> _readService;
+        private readonly IWriteServiceAsync<RegistroCreateDto, RegistroDto> _writeService;
+        private readonly JornadaCalculoService _jornadaCalculoService;
 
         public RegistroJornadaController(
-            IReadServiceAsync<RegistroResponseDto> readService,
-            IWriteServiceAsync<RegistroCreateDto, RegistroUpdateDto> writeService)
+            IReadServiceAsync<RegistroDto> readService,
+            IWriteServiceAsync<RegistroCreateDto, RegistroDto> writeService,
+            JornadaCalculoService jornadaCalculoService)
         {
             _readService = readService;
             _writeService = writeService;
+            _jornadaCalculoService = jornadaCalculoService;
         }
 
         [Authorize]
         [HttpGet]
-        public async Task<ActionResult<IEnumerable<RegistroResponseDto>>> GetAll()
+        public async Task<ActionResult<IEnumerable<RegistroDto>>> GetAll()
         {
             try
             {
@@ -39,12 +43,32 @@ namespace InfoDynamics.API.Controllers
 
         [Authorize]
         [HttpGet("{id:int}")]
-        public async Task<ActionResult<RegistroResponseDto>> GetById(int id)
+        public async Task<ActionResult<RegistroDto>> GetById(int id)
         {
             try
             {
                 var registro = await _readService.GetByIdAsync(id);
                 return Ok(registro);
+            }
+            catch (EntityNotFoundException ex)
+            {
+                return NotFound(new { message = ex.Message });
+            }
+        }
+        
+        [Authorize]
+        [HttpGet("usuario/{noUsuario:int}")]
+        public async Task<ActionResult<IEnumerable<RegistroDto>>> GetByUsuario(int noUsuario)
+        {
+            try
+            {
+                var registros = await _readService.GetAllAsync();
+                var resultado = registros.Where(r => r.NoUsuario == noUsuario).ToList();
+
+                if (!resultado.Any())
+                    return NotFound(new { message = "No se encontraron registros para ese usuario." });
+
+                return Ok(resultado);
             }
             catch (EntityNotFoundException ex)
             {
@@ -67,7 +91,7 @@ namespace InfoDynamics.API.Controllers
         [Authorize]
 
         [HttpPost("{id:int}")]
-        public async Task<ActionResult> Update(int id, [FromBody] RegistroUpdateDto dto)
+        public async Task<ActionResult> Update(int id, [FromBody] RegistroDto dto)
         {
             if (!ModelState.IsValid)
                 return BadRequest(ModelState);
@@ -86,6 +110,29 @@ namespace InfoDynamics.API.Controllers
             }
         }
 
-       
+        //OBTENER EMPLEADOS
+        [Authorize]
+        [HttpGet("top-empleados")]
+        public async Task<ActionResult<IEnumerable<MEmpleadoDto>>> ObtenerTop3Empleados([FromQuery] DateTime fechaInicio)
+        {
+            // VALIDAR FECHA
+            if (fechaInicio == DateTime.MinValue)
+            {
+                return BadRequest("Debe enviar una fecha válida.");
+            }
+
+            var resultado = await _jornadaCalculoService
+                .ObtenerTop3EmpleadosHoras(fechaInicio);
+
+            return Ok(resultado);
+        }
+
+        [Authorize]
+        [HttpGet("horas-semana/{noUsuario}/{periodoId}")]
+        public async Task<IActionResult> GetHorasSemana(int noUsuario, int periodoId)
+        {
+            var total = await _jornadaCalculoService.GetHorasSemanaAsync(noUsuario, periodoId);
+            return Ok(total);
+        }
     }
 }
