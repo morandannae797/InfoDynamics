@@ -1,3 +1,5 @@
+//
+using System.Security.Claims;
 using InfoDynamics.Aplicacion.CustomException;
 using InfoDynamics.Aplicacion.dtos;
 using InfoDynamics.Aplicacion.servicio.IServicios;
@@ -15,15 +17,21 @@ namespace InfoDynamics.API.Controllers
         private readonly IReadServiceAsync<RegistroDto> _readService;
         private readonly IWriteServiceAsync<RegistroCreateDto, RegistroDto> _writeService;
         private readonly JornadaCalculoService _jornadaCalculoService;
+        //
+        private readonly JornadaRegistroService _jornadaRegistroService;
 
         public RegistroJornadaController(
             IReadServiceAsync<RegistroDto> readService,
             IWriteServiceAsync<RegistroCreateDto, RegistroDto> writeService,
-            JornadaCalculoService jornadaCalculoService)
+            JornadaCalculoService jornadaCalculoService,
+            //
+            JornadaRegistroService jornadaRegistroService)
         {
             _readService = readService;
             _writeService = writeService;
             _jornadaCalculoService = jornadaCalculoService;
+            //
+            _jornadaRegistroService = jornadaRegistroService;
         }
 
         [Authorize]
@@ -83,13 +91,46 @@ namespace InfoDynamics.API.Controllers
             if (!ModelState.IsValid)
                 return BadRequest(ModelState);
 
+            var rol = User.FindFirst(ClaimTypes.Role)?.Value;
+
+            if (string.IsNullOrEmpty(rol))
+                return Unauthorized(new { message = "No se pudo determinar el rol del usuario." });
+
+            try
+            {
+                await _jornadaRegistroService.RegistrarAsync(dto, rol);
+                return Ok(new { message = "Registro de jornada creado correctamente." });
+            }
+            catch (BadRequestException ex)
+            {
+                return BadRequest(new { message = ex.Message });
+            }
+            catch (UnauthorizedException ex)
+            {
+                return Unauthorized(new { message = ex.Message });
+            }
+            catch (EntityNotFoundException ex)
+            {
+                return NotFound(new { message = ex.Message });
+            }
+            catch (ConflictException ex)
+            {
+                return Conflict(new { message = ex.Message });
+            }
+        }
+        /*[Authorize]
+        [HttpPost]
+        public async Task<ActionResult> Create([FromBody] RegistroCreateDto dto)
+        {
+            if (!ModelState.IsValid)
+                return BadRequest(ModelState);
+
             await _writeService.AddAsync(dto);
 
             return Ok(new { message = "Registro de jornada creado correctamente." });
         }
-
+        */
         [Authorize]
-
         [HttpPost("{id:int}")]
         public async Task<ActionResult> Update(int id, [FromBody] RegistroDto dto)
         {
@@ -98,15 +139,39 @@ namespace InfoDynamics.API.Controllers
 
             if (id != dto.RegistroId)
                 return BadRequest(new { message = "El ID de la ruta no coincide con el del objeto." });
-     
+
+            var rol = User.FindFirst(ClaimTypes.Role)?.Value;
+
+            if (string.IsNullOrEmpty(rol))
+                return Unauthorized(new { message = "No se pudo determinar el rol del usuario." });
+
+            if (rol != "Manager")
+                return Unauthorized(new { message = "Solo los managers pueden modificar registros." });
+
             try
             {
                 await _writeService.UpdateAsync(dto);
                 return NoContent();
             }
+            catch (BadRequestException ex)
+            {
+                return BadRequest(new { message = ex.Message });
+            }
+            catch (UnauthorizedException ex)
+            {
+                return Unauthorized(new { message = ex.Message });
+            }
+            catch (EntityNotFoundException ex)
+            {
+                return NotFound(new { message = ex.Message });
+            }
             catch (DbUpdateConcurrencyException)
             {
                 return Conflict(new { message = "El registro fue modificado por otro proceso. Recarga los datos y reintenta." });
+            }
+            catch (DbUpdateException ex)
+            {
+                return BadRequest(new { message = ex.InnerException?.Message ?? ex.Message });
             }
         }
 
