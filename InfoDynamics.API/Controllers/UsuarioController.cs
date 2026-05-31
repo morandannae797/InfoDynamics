@@ -53,15 +53,16 @@ namespace InfoDynamics.API.Controllers
         {
             try
             {
-                var claimUsuario = User.Claims.FirstOrDefault(
-                    c => c.Type.Contains("nameidentifier"));
+                var claimUsuario = User.Claims.FirstOrDefault(c => c.Type.Contains("nameidentifier"));
 
                 if (claimUsuario == null)
                 {
                     return Unauthorized(new
                     {
-                        message = "No se encontró el ID del usuario en el token."
+                        message = "No se encontro ID"
+
                     });
+
                 }
 
                 int usuarioAutenticado = int.Parse(claimUsuario.Value);
