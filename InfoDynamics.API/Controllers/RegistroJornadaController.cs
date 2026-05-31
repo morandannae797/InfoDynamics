@@ -151,7 +151,7 @@ namespace InfoDynamics.API.Controllers
             try
             {
                 await _writeService.UpdateAsync(dto);
-                return NoContent();
+                return Ok(new { message = "Registro modificado correctamente." });
             }
             catch (BadRequestException ex)
             {
