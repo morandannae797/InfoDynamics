@@ -121,10 +121,6 @@ namespace InfoDynamics.Aplicacion.servicios.Servicios
 
 
 
-
-
-
-
         public async Task RefreshtokenAsync(string? refreshToken)
         {
             if (string.IsNullOrWhiteSpace(refreshToken))
@@ -189,7 +185,6 @@ namespace InfoDynamics.Aplicacion.servicios.Servicios
                 refreshTokenExpirationDateInUtc);
         }
 
-        // CAMBIO:
 
         public async Task DesbloquearCuentaAsync(
             int noUsuario)
@@ -203,8 +198,6 @@ namespace InfoDynamics.Aplicacion.servicios.Servicios
                     "Usuario no encontrado.");
             }
 
-            // Desbloqueo manual independiente del tiempoo
-            //jj
             user.estado_cuenta = true;
             user.hora_bloqueo = null;
             user.intentos = 0;
