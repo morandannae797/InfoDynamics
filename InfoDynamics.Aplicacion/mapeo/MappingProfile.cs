@@ -73,8 +73,8 @@ namespace InfoDynamics.Aplicacion.mapeo
                 .ForMember(dest => dest.id_periodo, opt => opt.MapFrom(src => src.PeriodoId))
                 .ForMember(dest => dest.codigo, opt => opt.MapFrom(src => src.Codigo))
                 .ForMember(dest => dest.no_usuarioNavigation, opt => opt.Ignore())
-                .ForMember(dest => dest.id_periodoNavigation, opt => opt.Ignore())
-                .ForMember(dest => dest.id_proyectoNavigation, opt => opt.Ignore());
+                .ForMember(dest => dest.id_periodoNavigation, opt => opt.Ignore());
+
 
 
             CreateMap<RegistroDto, Registro>()
@@ -85,8 +85,8 @@ namespace InfoDynamics.Aplicacion.mapeo
                 .ForMember(dest => dest.codigo, opt => opt.MapFrom(src => src.Codigo))
                 .ForMember(dest => dest.no_usuario, opt => opt.Ignore())
                 .ForMember(dest => dest.no_usuarioNavigation, opt => opt.Ignore())
-                .ForMember(dest => dest.id_periodoNavigation, opt => opt.Ignore())
-                .ForMember(dest => dest.id_proyectoNavigation, opt => opt.Ignore());
+                .ForMember(dest => dest.id_periodoNavigation, opt => opt.Ignore());
+
 
 
             CreateMap<UsuarioCreateDTO, Usuario>()
