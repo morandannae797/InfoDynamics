@@ -281,11 +281,13 @@ POST https://localhost:7293/api/RegistroJornada
 Content-Type: application/json
 
 {
+
+
   "fecha": "2026-06-10",
   "horas": 8,
   "noUsuario": 1000002,
   "periodoId": 1,
-  "codigo": "L00001"
+  "codigo": "L000001"
 }
 
 
@@ -294,16 +296,15 @@ Content-Type: application/json
 ### EMPLEADO EDITA JORNADA
 ##################################################
 
-POST https://localhost:7293/api/RegistroJornada/1
+POST https://localhost:7293/api/RegistroJornada/2
 Content-Type: application/json
 
 {
-  "registroId": 1,
   "fecha": "2026-06-10",
   "horas": 6,
   "noUsuario": 1000002,
   "periodoId": 1,
-  "codigo": "L00001"
+  "codigo": "L000001"
 }
 
 
