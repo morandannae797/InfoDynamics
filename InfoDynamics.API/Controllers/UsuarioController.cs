@@ -66,7 +66,6 @@ namespace InfoDynamics.API.Controllers
 
                 int usuarioAutenticado = int.Parse(claimUsuario.Value);
 
-                // Si consulta su propio perfil
                 if (usuarioAutenticado == id)
                 {
                     var usuario = await _usuarioServicio.FindByIdAsync(id);

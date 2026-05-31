@@ -92,20 +92,18 @@ Content-Type: application/json
 ### CREAR OTRA EMPRESA
 POST https://localhost:7293/api/empresa
 Content-Type: application/json
-
 {
-
- "nombre": "Pompas2004",
-  "tipoProyecto": "NoCobrable"
+ "nombre": "KuromiIntensa",
+ "tipoProyecto": "NoCobrable"
 }
 
 ### ACTUALIZAR EMPRESA
-POST https://localhost:7293/api/empresa/update/12
+POST https://localhost:7293/api/empresa/update
 Content-Type: application/json
 
 {
-  "nombre": "Pompas2004",
-  "tipoProyecto": "Cobrable"
+  "nombre": "KuromiIntensa",
+  "tipoProyecto": "Ambos"
 }
 
 ### EL ID NO COINCIDE
