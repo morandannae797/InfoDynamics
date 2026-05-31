@@ -173,8 +173,11 @@ namespace InfoDynamics.Aplicacion.servicios.Servicios
 
             if (ahora <= finCaptura)
             {
-                if (rolUsuario != "Empleado")
-                    throw new UnauthorizedException("Solo los empleados pueden registrar o modificar horas durante el periodo abierto.");
+                if (accion == "Registrar" && rolUsuario != "Empleado")
+                    throw new UnauthorizedException("Solo los empleados pueden registrar horas.");
+
+                if (accion == "Modificar" && rolUsuario != "Manager")
+                    throw new UnauthorizedException("Solo los managers pueden modificar horas.");
 
                 return;
             }
@@ -250,7 +253,7 @@ namespace InfoDynamics.Aplicacion.servicios.Servicios
             if (periodo == null)
                 throw new EntityNotFoundException($"El periodo con ID {dto.PeriodoId} no existe.");
 
-            _validacion.ValidarAccesoPeriodo(periodo, rolUsuario, "Modificar");
+            _validacion.ValidarAccesoPeriodo(periodo, rolUsuario, "Registrar");
 
             var duplicado = await _unitOfWork.Repository<Registro>().FirstOrDefaultAsync(r => r.no_usuario == dto.NoUsuario && r.fecha.Date == dto.Fecha.Date && r.codigo == dto.Codigo);
 
@@ -316,11 +319,10 @@ namespace InfoDynamics.Aplicacion.servicios.Servicios
             if (periodo == null)
                 throw new EntityNotFoundException($"El periodo {periodoId} no existe.");
 
+            // Semana actual: lunes a domingo
             var hoy = DateTime.Now.Date;
-            var diasDesdeInicio = (hoy - periodo.fecha_inicio.Date).Days;
-            var semana = diasDesdeInicio / 7;
-
-            var inicioSemana = periodo.fecha_inicio.Date.AddDays(semana * 7);
+            var diasDesdelunes = ((int)hoy.DayOfWeek + 6) % 7; // lunes = 0
+            var inicioSemana = hoy.AddDays(-diasDesdelunes);
             var finSemana = inicioSemana.AddDays(6);
 
             var registros = await _unitOfWork.Repository<Registro>().GetAllAsync();
