@@ -4,7 +4,6 @@ using InfoDynamics.Aplicacion.servicio.IServicios;
 using InfoDynamics.Aplicacion.Servicios.Servicios;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.EntityFrameworkCore;
 
 namespace InfoDynamics.API.Controllers
 {
@@ -81,21 +80,19 @@ namespace InfoDynamics.API.Controllers
         }
 
         [Authorize(Roles = "Manager")]
-        [HttpPost("update/{id:int}")]
-        public async Task<ActionResult> Update(
-            int id,
-            [FromBody] EmpresaDto dto)
+        [HttpPost("update")]
+        public async Task<ActionResult> Update([FromBody] EmpresaDto dto)
         {
             if (!ModelState.IsValid)
                 return BadRequest(ModelState);
 
             try
             {
-                await _empresaService.UpdateNombreYAgregarCodigoAsync(id, dto);
+                await _empresaService.UpdateNombreYAgregarCodigoAsync(dto);
 
                 return Ok(new
                 {
-                    message = "Empresa actualizada y código agregado correctamente."
+                    message = "Código agregado correctamente."
                 });
             }
             catch (BadRequestException ex)
