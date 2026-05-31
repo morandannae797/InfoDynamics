@@ -382,3 +382,5 @@ Content-Type: application/json
 
 GET https://localhost:7293/api/RegistroJornada/top-empleados?fechaInicio=2026-06-01
 Accept: application/json
+
+
