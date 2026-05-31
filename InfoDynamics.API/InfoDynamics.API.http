@@ -59,10 +59,10 @@ Content-Type: application/json
 }
 
 ### EMPLEADO QUE SI PERTENECE AL MANAGER
-GET https://localhost:7293/api/Usuario/1000002
+GET https://localhost:7293/api/Usuario
 
 ### EMPLEADO QUE NO PERTENECE
-GET https://localhost:7293/api/Usuario/1000003
+GET https://localhost:7293/api/Usuario/1000004waddwwww
 ###
 POST https://localhost:7293/api/LogIn/logout
 ### TODAS LAS EMPRESAS
@@ -92,20 +92,18 @@ Content-Type: application/json
 ### CREAR OTRA EMPRESA
 POST https://localhost:7293/api/empresa
 Content-Type: application/json
-
 {
-
- "nombre": "Pompas2004",
-  "tipoProyecto": "NoCobrable"
+ "nombre": "KuromiIntensa",
+ "tipoProyecto": "NoCobrable"
 }
 
 ### ACTUALIZAR EMPRESA
-POST https://localhost:7293/api/empresa/update/12
+POST https://localhost:7293/api/empresa/update
 Content-Type: application/json
 
 {
-  "nombre": "Pompas2004",
-  "tipoProyecto": "Cobrable"
+  "nombre": "KuromiIntensa",
+  "tipoProyecto": "Ambos"
 }
 
 ### EL ID NO COINCIDE
@@ -281,11 +279,13 @@ POST https://localhost:7293/api/RegistroJornada
 Content-Type: application/json
 
 {
+
+
   "fecha": "2026-06-10",
   "horas": 8,
   "noUsuario": 1000002,
   "periodoId": 1,
-  "codigo": "L00001"
+  "codigo": "L000001"
 }
 
 
@@ -294,16 +294,15 @@ Content-Type: application/json
 ### EMPLEADO EDITA JORNADA
 ##################################################
 
-POST https://localhost:7293/api/RegistroJornada/1
+POST https://localhost:7293/api/RegistroJornada/2
 Content-Type: application/json
 
 {
-  "registroId": 1,
   "fecha": "2026-06-10",
   "horas": 6,
   "noUsuario": 1000002,
   "periodoId": 1,
-  "codigo": "L00001"
+  "codigo": "L000001"
 }
 
 
@@ -384,129 +383,4 @@ Content-Type: application/json
 GET https://localhost:7293/api/RegistroJornada/top-empleados?fechaInicio=2026-06-01
 Accept: application/json
 
-################################################################################################################################VACACION
-### LOGIN COMO MANAGER (Para las pruebas de evaluación)
-POST https://localhost:7293/api/LogIn/login
-Content-Type: application/json
 
-{
-    "identificador": "1000001",
-    "contrasena": "hash123"
-}
-
-
-### CONSULTAR SOLICITUDES (Aquí verás SOLO las de sus empleados)
-GET https://localhost:7293/api/Vacacion
-Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJodHRwOi8vc2NoZW1hcy5taWNyb3NvZnQuY29tL3dzLzIwMDgvMDYvaWRlbnRpdHkvY2xhaW1zL3JvbGUiOiJNYW5hZ2VyIiwic3ViIjoiMTAwMDAwMSIsImp0aSI6IjkwOGI2ZWEwLTFhZGUtNDc4MS1iZDc1LTI1MmQ2MTkxMjY1NyIsImVtYWlsIjoiYXJhaGVsLnNhcGlAZW1wcmVzYS5jb20iLCJleHAiOjE3ODAyMTUxMTAsImlzcyI6Imh0dHBzOi8vbG9jYWxob3N0OjcyOTMiLCJhdWQiOiJodHRwczovL2xvY2FsaG9zdDo3MjkzIn0.UlrgcCETI_T-ZLqq_KbS04nr_56iACmPTFEKT09cZXg
-
-
-
-### LOGIN COMO EMPLEADO (Para solicitar vacaciones)
-POST https://localhost:7293/api/LogIn/login
-Content-Type: application/json
-
-{
-  "identificador": "1000002",
-  "contrasena": "Nuevascosas683!@$"
-}
-
-
-
-### EMPLEADO SOLICITA VACACIONES
-POST https://localhost:7293/api/Vacacion
-Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJodHRwOi8vc2NoZW1hcy5taWNyb3NvZnQuY29tL3dzLzIwMDgvMDYvaWRlbnRpdHkvY2xhaW1zL3JvbGUiOiJFbXBsZWFkbyIsInN1YiI6IjEwMDAwMDIiLCJqdGkiOiJjOWY2OTU2MS04ZGM4LTQxOGUtYWI5NS1mODFlNTMxYTZmYzYiLCJlbWFpbCI6Im1hcmlhLmdvbWV6QGVtcHJlc2EuY29tIiwiZXhwIjoxNzgwMjEzNzE2LCJpc3MiOiJodHRwczovL2xvY2FsaG9zdDo3MjkzIiwiYXVkIjoiaHR0cHM6Ly9sb2NhbGhvc3Q6NzI5MyJ9.yrj0114pcrJezSBMVNUA5YAoLX_DEsyQrfLBj16HEH8
-Content-Type: application/json
-
-{
-  "fechaInicio": "2026-06-21",
-  "fechaFin": "2026-06-30"
-}
-
-### INTENTO DE SOLICITAR OTRA (Debería lanzar el 409 Conflict)
-POST https://localhost:7293/api/Vacacion
-Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJodHRwOi8vc2NoZW1hcy5taWNyb3NvZnQuY29tL3dzLzIwMDgvMDYvaWRlbnRpdHkvY2xhaW1zL3JvbGUiOiJFbXBsZWFkbyIsInN1YiI6IjEwMDAwMDIiLCJqdGkiOiJjOWY2OTU2MS04ZGM4LTQxOGUtYWI5NS1mODFlNTMxYTZmYzYiLCJlbWFpbCI6Im1hcmlhLmdvbWV6QGVtcHJlc2EuY29tIiwiZXhwIjoxNzgwMjEzNzE2LCJpc3MiOiJodHRwczovL2xvY2FsaG9zdDo3MjkzIiwiYXVkIjoiaHR0cHM6Ly9sb2NhbGhvc3Q6NzI5MyJ9.yrj0114pcrJezSBMVNUA5YAoLX_DEsyQrfLBj16HEH8
-Content-Type: application/json
-
-{
-  "fechaInicio": "2026-07-01",
-  "fechaFin": "2026-07-05"
-}
-
-
-
-
-#####################################################FLUJO CORRECTO PARA VACACIONES
-### LOGIN EMPLEADO (Ej: 1000002)
-POST https://localhost:7293/api/LogIn/login
-Content-Type: application/json
-
-{
-  "identificador": "1000002",
-  "contrasena": "Nuevascosas683!@$"
-}
-
-### LOGIN MANAGER (Ej: 1000001)
-POST https://localhost:7293/api/LogIn/login
-Content-Type: application/json
-
-{
-  "identificador": "2000001",
-  "contrasena": "hash123"
-}
-
-#######################################EMPLEADO 
-### 1. FALLO: Fecha Inicio > Fecha Fin
-POST https://localhost:7293/api/Vacacion
-Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJodHRwOi8vc2NoZW1hcy5taWNyb3NvZnQuY29tL3dzLzIwMDgvMDYvaWRlbnRpdHkvY2xhaW1zL3JvbGUiOiJFbXBsZWFkbyIsInN1YiI6IjEwMDAwMDIiLCJqdGkiOiI1ZTQwYmQ0MS1mMjYzLTRkMzMtYmQzOS0yZTdhOGUyZDRkN2MiLCJlbWFpbCI6Im1hcmlhLmdvbWV6QGVtcHJlc2EuY29tIiwiZXhwIjoxNzgwMjI0OTYzLCJpc3MiOiJodHRwczovL2xvY2FsaG9zdDo3MjkzIiwiYXVkIjoiaHR0cHM6Ly9sb2NhbGhvc3Q6NzI5MyJ9.LjI_A8yk_TZbY_tkOriiPZdjXsvMVaCCQspOvoUrBqo
-Content-Type: application/json
-
-{ "fechaInicio": "2026-06-30", "fechaFin": "2026-06-20" }
-
-### 2. FALLO: Fechas Pasadas
-POST https://localhost:7293/api/Vacacion
-Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJodHRwOi8vc2NoZW1hcy5taWNyb3NvZnQuY29tL3dzLzIwMDgvMDYvaWRlbnRpdHkvY2xhaW1zL3JvbGUiOiJFbXBsZWFkbyIsInN1YiI6IjEwMDAwMDIiLCJqdGkiOiI1ZTQwYmQ0MS1mMjYzLTRkMzMtYmQzOS0yZTdhOGUyZDRkN2MiLCJlbWFpbCI6Im1hcmlhLmdvbWV6QGVtcHJlc2EuY29tIiwiZXhwIjoxNzgwMjI0OTYzLCJpc3MiOiJodHRwczovL2xvY2FsaG9zdDo3MjkzIiwiYXVkIjoiaHR0cHM6Ly9sb2NhbGhvc3Q6NzI5MyJ9.LjI_A8yk_TZbY_tkOriiPZdjXsvMVaCCQspOvoUrBqo
-Content-Type: application/json
-
-{ "fechaInicio": "2025-01-01", "fechaFin": "2025-01-05" }
-
-### 3. ÉXITO: Crear primera solicitud
-POST https://localhost:7293/api/Vacacion
-Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJodHRwOi8vc2NoZW1hcy5taWNyb3NvZnQuY29tL3dzLzIwMDgvMDYvaWRlbnRpdHkvY2xhaW1zL3JvbGUiOiJFbXBsZWFkbyIsInN1YiI6IjEwMDAwMDIiLCJqdGkiOiI1ZTQwYmQ0MS1mMjYzLTRkMzMtYmQzOS0yZTdhOGUyZDRkN2MiLCJlbWFpbCI6Im1hcmlhLmdvbWV6QGVtcHJlc2EuY29tIiwiZXhwIjoxNzgwMjI0OTYzLCJpc3MiOiJodHRwczovL2xvY2FsaG9zdDo3MjkzIiwiYXVkIjoiaHR0cHM6Ly9sb2NhbGhvc3Q6NzI5MyJ9.LjI_A8yk_TZbY_tkOriiPZdjXsvMVaCCQspOvoUrBqo
-Content-Type: application/json
-
-{ "fechaInicio": "2026-06-21", "fechaFin": "2026-06-25" }
-
-### 4. FALLO: Bloqueo de Duplicado (Ya tiene una pendiente)
-POST https://localhost:7293/api/Vacacion
-Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJodHRwOi8vc2NoZW1hcy5taWNyb3NvZnQuY29tL3dzLzIwMDgvMDYvaWRlbnRpdHkvY2xhaW1zL3JvbGUiOiJFbXBsZWFkbyIsInN1YiI6IjEwMDAwMDIiLCJqdGkiOiI1ZTQwYmQ0MS1mMjYzLTRkMzMtYmQzOS0yZTdhOGUyZDRkN2MiLCJlbWFpbCI6Im1hcmlhLmdvbWV6QGVtcHJlc2EuY29tIiwiZXhwIjoxNzgwMjI0OTYzLCJpc3MiOiJodHRwczovL2xvY2FsaG9zdDo3MjkzIiwiYXVkIjoiaHR0cHM6Ly9sb2NhbGhvc3Q6NzI5MyJ9.LjI_A8yk_TZbY_tkOriiPZdjXsvMVaCCQspOvoUrBqo
-Content-Type: application/json
-
-{ "fechaInicio": "2026-07-01", "fechaFin": "2026-07-05" }
-
-
-################################################MANAGER
-
-### 1. ÉXITO: Consultar solicitudes (Debe filtrar y traer SOLO sus empleados)
-GET https://localhost:7293/api/Vacacion
-Authorization: Bearer <TOKEN_MANAGER>
-
-### 2. FALLO: Intentar aprobar con código de proyecto inexistente
-POST https://localhost:7293/api/Vacacion/15/evaluar
-Authorization: Bearer <TOKEN_MANAGER>
-Content-Type: application/json
-
-{ "EstadoDecision": "Aprobada", "CodigoProyecto": "PROYECTO_FALSO" }
-
-### 3. ÉXITO: Aprobar solicitud válida
-POST https://localhost:7293/api/Vacacion/15/evaluar
-Authorization: Bearer <TOKEN_MANAGER>
-Content-Type: application/json
-
-{ "EstadoDecision": "Aprobada" }
-
-### 4. FALLO: Intentar aprobar algo que ya fue evaluado
-POST https://localhost:7293/api/Vacacion/15/evaluar
-Authorization: Bearer <TOKEN_MANAGER>
-Content-Type: application/json
-
-{ "EstadoDecision": "Aprobada"}

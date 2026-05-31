@@ -85,9 +85,13 @@ builder.Services.AddScoped<
     IWriteServiceAsync<VacacionCreateDto, VacacionAprobacionDto>,
     WriteServiceAsync<Vacacion, VacacionCreateDto, VacacionAprobacionDto>>();
 
-builder.Services.AddScoped<
+//builder.Services.AddScoped<
+// IWriteServiceAsync<RegistroCreateDto, RegistroDto>,
+// WriteServiceAsync<Registro, RegistroCreateDto, RegistroDto>>();
+
+ builder.Services.AddScoped<
     IWriteServiceAsync<RegistroCreateDto, RegistroDto>,
-    WriteServiceAsync<Registro, RegistroCreateDto, RegistroDto>>();
+    RegistroJornadaService > ();
 
 builder.Services.AddHttpContextAccessor();
 
@@ -103,8 +107,6 @@ builder.Services.AddHttpContextAccessor();
 builder.Services.AddScoped<LoginValidacion>();
 builder.Services.AddScoped<LoginIntentosValidacion>();
 
-// Busqueda
-builder.Services.AddScoped<BusquedaService>();
 
 // Contraseña
 builder.Services.AddScoped<IContrasenaService, ContrasenaService>();
