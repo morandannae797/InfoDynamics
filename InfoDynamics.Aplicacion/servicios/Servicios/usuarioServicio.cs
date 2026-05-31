@@ -144,7 +144,6 @@ namespace InfoDynamics.Aplicacion.servicios.Servicios
             );
         }
 
-        // METODO PARA VALIDAR LA RELACION DE MANAGE (ADMIN) A EMPLEADO
         public async Task<object?> ObtenerEmpleadoDeManager(int managerId, int empleadoId)
         {
             var repoRelacion = _unitOfWork.Repository<Usuario_manager>();
@@ -166,9 +165,14 @@ namespace InfoDynamics.Aplicacion.servicios.Servicios
 
             return new
             {
-                usuario.nombre,
-                usuario.ap_paterno,
-                usuario.ap_materno,
+                usuario.no_usuario,
+                nombre_completo = string.Join(" ",
+        new[]
+        {
+            usuario.nombre,
+            usuario.ap_paterno,
+            usuario.ap_materno
+        }.Where(x => !string.IsNullOrWhiteSpace(x))),
                 usuario.email
             };
         }

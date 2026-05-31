@@ -59,10 +59,10 @@ Content-Type: application/json
 }
 
 ### EMPLEADO QUE SI PERTENECE AL MANAGER
-GET https://localhost:7293/api/Usuario/1000002
+GET https://localhost:7293/api/Usuario
 
 ### EMPLEADO QUE NO PERTENECE
-GET https://localhost:7293/api/Usuario/1000003
+GET https://localhost:7293/api/Usuario/1000004waddwwww
 ###
 POST https://localhost:7293/api/LogIn/logout
 ### TODAS LAS EMPRESAS
