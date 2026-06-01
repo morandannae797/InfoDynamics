@@ -177,6 +177,29 @@ namespace InfoDynamics.Aplicacion.servicios.Servicios
             };
         }
 
+        public async Task<object?> ObtenerPerfilSimpleAsync(int id)
+        {
+            var repoUsuario = _unitOfWork.Repository<Usuario>();
+
+            var usuario = await repoUsuario.GetAsync(
+                x => x.no_usuario == id);
+
+            if (usuario == null)
+                return null;
+
+            return new
+            {
+                usuario.no_usuario,
+                nombre_completo = string.Join(" ",
+                    new[]
+                    {
+                usuario.nombre,
+                usuario.ap_paterno,
+                usuario.ap_materno
+                    }.Where(x => !string.IsNullOrWhiteSpace(x))),
+                usuario.email
+            };
+        }
         public async Task<Usuario> UpdateWithConcurrencyAsync(Usuario usuarioActualizado, byte[] rowVersion)
         {
             var usuarioExistente = await _usuarioRepo.GetByIdAsync(usuarioActualizado.no_usuario);

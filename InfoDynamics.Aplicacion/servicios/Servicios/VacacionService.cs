@@ -38,26 +38,8 @@ namespace InfoDynamics.Aplicacion.servicios
             if (!pertenece)
                 throw new UnauthorizedException("No tienes permiso para aprobar solicitudes de este usuario.");
 
+           
             vacacion.estado = dto.EstadoDecision;
-
-            if (vacacion.estado == "Aprobada")
-            {
-                var periodoActivo = await _unitOfWork.Repository<Periodo>().GetAsync(p => p.estado == "Abierto");
-
-                if (periodoActivo == null)
-                    throw new ConflictException("No hay periodos abiertos para registrar las vacaciones.");
-
-
-                var nuevoRegistro = new Registro
-                {
-                    no_usuario = vacacion.no_usuario,
-                    fecha = vacacion.fecha_inicio.ToDateTime(TimeOnly.MinValue),
-                    horas = 8,
-                    id_periodo = periodoActivo.id_periodo
-                };
-
-                await _unitOfWork.Repository<Registro>().AddAsync(nuevoRegistro);
-            }
 
             await _unitOfWork.SaveChangesAsync();
         }

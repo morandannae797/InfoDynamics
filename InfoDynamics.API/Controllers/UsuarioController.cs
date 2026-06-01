@@ -61,30 +61,31 @@ namespace InfoDynamics.API.Controllers
                 .Where(u => usuariosACargo.Contains(u.NoUsuario))
                 .ToList());
         }
-
         [Authorize]
         [HttpGet("{id:int}")]
         public async Task<ActionResult> GetById(int id)
         {
             try
             {
-                var claimUsuario = User.Claims.FirstOrDefault(c => c.Type.Contains("nameidentifier"));
+                var claimUsuario = User.Claims
+                    .FirstOrDefault(c => c.Type.Contains("nameidentifier"));
 
                 if (claimUsuario == null)
                 {
                     return Unauthorized(new
                     {
-                        message = "No se encontro ID"
-
+                        message = "No se encontro ID."
                     });
-
                 }
 
                 int usuarioAutenticado = int.Parse(claimUsuario.Value);
 
+                var servicioConcreto = (UsuarioServicio)_usuarioServicio;
+
+                
                 if (usuarioAutenticado == id)
                 {
-                    var usuario = await _usuarioServicio.FindByIdAsync(id);
+                    var usuario = await servicioConcreto.ObtenerPerfilSimpleAsync(id);
 
                     if (usuario == null)
                     {
@@ -97,14 +98,13 @@ namespace InfoDynamics.API.Controllers
                     return Ok(usuario);
                 }
 
+            
                 bool esManager = User.IsInRole("Manager");
 
                 if (!esManager)
                 {
                     return Forbid();
                 }
-
-                var servicioConcreto = (UsuarioServicio)_usuarioServicio;
 
                 var empleado = await servicioConcreto.ObtenerEmpleadoDeManager(
                     usuarioAutenticado,
@@ -129,7 +129,6 @@ namespace InfoDynamics.API.Controllers
                 });
             }
         }
-
 
         [Authorize(Roles = "Manager")]
         [HttpPost]
