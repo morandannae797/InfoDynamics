@@ -5,8 +5,10 @@ using InfoDynamics.Dominio.Entidades;
 using InfoDynamics.Dominio.interfaces;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using System;
 using System.Security.Claims;
 using System.Linq;
+using System.Threading.Tasks;
 
 namespace InfoDynamics.API.Controllers
 {
@@ -18,17 +20,20 @@ namespace InfoDynamics.API.Controllers
         private readonly IWriteServiceAsync<VacacionDto.VacacionCreateDto, VacacionDto.VacacionAprobacionDto> _writeService;
         private readonly IVacacionAprobacionService _vacacionAprobacionService;
         private readonly IUnitOfWork _unitOfWork;
+        private readonly IEmailService _emailService;
 
         public VacacionController(
             IReadServiceAsync<VacacionDto.VacacionResponseDto> readService,
             IWriteServiceAsync<VacacionDto.VacacionCreateDto, VacacionDto.VacacionAprobacionDto> writeService,
             IVacacionAprobacionService vacacionAprobacionService,
-            IUnitOfWork unitOfWork)
+            IUnitOfWork unitOfWork,
+            IEmailService emailService)
         {
             _readService = readService;
             _writeService = writeService;
             _vacacionAprobacionService = vacacionAprobacionService;
             _unitOfWork = unitOfWork;
+            _emailService = emailService;
         }
 
         [Authorize(Roles = "Manager")]
@@ -61,11 +66,10 @@ namespace InfoDynamics.API.Controllers
         [HttpPost]
         public async Task<ActionResult> Create([FromBody] VacacionDto.VacacionCreateDto dto)
         {
-            // 1. Validación de Fechas Lógicas
+            // 1. Validaciones de Fecha
             if (dto.FechaInicio > dto.FechaFin)
                 return BadRequest(new { message = "La fecha de inicio no puede ser posterior a la fecha de fin." });
 
-            // 2. Validación de Fechas Retroactivas
             if (dto.FechaInicio < DateTime.Today)
                 return BadRequest(new { message = "No puedes solicitar vacaciones en fechas pasadas." });
 
@@ -73,7 +77,7 @@ namespace InfoDynamics.API.Controllers
             if (claim == null) return Unauthorized("Usuario no autenticado.");
             int usuarioId = int.Parse(claim.Value);
 
-            // 3. Validación de solicitud pendiente única
+            // 2. Validación de solicitud única
             var solicitudExistente = await _unitOfWork.Repository<Vacacion>()
                 .GetAsync(v => v.no_usuario == usuarioId && v.estado == "Pendiente");
 
@@ -84,6 +88,20 @@ namespace InfoDynamics.API.Controllers
 
             dto.SolicitanteId = usuarioId;
             await _writeService.AddAsync(dto);
+
+            // 3. Notificación al Manager (Ejecución asíncrona "fire and forget")
+            try
+            {
+                var relacion = await _unitOfWork.Repository<Usuario_manager>().GetAsync(x => x.no_usuario == usuarioId);
+                if (relacion != null)
+                {
+                    var manager = await _unitOfWork.Repository<Usuario>().GetByIdAsync(relacion.no_usuario_manager);
+                    var empleado = await _unitOfWork.Repository<Usuario>().GetByIdAsync(usuarioId);
+
+                    _ = _emailService.EnviarNotificacionVacacionesAsync(manager.email, empleado.nombre, dto.FechaInicio.ToString("yyyy-MM-dd"));
+                }
+            }
+            catch { /* El error de correo no debe abortar la creación de la vacación */ }
 
             return Ok(new { mensaje = "Vacación solicitada correctamente." });
         }
@@ -104,7 +122,7 @@ namespace InfoDynamics.API.Controllers
             }
             catch (Exception ex) when (ex is EntityNotFoundException || ex is UnauthorizedException || ex is ConflictException)
             {
-                return StatusCode(ex is UnauthorizedException ? 403 : 404, new { message = ex.Message });
+                return StatusCode(ex is UnauthorizedException ? 403 : (ex is EntityNotFoundException ? 404 : 409), new { message = ex.Message });
             }
         }
     }
