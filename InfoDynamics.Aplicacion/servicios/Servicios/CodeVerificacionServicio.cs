@@ -6,11 +6,13 @@ namespace InfoDynamics.Aplicacion.servicios.Servicios
     public class CodeVerificacionServicio
     {
         private readonly IUnitOfWork _unitOfWork;
+        //private readonly IEmailService _emailService; (LINEA PARA EL EMAIL)
 
         public CodeVerificacionServicio(
             IUnitOfWork unitOfWork)
         {
             _unitOfWork = unitOfWork;
+            //_emailService = emailService; (LINEA PARA EL EMAIL)
         }
 
         public async Task<string> GenerarYEnviarCodigoAsync(string email)
@@ -35,19 +37,23 @@ namespace InfoDynamics.Aplicacion.servicios.Servicios
                 {
                     no_usuario = usuario.no_usuario,
                     codigo = codigo,
-                    fecha_caduca = DateTime.Now.AddMinutes(15)
+                    fecha_caduca = DateTime.Now.AddMinutes(1)
                 });
             }
             else
             {
                 otpExistente.codigo = codigo;
-                otpExistente.fecha_caduca = DateTime.Now.AddMinutes(15);
+                otpExistente.fecha_caduca = DateTime.Now.AddMinutes(1);
 
                 await otpRepo.UpdateAsync(otpExistente);
             }
 
             await _unitOfWork.SaveChangesAsync();
 
+            //await _emailService.EnvioResetContra(usuario.email,
+                //$"{usuario.nombre} {usuario.ap_paterno}",codigo);
+
+            // SE ELIMINA EL RETURN CODIGO PARA CUANDO YA ESTE LA FUNCIONALIDAD DENTRO DE LA BD Y NUBE
             return codigo;
         }
 

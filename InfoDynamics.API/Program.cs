@@ -107,6 +107,8 @@ builder.Services.AddScoped<LoginIntentosValidacion>();
 // Contraseña
 builder.Services.AddScoped<IContrasenaService, ContrasenaService>();
 
+// Email (CUANDO ESTE DISPONIBLE)
+//builder.Services.AddScoped<IEmailService, EmailService>();
 
 // Empresa
 builder.Services.AddScoped<EmpresaValidacionService>();

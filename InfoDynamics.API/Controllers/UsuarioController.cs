@@ -340,7 +340,7 @@ namespace InfoDynamics.API.Controllers
 
             return Ok(new
             {
-                message = "Código enviado",
+                message = "Código generado correctamente",
                 codigo = codigo
             });
         }
