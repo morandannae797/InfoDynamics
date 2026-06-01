@@ -1,3 +1,4 @@
+using Azure.Identity;
 using InfoDynamics.API.Middleware;
 using InfoDynamics.Aplicacion.Abstracts;
 using InfoDynamics.Aplicacion.dtos;
@@ -13,15 +14,17 @@ using InfoDynamics.Dominio.Entidades;
 using InfoDynamics.Dominio.interfaces;
 using InfoDynamics.Infraestructura.Contexto;
 using InfoDynamics.Infraestructura.Processors;
+using Azure.Identity;
+using Azure.Extensions.AspNetCore.Configuration.Secrets;
 using InfoDynamics.Infraestructura.Repositorio;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
+using Microsoft.AspNetCore.Builder.Extensions;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Net.Http.Headers;
 using Scalar.AspNetCore;
 using System.Reflection.Emit;
 using System.Security.Claims;
 using static InfoDynamics.Aplicacion.dtos.VacacionDto;
-
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -32,17 +35,50 @@ builder.Services.AddRazorPages();
 
 builder.Services.AddOpenApi();
 
+
+
 // Base de datos 
+var keyVaultName = builder.Configuration["KeyVaultName"];
+//que onda como andamos
+if (!string.IsNullOrWhiteSpace(keyVaultName))
+{
+    builder.Configuration.AddAzureKeyVault(
+        new Uri($"https://KeyVaultS26.vault.azure.net/"),
+        new DefaultAzureCredential());
+}
+
+var connectionString = builder.Configuration.GetConnectionString("DefaultConnection");
+
+if (string.IsNullOrWhiteSpace(connectionString))
+{
+    throw new InvalidOperationException(
+        "WARNING.");
+}
+
 builder.Services.AddDbContext<EmployeesDbContext>(options =>
-    options.UseSqlServer(builder.Configuration.GetConnectionString("DefaultConnection")));
+    options.UseSqlServer(
+        connectionString,
+        sqlOptions =>
+        {
+            sqlOptions.EnableRetryOnFailure(
+                maxRetryCount: 5,
+                maxRetryDelay: TimeSpan.FromSeconds(10),
+                errorNumbersToAdd: null
+            );
+        }
+    ));
+
+builder.Services.Configure<SmtpOptions>(
+    builder.Configuration.GetSection("Smtp"));
+builder.Services.AddTransient<IEmailService, SendSmtpEmailService>();
 
 builder.Services.AddMediatR(cfg => cfg.RegisterServicesFromAssembly(typeof(Program).Assembly));
-
 // AutoMapper
 builder.Services.AddAutoMapper(cfg =>
 {
     cfg.AddProfile<MappingProfile>();
 });
+
 
 // Repositorio y Unit of Work
 builder.Services.AddScoped(typeof(IGenericRepository<>), typeof(GenericRepository<>));
@@ -136,16 +172,21 @@ builder.Services.AddScoped<IVacacionAprobacionService, VacacionAprobacionService
 builder.Services.Configure<JwtOptions>(builder.Configuration.GetSection(JwtOptions.JwtOptionKey));
 
 // CORS
+// JWT Options
+builder.Services.Configure<JwtOptions>(builder.Configuration.GetSection(JwtOptions.JwtOptionKey));
+
+// CORS
 builder.Services.AddCors(options =>
 {
     options.AddPolicy("FrontendClient", policy =>
     {
-        policy.WithOrigins("https://localhost:7293", "https://www.infodynamics.dpns.org")
-              .WithHeaders(HeaderNames.Accept, HeaderNames.ContentType, HeaderNames.Authorization)
+        policy.WithOrigins("https://localhost:7293", "https://www.infodynamics.lat")
+                .WithHeaders(HeaderNames.Accept, HeaderNames.ContentType, HeaderNames.Authorization)
               .AllowCredentials()
               .AllowAnyMethod();
     });
 });
+
 
 // CORS
 var cors = builder.Configuration.GetSection("Cors");
@@ -241,7 +282,7 @@ var app = builder.Build();
 
 
 app.UseExceptionHandler();
-//app.UseCors("FrontCors");//comentado para pruebas
+app.UseCors("FrontCors");//comentado para pruebas
 app.UseHttpsRedirection();
 app.UseAuthentication();
 app.UseAuthorization();
