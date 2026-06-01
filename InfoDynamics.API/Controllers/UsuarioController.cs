@@ -1,9 +1,10 @@
 using InfoDynamics.Aplicacion.CustomException;
 using InfoDynamics.Aplicacion.dtos;
 using InfoDynamics.Aplicacion.servicio.IServicios;
-using InfoDynamics.Aplicacion.servicios.Servicios;
 using InfoDynamics.Aplicacion.servicios.IServicios.IServicioMapping;
+using InfoDynamics.Aplicacion.servicios.Servicios;
 using InfoDynamics.Dominio.Entidades;
+using InfoDynamics.Dominio.interfaces;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
@@ -19,9 +20,10 @@ namespace InfoDynamics.API.Controllers
         private readonly IContrasenaService _contrasenaService;
         private readonly IReadServiceAsync<UsuarioResponseDTO> _readService;
         private readonly Iusuarioservicio _usuarioServicio;
+        private readonly IUnitOfWork _unitOfWork;
 
         public UsuarioController(
-
+            IUnitOfWork unitOfWork,
             IContrasenaService contrasenaService,
             IReadServiceAsync<UsuarioResponseDTO> readService,
             Iusuarioservicio usuarioServicio)
@@ -29,6 +31,7 @@ namespace InfoDynamics.API.Controllers
             _contrasenaService = contrasenaService;
             _readService = readService;
             _usuarioServicio = usuarioServicio;
+            _unitOfWork = unitOfWork;
         }
 
 
@@ -36,15 +39,27 @@ namespace InfoDynamics.API.Controllers
         [HttpGet]
         public async Task<ActionResult<IEnumerable<UsuarioResponseDTO>>> GetAll()
         {
-            try
-            {
-                var usuarios = await _readService.GetAllAsync();
-                return Ok(usuarios);
-            }
-            catch (EntityNotFoundException ex)
-            {
-                return NotFound(new { message = ex.Message });
-            }
+            var claim = User.FindFirst(ClaimTypes.NameIdentifier);
+
+            if (claim == null)
+                return Unauthorized("Usuario no autenticado.");
+
+            int managerId = int.Parse(claim.Value);
+
+            var todasLasRelaciones = await _unitOfWork.Repository<Usuario_manager>().GetAllAsync();
+
+            var usuariosACargo = todasLasRelaciones
+                .Where(x => x.no_usuario_manager == managerId)
+                .Select(x => x.no_usuario)
+                .ToList();
+
+            usuariosACargo.Add(managerId);
+
+            var todosLosUsuarios = await _readService.GetAllAsync();
+
+            return Ok(todosLosUsuarios
+                .Where(u => usuariosACargo.Contains(u.NoUsuario))
+                .ToList());
         }
 
         [Authorize]
@@ -125,7 +140,12 @@ namespace InfoDynamics.API.Controllers
 
             try
             {
-                var usuario = await _usuarioServicio.CreateFromDtoAsync(dto);
+                var noUsuarioManager = int.Parse(
+                         User.FindFirst(ClaimTypes.NameIdentifier)!.Value);
+
+                var usuario = await _usuarioServicio.CreateFromDtoAsync(
+                    dto,
+                    noUsuarioManager);
 
                 return CreatedAtAction(
                     nameof(GetById),
