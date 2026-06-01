@@ -143,18 +143,6 @@ namespace InfoDynamics.Aplicacion.servicios.Servicios
 
 
 
-
-
-
-
-
-
-
-
-
-
-
-
     public class JornadaValidacionService
     {
         private readonly IUnitOfWork _unitOfWork;
@@ -224,20 +212,6 @@ namespace InfoDynamics.Aplicacion.servicios.Servicios
                 throw new BadRequestException("El código del proyecto no tiene clasificación válida.");
         }
     }
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 
 
 
