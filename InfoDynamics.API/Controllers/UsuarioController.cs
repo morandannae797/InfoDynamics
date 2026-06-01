@@ -125,7 +125,11 @@ namespace InfoDynamics.API.Controllers
 
             try
             {
-                var usuario = await _usuarioServicio.CreateFromDtoAsync(dto);
+                var noUsuarioManager = int.Parse(
+                         User.FindFirst(ClaimTypes.NameIdentifier)!.Value);
+
+                var usuario = await _usuarioServicio.CreateFromDtoAsync(
+                    dto);
 
                 return CreatedAtAction(
                     nameof(GetById),
