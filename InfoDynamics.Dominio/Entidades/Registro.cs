@@ -6,7 +6,7 @@ public class Registro
     public DateTime fecha { get; set; }
     public decimal horas { get; set; }
     public int no_usuario { get; set; }
-    public string codigo { get; set; }
+    public string codigo { get; set; } = null!;
 
     public int id_periodo { get; set; }
 
