@@ -34,9 +34,11 @@ builder.Services.AddRazorPages();
 
 builder.Services.AddOpenApi();
 
+
+
 // Base de datos 
 var keyVaultName = builder.Configuration["KeyVaultName"];
-
+//que onda como andamos
 if (!string.IsNullOrWhiteSpace(keyVaultName))
 {
     builder.Configuration.AddAzureKeyVault(
@@ -70,12 +72,12 @@ builder.Services.Configure<SmtpOptions>(
 builder.Services.AddTransient<IEmailService, SendSmtpEmailService>();
 
 builder.Services.AddMediatR(cfg => cfg.RegisterServicesFromAssembly(typeof(Program).Assembly));
-
 // AutoMapper
 builder.Services.AddAutoMapper(cfg =>
 {
     cfg.AddProfile<MappingProfile>();
 });
+
 
 // Repositorio y Unit of Work
 builder.Services.AddScoped(typeof(IGenericRepository<>), typeof(GenericRepository<>));
@@ -274,7 +276,7 @@ var app = builder.Build();
 
 
 app.UseExceptionHandler();
-//app.UseCors("FrontCors");//comentado para pruebas
+app.UseCors("FrontCors");//comentado para pruebas
 app.UseHttpsRedirection();
 app.UseAuthentication();
 app.UseAuthorization();
