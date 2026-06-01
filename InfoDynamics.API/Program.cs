@@ -1,3 +1,4 @@
+using Azure.Identity;
 using InfoDynamics.API.Middleware;
 using InfoDynamics.Aplicacion.Abstracts;
 using InfoDynamics.Aplicacion.dtos;
@@ -15,6 +16,7 @@ using InfoDynamics.Infraestructura.Contexto;
 using InfoDynamics.Infraestructura.Processors;
 using InfoDynamics.Infraestructura.Repositorio;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
+using Microsoft.AspNetCore.Builder.Extensions;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Net.Http.Headers;
 using Scalar.AspNetCore;
@@ -33,8 +35,39 @@ builder.Services.AddRazorPages();
 builder.Services.AddOpenApi();
 
 // Base de datos 
+var keyVaultName = builder.Configuration["KeyVaultName"];
+
+if (!string.IsNullOrWhiteSpace(keyVaultName))
+{
+    builder.Configuration.AddAzureKeyVault(
+        new Uri($"https://KeyVaultS26.vault.azure.net/"),
+        new DefaultAzureCredential());
+}
+
+var connectionString = builder.Configuration.GetConnectionString("DefaultConnection");
+
+if (string.IsNullOrWhiteSpace(connectionString))
+{
+    throw new InvalidOperationException(
+        "WARNING.");
+}
+
 builder.Services.AddDbContext<EmployeesDbContext>(options =>
-    options.UseSqlServer(builder.Configuration.GetConnectionString("DefaultConnection")));
+    options.UseSqlServer(
+        connectionString,
+        sqlOptions =>
+        {
+            sqlOptions.EnableRetryOnFailure(
+                maxRetryCount: 5,
+                maxRetryDelay: TimeSpan.FromSeconds(10),
+                errorNumbersToAdd: null
+            );
+        }
+    ));
+
+builder.Services.Configure<SmtpOptions>(
+    builder.Configuration.GetSection("Smtp"));
+builder.Services.AddTransient<IEmailService, SendSmtpEmailService>();
 
 builder.Services.AddMediatR(cfg => cfg.RegisterServicesFromAssembly(typeof(Program).Assembly));
 
