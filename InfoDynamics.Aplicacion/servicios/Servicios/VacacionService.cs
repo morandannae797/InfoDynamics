@@ -47,17 +47,17 @@ namespace InfoDynamics.Aplicacion.servicios
                 if (periodoActivo == null)
                     throw new ConflictException("No hay periodos abiertos para registrar las vacaciones.");
 
-                var proyectoExiste = await _unitOfWork.Repository<Proyecto>().GetAsync(p => p.codigo == dto.CodigoProyecto);
-
-                if (proyectoExiste == null)
+                /*var proyectoExiste = await _unitOfWork.Repository<Proyecto>().GetAsync(p => p.codigo == dto.CodigoProyecto);
+                */
+                /*if (proyectoExiste == null)
                     throw new ConflictException($"El código de proyecto '{dto.CodigoProyecto}' no es válido.");
-
+                */
                 var nuevoRegistro = new Registro
                 {
                     no_usuario = vacacion.no_usuario,
                     fecha = vacacion.fecha_inicio.ToDateTime(TimeOnly.MinValue),
                     horas = 8,
-                    codigo = dto.CodigoProyecto,
+                    //codigo = dto.CodigoProyecto,
                     id_periodo = periodoActivo.id_periodo
                 };
 

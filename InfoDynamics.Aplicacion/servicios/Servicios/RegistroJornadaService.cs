@@ -5,6 +5,7 @@ using InfoDynamics.Aplicacion.servicio;
 using InfoDynamics.Dominio.Entidades;
 using InfoDynamics.Dominio.interfaces;
 using Microsoft.AspNetCore.Http;
+using System.Security.Claims;
 
 namespace InfoDynamics.Aplicacion.servicios.Servicios
 {
@@ -44,14 +45,23 @@ namespace InfoDynamics.Aplicacion.servicios.Servicios
             _validacion.ValidarHoras(dto.Horas);
             await _validacion.ValidarProyectoAsync(dto.Codigo);
 
+            //
+            var usuario = await _unitOfWork.Repository<Usuario>().GetByIdAsync(dto.NoUsuario);
+            if (usuario == null)
+                throw new EntityNotFoundException($"El usuario {dto.NoUsuario} no existe.");
+
+
+
             var repo = _unitOfWork.Repository<Registro>();
+
+            
 
             var entity = await repo.GetByIdAsync(dto.RegistroId);
 
             if (entity == null)
                 throw new EntityNotFoundException("Registro no encontrado.");
 
-            await GenerarAuditoriaAsync(dto, entity);
+           // await GenerarAuditoriaAsync(dto, entity);
 
             entity.fecha = dto.Fecha;
             entity.horas = dto.Horas;
@@ -116,7 +126,8 @@ namespace InfoDynamics.Aplicacion.servicios.Servicios
                 no_usuario = registroOriginal.no_usuario,
                 id_periodo = dto.PeriodoId,
                 codigo = dto.Codigo,
-                accion = cambios,
+                //
+                accion =  cambios,
                 usuario_accion = managerId,
                 fecha_accion = DateTime.UtcNow
             };
@@ -173,8 +184,11 @@ namespace InfoDynamics.Aplicacion.servicios.Servicios
 
             if (ahora <= finCaptura)
             {
-                if (rolUsuario != "Empleado")
-                    throw new UnauthorizedException("Solo los empleados pueden registrar o modificar horas durante el periodo abierto.");
+                if (accion == "Registrar" && rolUsuario != "Empleado")
+                    throw new UnauthorizedException("Solo los empleados pueden registrar horas.");
+
+                if (accion == "Modificar" && rolUsuario != "Manager")
+                    throw new UnauthorizedException("No tiene autorizacion.");
 
                 return;
             }
@@ -248,14 +262,14 @@ namespace InfoDynamics.Aplicacion.servicios.Servicios
             var periodo = await _unitOfWork.Repository<Periodo>().GetByIdAsync(dto.PeriodoId);
 
             if (periodo == null)
-                throw new EntityNotFoundException($"El periodo con ID {dto.PeriodoId} no existe.");
+                throw new EntityNotFoundException($"Periodo Incorrecto");
 
-            _validacion.ValidarAccesoPeriodo(periodo, rolUsuario, "Modificar");
+            _validacion.ValidarAccesoPeriodo(periodo, rolUsuario, "Registrar");
 
             var duplicado = await _unitOfWork.Repository<Registro>().FirstOrDefaultAsync(r => r.no_usuario == dto.NoUsuario && r.fecha.Date == dto.Fecha.Date && r.codigo == dto.Codigo);
 
             if (duplicado != null)
-                throw new ConflictException("Ya existe un registro para ese usuario en ese día y código.");
+                throw new ConflictException("Registro duplicado, Intentelo de nuevo");
 
             var registro = new Registro
             {
@@ -316,11 +330,10 @@ namespace InfoDynamics.Aplicacion.servicios.Servicios
             if (periodo == null)
                 throw new EntityNotFoundException($"El periodo {periodoId} no existe.");
 
+            // Semana actual: lunes a domingo
             var hoy = DateTime.Now.Date;
-            var diasDesdeInicio = (hoy - periodo.fecha_inicio.Date).Days;
-            var semana = diasDesdeInicio / 7;
-
-            var inicioSemana = periodo.fecha_inicio.Date.AddDays(semana * 7);
+            var diasDesdelunes = ((int)hoy.DayOfWeek + 6) % 7; // lunes = 0
+            var inicioSemana = hoy.AddDays(-diasDesdelunes);
             var finSemana = inicioSemana.AddDays(6);
 
             var registros = await _unitOfWork.Repository<Registro>().GetAllAsync();
