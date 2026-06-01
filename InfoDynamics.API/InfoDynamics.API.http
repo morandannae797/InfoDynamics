@@ -21,13 +21,23 @@ Content-Type: application/json
   "contrasena": "hash123"
 }
 
+### LOGIN COMO  EMPLEADO CON NUMERO Ashley
+POST https://localhost:7293/api/LogIn/login
+Content-Type: application/json
+
+{
+  "identificador": "1000031",
+  "contrasena": "Ashley?@26Segura!"
+}   
+
+
 ### LOGIN COMO  EMPLEADO CON NUMERO
 POST https://localhost:7293/api/LogIn/login
 Content-Type: application/json
 
 {
-  "identificador": "1000002",
-  "contrasena": "Nuevascosas683!@$"
+  "identificador": "1000013",
+  "contrasena": "hash123"
 }   
 
 ### CAMBIAR CONTRASENA EMPLEADO
@@ -59,10 +69,39 @@ Content-Type: application/json
 }
 
 ### EMPLEADO QUE SI PERTENECE AL MANAGER
-GET https://localhost:7293/api/Usuario
+GET https://localhost:7293/api/Usuario/1000033
 
 ### EMPLEADO QUE NO PERTENECE
-GET https://localhost:7293/api/Usuario/1000004
+GET https://localhost:7293/api/Usuario/1000001
+
+
+###
+POST https://localhost:7293/api/Usuario
+Content-Type: application/json
+{
+  "noUsuario": 1000031,
+  "nombre": "Ashley",
+  "apPaterno": "Martinez",
+  "apMaterno": "Lopez",
+  "email": "ashley.martinez@empresa.com",
+  "contrasena": "Ashley?@26Segura!",
+  "esManager": true
+}
+
+###
+POST https://localhost:7293/api/Usuario
+Content-Type: application/json
+{
+  "noUsuario": 1000033,
+  "nombre": "Valeriana",
+  "apPaterno": "Martinez",
+  "apMaterno": "Garcia",
+  "email": "ashley.bomba24@empresa.com",
+  "contrasena": "Hola?@26Segura!2",
+  "esManager": false
+}
+
+
 ###
 POST https://localhost:7293/api/LogIn/logout
 ### TODAS LAS EMPRESAS
@@ -121,28 +160,24 @@ GET https://localhost:7293/api/proyecto
 
 
 
-
-### EMPLEADO SOLICITA VACACIONES
-
+### FECHA INVALIDA PARA PERIODO FUTURO
 POST https://localhost:7293/api/Vacacion
 Content-Type: application/json
 
 {
-  "fechaInicio": "2026-07-01",
-  "fechaFin": "2026-06-03"
+  "fechaInicio": "2026-06-10",
+  "fechaFin": "2026-06-20"
 }
 
 
 
 ### ERROR FECHA INVALIDA
-
-
 POST https://localhost:7293/api/Vacacion
 Content-Type: application/json
 
 {
-  "fechaInicio": "2026-07-07",
-  "fechaFin": "2026-07-10"
+  "fechaInicio": "2026-05-10",
+  "fechaFin": "2026-05-20"
 }
 
 
@@ -155,24 +190,17 @@ GET https://localhost:7293/api/Vacacion
 
 
 
-##################################################
-### VER UNA SOLICITUD
-##################################################
-
-GET https://localhost:7293/api/Vacacion/3
-
-
 
 ##################################################
 ### APROBAR SOLICITUD
 ##################################################
 
-POST https://localhost:7293/api/Vacacion/7/evaluar
+POST https://localhost:7293/api/Vacacion/11/evaluar
 Content-Type: application/json
 
 {
-  "EstadoDecision": "Aprobada",
-  "CodigoProyecto": "L001" 
+
+  "EstadoDecision": "Rechazada"
 }
 
 
@@ -181,12 +209,12 @@ Content-Type: application/json
 ### RECHAZAR SOLICITUD
 ##################################################
 
-POST https://localhost:7293/api/Vacacion/6/evaluar
+POST https://localhost:7293/api/Vacacion/5/evaluar
 Content-Type: application/json
 
 {
   
-    "EstadoDecision": "Rechazada"
+    "EstadoDecision": "Aprobada"
   
 }
 
@@ -195,12 +223,12 @@ Content-Type: application/json
 ### ERROR ESTADO INVALIDO
 ##################################################
 
-POST https://localhost:7293/api/Vacacion/1/evaluar
+POST https://localhost:7293/api/Vacacion/11/evaluar
 Authorization: Bearer TOKEN_MANAGER
 Content-Type: application/json
 
 {
-  "estadoDecision": "Pendiente"
+  "estadoDecision": "Aprobada"
 }
 
   
@@ -266,7 +294,6 @@ Content-Type: application/json
 
 POST https://localhost:7293/api/Vacacion/1/evaluar
 Content-Type: application/json
-
 {
   "estadoDecision": "Aprobada"
 }
@@ -275,16 +302,16 @@ Content-Type: application/json
 ### EMPLEADO REGISTRA JORNADA
 ##################################################
 
-POST https://localhost:7293/api/RegistroJornada
+POST https://localhost:7293/api/RegistroJornada/24
 Content-Type: application/json
 
 {
 
 
-  "fecha": "2026-06-10",
+  "fecha": "2026-05-24",
   "horas": 8,
-  "noUsuario": 1000002,
-  "periodoId": 1,
+  "noUsuario": 1000033,
+  "periodoId": 2,
   "codigo": "L000001"
 }
 
@@ -294,13 +321,8 @@ Content-Type: application/json
 ### EMPLEADO EDITA JORNADA
 ##################################################
 
-POST https://localhost:7293/api/RegistroJornada/2
+POST https://localhost:7293/api/RegistroJornada
 Content-Type: application/json
-
-{
-  "fecha": "2026-06-10",
-  "horas": 6,
-  "noUsuario": 1000002,
   "periodoId": 1,
   "codigo": "L000001"
 }
@@ -345,7 +367,7 @@ Content-Type: application/json
 ### ERROR REGISTRO DUPLICADO
 ##################################################
 
-POST https://localhost:7293/api/RegistroJornada
+GET https://localhost:7293/api/RegistroJornada
 Content-Type: application/json
 
 {

@@ -6,10 +6,8 @@ namespace InfoDynamics.Aplicacion.dtos
 {
     public class UsuarioResponseDTO
     {
+        [Required]
         public int NoUsuario { get; set; }
-
-        public string NoUsuarioFormateado => NoUsuario.ToString("D7");
-
         [Required]
         public string Nombre { get; set; } = null!;
 
@@ -18,6 +16,7 @@ namespace InfoDynamics.Aplicacion.dtos
 
         public string? ApMaterno { get; set; }
 
+        [Required]
         public string NombreCompleto => $"{Nombre} {ApPaterno} {ApMaterno}".Trim();
 
         [Required]
@@ -26,21 +25,7 @@ namespace InfoDynamics.Aplicacion.dtos
         [Required]
         public bool EsManager { get; set; }
 
-        [Required]
-        public bool EstadoCuenta { get; set; }
 
-        [Required]
-        public bool DebeCambiarPass { get; set; }
-
-        [Required]
-        public int Intentos { get; set; }
-
-        public DateTime? HoraBloqueo { get; set; }
-
-        public string? Token { get; set; }
-
-        [Required]
-        public byte[] RowVersion { get; set; } = null!;
     }
 
     public class UsuarioCreateDTO

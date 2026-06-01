@@ -14,6 +14,8 @@ using InfoDynamics.Dominio.Entidades;
 using InfoDynamics.Dominio.interfaces;
 using InfoDynamics.Infraestructura.Contexto;
 using InfoDynamics.Infraestructura.Processors;
+using Azure.Identity;
+using Azure.Extensions.AspNetCore.Configuration.Secrets;
 using InfoDynamics.Infraestructura.Repositorio;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Builder.Extensions;
@@ -23,7 +25,6 @@ using Scalar.AspNetCore;
 using System.Reflection.Emit;
 using System.Security.Claims;
 using static InfoDynamics.Aplicacion.dtos.VacacionDto;
-
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -171,16 +172,21 @@ builder.Services.AddScoped<IVacacionAprobacionService, VacacionAprobacionService
 builder.Services.Configure<JwtOptions>(builder.Configuration.GetSection(JwtOptions.JwtOptionKey));
 
 // CORS
+// JWT Options
+builder.Services.Configure<JwtOptions>(builder.Configuration.GetSection(JwtOptions.JwtOptionKey));
+
+// CORS
 builder.Services.AddCors(options =>
 {
     options.AddPolicy("FrontendClient", policy =>
     {
-        policy.WithOrigins("https://localhost:7293", "https://www.infodynamics.dpns.org")
-              .WithHeaders(HeaderNames.Accept, HeaderNames.ContentType, HeaderNames.Authorization)
+        policy.WithOrigins("https://localhost:7293", "https://www.infodynamics.lat")
+                .WithHeaders(HeaderNames.Accept, HeaderNames.ContentType, HeaderNames.Authorization)
               .AllowCredentials()
               .AllowAnyMethod();
     });
 });
+
 
 // CORS
 var cors = builder.Configuration.GetSection("Cors");
