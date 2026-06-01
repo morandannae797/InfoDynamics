@@ -15,14 +15,16 @@ namespace InfoDynamics.Aplicacion.servicios.Servicios
         private readonly IGenericRepository<Usuario_manager> _usuarioManagerRepo;
         private readonly IUnitOfWork _unitOfWork;
         private readonly IUserRepository _userRepository;
+        private readonly IEmailService _emailService;
 
-        public UsuarioServicio(IUnitOfWork unitOfWork, IUserRepository userRepository)
+        public UsuarioServicio(IUnitOfWork unitOfWork, IUserRepository userRepository, IEmailService emailService)
         {
             _unitOfWork = unitOfWork;
             _usuarioRepo = _unitOfWork.Repository<Usuario>();
             _contrasenaRepo = _unitOfWork.Repository<HistorialContrasena>();
             _usuarioManagerRepo = _unitOfWork.Repository<Usuario_manager>();
             _userRepository = userRepository;
+            _emailService = emailService;
         }
 
         public async Task<Usuario?> VerifyUser(string identificador, string contrasena)
@@ -85,6 +87,7 @@ namespace InfoDynamics.Aplicacion.servicios.Servicios
             if (emailExistente != null)
                 throw new ConflictException($"El correo {dto.Email} ya está registrado.");
 
+            var ContraTemporal = GeneradorContrasena.Generarcontrasenatemporal();
             var usuario = new Usuario
             {
                 no_usuario = dto.NoUsuario,
@@ -94,7 +97,7 @@ namespace InfoDynamics.Aplicacion.servicios.Servicios
                 email = dto.Email,
                 es_manager = dto.EsManager,
                 estado_cuenta = true,
-                contrasena_hash = BCrypt.Net.BCrypt.HashPassword(dto.Contrasena),
+                contrasena_hash = BCrypt.Net.BCrypt.HashPassword(ContraTemporal),
                 debe_cambiar_pass = true,
                 intentos = 0,
                 hora_bloqueo = null,
@@ -103,6 +106,12 @@ namespace InfoDynamics.Aplicacion.servicios.Servicios
             };
 
             await _usuarioRepo.AddAsync(usuario);
+
+            await _emailService.SendTemporaryPasswordAsync(
+            usuario.email,
+            usuario.nombre,
+            ContraTemporal,
+            "https://www.infodynamics.lat/HTML/Login.html");
 
             var contrasenaHistorial = new HistorialContrasena
             {
@@ -118,7 +127,6 @@ namespace InfoDynamics.Aplicacion.servicios.Servicios
 
             return usuario;
         }
-
         public async Task<Usuario?> FindByEmailAsync(string email)
         {
             return await _usuarioRepo.GetAsync(
