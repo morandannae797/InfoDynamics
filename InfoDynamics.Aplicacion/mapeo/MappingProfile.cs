@@ -156,13 +156,13 @@ namespace InfoDynamics.Aplicacion.mapeo
                 .ForMember(dest => dest.ApPaterno, opt => opt.MapFrom(src => src.ap_paterno))
                 .ForMember(dest => dest.ApMaterno, opt => opt.MapFrom(src => src.ap_materno))
                 .ForMember(dest => dest.Email, opt => opt.MapFrom(src => src.email))
-                .ForMember(dest => dest.EsManager, opt => opt.MapFrom(src => src.es_manager))
-                .ForMember(dest => dest.EstadoCuenta, opt => opt.MapFrom(src => src.estado_cuenta))
-                .ForMember(dest => dest.DebeCambiarPass, opt => opt.MapFrom(src => src.debe_cambiar_pass))
-                .ForMember(dest => dest.Intentos, opt => opt.MapFrom(src => src.intentos))
-                .ForMember(dest => dest.HoraBloqueo, opt => opt.MapFrom(src => src.hora_bloqueo))
-                .ForMember(dest => dest.Token, opt => opt.MapFrom(src => src.RefreshToken))
-                .ForMember(dest => dest.RowVersion, opt => opt.MapFrom(src => src.RowVersion));
+                .ForMember(dest => dest.EsManager, opt => opt.MapFrom(src => src.es_manager));
+                //.ForMember(dest => dest.EstadoCuenta, opt => opt.MapFrom(src => src.estado_cuenta))
+                //.ForMember(dest => dest.DebeCambiarPass, opt => opt.MapFrom(src => src.debe_cambiar_pass))
+               // .ForMember(dest => dest.Intentos, opt => opt.MapFrom(src => src.intentos))
+               // .ForMember(dest => dest.HoraBloqueo, opt => opt.MapFrom(src => src.hora_bloqueo))
+                //.ForMember(dest => dest.Token, opt => opt.MapFrom(src => src.RefreshToken))
+                //.ForMember(dest => dest.RowVersion, opt => opt.MapFrom(src => src.RowVersion));
 
 
 
