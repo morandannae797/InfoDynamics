@@ -30,6 +30,7 @@ public partial class EmployeesDbContext : DbContext
     public virtual DbSet<HistorialContrasena> Contrasenas { get; set; }
     public virtual DbSet<Proyecto> Proyectos { get; set; }
 
+    public virtual DbSet<Usuario_manager> OneTimePass { get; set; }
     public virtual DbSet<Usuario_manager> UsuarioManagers { get; set; }
 
     protected override void OnModelCreating(ModelBuilder modelBuilder)
@@ -38,8 +39,7 @@ public partial class EmployeesDbContext : DbContext
        
         base.OnModelCreating(modelBuilder);
 
-
-
+        modelBuilder.ApplyConfiguration(new FluentConfiguracion.OneTimePassFluentConfiguration());
         modelBuilder.ApplyConfiguration(new FluentConfiguracion.Auditoria_FluentConfiguration());
         modelBuilder.ApplyConfiguration(new FluentConfiguracion.UsuarioManager_FluentConfiguration());
         modelBuilder.ApplyConfiguration(new FluentConfiguracion.Empresa_FluentConfiguration());
