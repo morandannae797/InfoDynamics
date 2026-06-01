@@ -384,3 +384,37 @@ GET https://localhost:7293/api/RegistroJornada/top-empleados?fechaInicio=2026-06
 Accept: application/json
 
 
+##################################################
+### SOLICITAR CODIGO OTP PARA RECUPERAR CONTRASENA
+##################################################
+
+POST https://localhost:7293/api/Usuario/solicitar-codigo-recuperacion
+Content-Type: application/json
+
+{
+  "email": "arahel.sapi@empresa.com"
+}
+
+##################################################
+### VALIDAR CODIGO OTP
+##################################################
+
+POST https://localhost:7293/api/Usuario/validar-codigo-recuperacion
+Content-Type: application/json
+
+{
+  "noUsuario": 1000001,
+  "codigo": "465054"
+}
+
+##################################################
+### RESTABLECER CONTRASENA CON FLUJO OTP
+##################################################
+
+POST https://localhost:7293/api/Usuario/restablecer-contrasena
+Content-Type: application/json
+
+{
+  "nuevaContrasena": "NuevaPass123!",
+  "confirmarNuevaContrasena": "NuevaPass123!"
+}

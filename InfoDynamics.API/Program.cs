@@ -112,8 +112,8 @@ builder.Services.AddScoped<IContrasenaService, ContrasenaService>();
 builder.Services.AddScoped<EmpresaValidacionService>();
 builder.Services.AddScoped<EmpresaRegistroService>();
 
-
-
+// Codigo verificacion
+builder.Services.AddScoped<CodeVerificacionServicio>();
 
 // Jornada
 builder.Services.AddScoped<RegistroJornadaService>();
