@@ -85,10 +85,6 @@ builder.Services.AddScoped<
     IWriteServiceAsync<VacacionCreateDto, VacacionAprobacionDto>,
     WriteServiceAsync<Vacacion, VacacionCreateDto, VacacionAprobacionDto>>();
 
-//builder.Services.AddScoped<
-// IWriteServiceAsync<RegistroCreateDto, RegistroDto>,
-// WriteServiceAsync<Registro, RegistroCreateDto, RegistroDto>>();
-
  builder.Services.AddScoped<
     IWriteServiceAsync<RegistroCreateDto, RegistroDto>,
     RegistroJornadaService > ();
@@ -131,12 +127,8 @@ builder.Services.AddScoped<RegistroProyectoService>();
 
 builder.Services.AddScoped<PeriodoService>();
 builder.Services.AddScoped<IWriteServiceAsync<PeriodoDto, PeriodoDto>, WriteServiceAsync<Periodo, PeriodoDto, PeriodoDto>>();
-/* Vacaciones
-builder.Services.AddScoped<VacacionValidacionService>();
-builder.Services.AddScoped<VacacionSolicitudService>();
-builder.Services.AddScoped<VacacionDecisionService>();
-builder.Services.AddScoped<VacacionNotificacionService>();
- */
+
+
 
 builder.Services.AddScoped<IVacacionAprobacionService, VacacionAprobacionService>();
 

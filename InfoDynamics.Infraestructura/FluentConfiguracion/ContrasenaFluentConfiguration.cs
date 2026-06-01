@@ -19,10 +19,6 @@ namespace InfoDynamics.Infraestructura.FluentConfiguracion
             builder.Property(e => e.fecha_registro)
                 .HasColumnType("datetime");
 
-            builder.Property(e => e.RowVersion)
-                .IsRowVersion()
-                .IsConcurrencyToken();
-
             builder.HasOne(d => d.no_usuarioNavigation)
                 .WithMany(p => p.Contrasenas)
                 .HasForeignKey(d => d.no_usuario)
