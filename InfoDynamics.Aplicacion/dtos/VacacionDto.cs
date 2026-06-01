@@ -1,5 +1,7 @@
 ﻿using System.ComponentModel.DataAnnotations;
 
+
+
 namespace InfoDynamics.Aplicacion.dtos
 {
     public class VacacionDto
@@ -34,9 +36,6 @@ namespace InfoDynamics.Aplicacion.dtos
             [RegularExpression("Aprobada|Rechazada", ErrorMessage = "El estado debe ser 'Aprobada' o 'Rechazada'.")]
             public string EstadoDecision { get; set; } = null!;
 
-            // AGREGA ESTA LÍNEA:
-
-            //public string? CodigoProyecto { get; set; } = null!;
         }
     }
 }

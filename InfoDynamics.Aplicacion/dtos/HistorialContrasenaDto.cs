@@ -32,8 +32,6 @@ namespace InfoDynamics.Aplicacion.dtos
         [Required]
         public int NoUsuario { get; set; } 
 
-        [Required]
-        public byte[] RowVersion { get; set; } = null!;
     }
   
 }
