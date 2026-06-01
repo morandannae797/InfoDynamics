@@ -62,7 +62,7 @@ Content-Type: application/json
 GET https://localhost:7293/api/Usuario
 
 ### EMPLEADO QUE NO PERTENECE
-GET https://localhost:7293/api/Usuario/1000004waddwwww
+GET https://localhost:7293/api/Usuario/1000004
 ###
 POST https://localhost:7293/api/LogIn/logout
 ### TODAS LAS EMPRESAS

@@ -10,12 +10,32 @@ namespace InfoDynamics.Aplicacion.mapeo
         {
 
 
-            CreateMap<Usuario_manager, UsuarioManagerDto>()
-                .ForMember(dest => dest.NoUsuario,
+            CreateMap<OneTimePassDto, OneTimePass>()
+                .ForMember(dest => dest.no_usuario,
                     opt => opt.MapFrom(src => src.no_usuario))
-                .ForMember(dest => dest.NoUsuarioManager,
-                    opt => opt.MapFrom(src => src.no_usuario_manager));
+                .ForMember(dest => dest.codigo,
+                    opt => opt.MapFrom(src => src.codigo))
+                .ForMember(dest => dest.fecha_caduca,
+                    opt => opt.MapFrom(src => src.fecha_caduca));
 
+            CreateMap<OneTimePass, OneTimePassDto>()
+                .ForMember(dest => dest.no_usuario,
+                    opt => opt.MapFrom(src => src.no_usuario))
+                .ForMember(dest => dest.codigo,
+                    opt => opt.MapFrom(src => src.codigo))
+                .ForMember(dest => dest.fecha_caduca,
+                    opt => opt.MapFrom(src => src.fecha_caduca));
+
+
+            CreateMap<Usuario_manager, UsuarioManagerDto>()
+             .ForMember(dest => dest.NoUsuario, opt => opt.MapFrom(src => src.no_usuario))
+             .ForMember(dest => dest.NoUsuarioManager, opt => opt.MapFrom(src => src.no_usuario_manager));
+
+
+            CreateMap<Usuario_manager, UsuarioManagerDto>() .ForMember(dest => dest.NoUsuario,
+            opt => opt.MapFrom(src => src.no_usuario))
+             .ForMember(dest => dest.NoUsuarioManager,
+                    opt => opt.MapFrom(src => src.no_usuario_manager));
 
 
             CreateMap<Empresa, EmpresaDto>()
@@ -98,7 +118,7 @@ namespace InfoDynamics.Aplicacion.mapeo
                 .ForMember(dest => dest.es_manager, opt => opt.MapFrom(src => src.EsManager))
                 .ForMember(dest => dest.estado_cuenta, opt => opt.MapFrom(src => true))
                 .ForMember(dest => dest.contrasena_hash,
-                    opt => opt.MapFrom(src => BCrypt.Net.BCrypt.HashPassword(src.Contrasena)))
+                 opt => opt.MapFrom(src => BCrypt.Net.BCrypt.HashPassword(src.Contrasena)))
                 .ForMember(dest => dest.debe_cambiar_pass, opt => opt.MapFrom(src => true))
                 .ForMember(dest => dest.intentos, opt => opt.MapFrom(src => 0))
                 .ForMember(dest => dest.hora_bloqueo, opt => opt.Ignore())
@@ -155,14 +175,13 @@ namespace InfoDynamics.Aplicacion.mapeo
                 .ForMember(dest => dest.fecha_registro,
                     opt => opt.MapFrom(src => DateTime.UtcNow))
 
-                .ForMember(dest => dest.RowVersion, opt => opt.Ignore())
+
                 .ForMember(dest => dest.no_usuarioNavigation, opt => opt.Ignore());
 
             CreateMap<HistorialContrasenaAmbosDto, HistorialContrasena>()
                 .ForMember(dest => dest.id_historial, opt => opt.MapFrom(src => src.IdHistorial))
                 .ForMember(dest => dest.fecha_registro, opt => opt.MapFrom(src => src.Fecharegistro))
                 .ForMember(dest => dest.no_usuario, opt => opt.MapFrom(src => src.NoUsuario))
-                .ForMember(dest => dest.RowVersion, opt => opt.MapFrom(src => src.RowVersion))
                 .ForMember(dest => dest.contrasena_hash, opt => opt.Ignore())
                 .ForMember(dest => dest.no_usuarioNavigation, opt => opt.Ignore());
 
@@ -170,8 +189,7 @@ namespace InfoDynamics.Aplicacion.mapeo
             CreateMap<HistorialContrasena, HistorialContrasenaAmbosDto>()
                 .ForMember(dest => dest.IdHistorial, opt => opt.MapFrom(src => src.id_historial))
                 .ForMember(dest => dest.Fecharegistro, opt => opt.MapFrom(src => src.fecha_registro))
-                .ForMember(dest => dest.NoUsuario, opt => opt.MapFrom(src => src.no_usuario))
-                .ForMember(dest => dest.RowVersion, opt => opt.MapFrom(src => src.RowVersion));
+                .ForMember(dest => dest.NoUsuario, opt => opt.MapFrom(src => src.no_usuario));
 
 
 
